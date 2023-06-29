@@ -18,13 +18,16 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from app_accounts.views import signup
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app_home.urls')),
-    path('login/', include('app_accounts.urls')),
-    path('shop/', include('app_products.urls'))
+    path('app_accounts/', include('app_accounts.urls')),
+    path('shop/', include('app_products.urls')),
 ] 
+
 
 
 

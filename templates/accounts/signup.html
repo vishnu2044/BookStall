@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>BookStall Login</title>
+    <title>BookStall Sign-up</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="manifest" href="site.webmanifest">
@@ -21,6 +21,7 @@
         <link rel="stylesheet" href="/static/assets/css/slick.css">
         <link rel="stylesheet" href="/static/assets/css/nice-select.css">
         <link rel="stylesheet" href="/static/assets/css/style.css">
+        <link rel="stylesheet" href="/static/assets/css/signup.css">
 </head>
 <body>
     <header>
@@ -79,71 +80,119 @@
     </header>
     <main>
         <!-- Hero Area Start-->
-        <div class="slider-area ">
-            <div class="single-slider  d-flex align-items-center">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="hero-cap text-center">
-                                <h2>Login</h2>
-                            </div>
+<!-- Hero Area End-->
+<!--================signup_part Area =================-->
+<section class="vh-100 gradient-custom">
+    <div class="slider-area ">
+        <div class="single-slider  d-flex align-items-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="hero-cap text-center">
+                            <h2>Signup</h2>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Hero Area End-->
-        <!--================login_part Area =================-->
-        <section class="login_part">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="login_part_text text-center">
-                            <div class="login_part_text_iner">
-                                <h2>New to BookStall?</h2>
-                                <p>There are advances being made in science and technology
-                                    everyday, and a good example of this is the</p>
-                                <a href="/app_accounts/signup/" class="btn_3">Create an Account</a>
-                            </div>
+    </div>
+    <div class="container py-5 h-100">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                      <div class="d-flex align-items-center">
+                        <div class="alert-icon">
+                          {% if message.tags == 'success' %}
+                          <i class="fas fa-check-circle bg-success"></i>
+                          {% elif message.tags == 'warning' %}
+                          <i class="fas fa-exclamation-circle bg-warning"></i>
+                          {% elif message.tags == 'error' %}
+                          <i class="fas fa-times-circle bg-error"></i>
+                          {% endif %}
                         </div>
+                        <div class="alert-message">
+                          <strong>Message:</strong> {{ message }}
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
                     </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="login_part_form">
-                            <div class="login_part_form_iner">
-                                <h3>Welcome Back ! <br>
-                                    Please Sign-in now</h3>
-                                <form class="row contact_form" action="#" method="post" novalidate="novalidate">
-                                    {% csrf_token %}
-                                    <div class="col-md-12 form-group p_star">
-                                        <label for="name" class="form-label"><strong>Username</strong></label>
-                                        <input type="text" class="form-control" id="username" name="username" value=""placeholder="Username">
+                    {% endfor %}
+                    
+                    
+                    <div class="card-body p-4 p-md-5">
+                        <form action="/app_accounts/signup/" method=POST>
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 mb-4 d-flex align-items-center pb-2">
+
+                                    <div class="form-outline datepicker w-100">
+                                        <label for="name" class="form-label"><strong>First Name</strong></label>
+                                        <input type="text" class="form-control form-control-lg" id="firstname" name="firstname" placeholder="Enter your First name" />
                                     </div>
-                                    <div class="col-md-12 form-group p_star">
-                                        <label for="name" class="form-label"><strong>email</strong></label>
-                                        <input type="text" class="form-control" id="email" name="email" value=""placeholder="Email">
+
+                                </div>
+
+                                <div class="col-md-6 mb-4 d-flex align-items-center pb-2">
+
+                                    <div class="form-outline datepicker w-100">
+                                        <label for="name" class="form-label"><strong>Last Name</strong></label>
+                                        <input type="text" class="form-control form-control-lg" id="firstname" name="firstname" placeholder="Enter your Last name" />
                                     </div>
-                                    <div class="col-md-12 form-group p_star">
-                                        <label for="name" class="form-label"><strong>Password</strong></label>
-                                        <input type="password" class="form-control" id="pass1" name="pass1" value=""placeholder="Password">
-                                    </div>
-                                    <div class="col-md-12 form-group">
-                                        <div class="creat_account d-flex align-items-center">
-                                            <input type="checkbox" id="f-option" name="selector">
-                                            <label for="f-option">Remember me</label>
-                                        </div>
-                                        <button type="submit" value="submit" class="btn_3">
-                                            log in
-                                        </button>
-                                        <a class="lost_pass" href="#">forget password?</a>
-                                    </div>
-                                </form>
+
+                                </div>
+                                
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    <div class="form-outline">
+                                        <label for="username" class="form-label"><strong>Username</strong></label>
+                                        <input type="username" id="username" class="form-control form-control-lg" name="username" placeholder="Enter Username" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 mb-4 d-flex align-items-center">
+                                    <div class="form-outline datepicker w-100">
+                                        <label for="email" class="form-label"><strong>E-mail</strong></label>
+                                        <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="Enter your E-mail id" />  
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-5 pb-2">
+                                    <div class="form-outline">
+                                        <label for="Password" class="form-label"><strong>Password</strong></label>
+                                        <input type="password" id="pass1" class="form-control form-control-lg" name="pass1" placeholder="Enter your Password" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-5 pb-2">
+                                    <div class="form-outline">
+                                        <label for="Password" class="form-label"><strong>Confirm Password</strong></label>
+                                        <input type="password" id="pass2" class="form-control form-control-lg" name="pass2" placeholder="Confirm Password" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pl-5">
+                                <button type="submit" value="submit" class="btn_3 mt-5 pt-4 col-md-10 ">
+                                    log in
+                                </button>
+                            </div >
+
+                        </form>
                     </div>
                 </div>
             </div>
-        </section>
-        <!--================login_part end =================-->
+        </div>
+    </div>
+</section>
+<!--================login_part end =================-->
+
     </main>
 
     <!--? Search model Begin -->
