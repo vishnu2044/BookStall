@@ -5,8 +5,11 @@ from base.models import BaseModel
 # Create your models here.
 
 class Profile(BaseModel):
-    user = models.OneToOneField(on_delete=models.CASCADE, related_name="profile")
-    username = models.CharField(max_length=100)
-    is_email_varified = models.models.BooleanField(default=False)
-    email_token = models.models.CharField(max_length=100, null=True, blank=True)
-    
+    user = models.OneToOneField(User, on_delete=models.CASCADE) 
+    mobile = models.CharField(max_length=10)
+    otp = models.CharField(max_length=6)
+
+
+
+
+

@@ -112,15 +112,11 @@
                             <div class="login_part_form_iner">
                                 <h3>Welcome Back ! <br>
                                     Please Sign-in now</h3>
-                                <form class="row contact_form" action="#" method="post" novalidate="novalidate">
+                                <form class="row contact_form" action="/app_accounts/login/" method="POST" novalidate="novalidate">
                                     {% csrf_token %}
                                     <div class="col-md-12 form-group p_star">
                                         <label for="name" class="form-label"><strong>Username</strong></label>
                                         <input type="text" class="form-control" id="username" name="username" value=""placeholder="Username">
-                                    </div>
-                                    <div class="col-md-12 form-group p_star">
-                                        <label for="name" class="form-label"><strong>email</strong></label>
-                                        <input type="text" class="form-control" id="email" name="email" value=""placeholder="Email">
                                     </div>
                                     <div class="col-md-12 form-group p_star">
                                         <label for="name" class="form-label"><strong>Password</strong></label>
@@ -136,7 +132,14 @@
                                         </button>
                                         <a class="lost_pass" href="#">forget password?</a>
                                     </div>
+
+                                    <div class="">
+                                        <button type="submit" value="submit" class="btn_3">
+                                            <a href="{% url 'otp_login' %}" class="text">Click here for OTP login</a>
+                                        </button>
+                                      </div>
                                 </form>
+
                             </div>
                         </div>
                     </div>
