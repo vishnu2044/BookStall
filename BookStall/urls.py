@@ -19,6 +19,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from app_accounts.views import signup
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -26,7 +28,8 @@ urlpatterns = [
     path('', include('app_home.urls')),
     path('app_accounts/', include('app_accounts.urls')),
     path('shop/', include('app_products.urls')),
-] 
+    path('adminpanel', include('app_admin_panel.urls')),
+] + static(settings.MEDIA_UR, document_root = settings.MEDIA_ROOT)
 
 
 
