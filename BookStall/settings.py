@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'app_authors',
     'app_accounts',
     'app_admin_panel',
+    'app_admin_products',
 
 ]
 

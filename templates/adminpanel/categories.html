@@ -1,0 +1,124 @@
+{% extends 'adminpanel/base.html' %}
+{% block title %}
+    admin panel-Categories
+{% endblock %}
+        {% block content %}
+        <div class="row col-8">
+            <div class="col-12 grid-margin">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Categories</h4>
+                  <p>Add, edit or delete a category</p>
+                  <div class="search-bar d-flex ">
+                        <input type="text" class="form-control search-input" placeholder="Search...">
+                        <button class="btn btn-primary search-button">Search</button>                  
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th> Name </th>
+                          <th> Slug </th>
+                          <th> Is avaliable </th>
+                          <th> Action </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for category in categories  %}
+                        <tr>
+                          </td>
+                          <td>{{ category.category_name }}</td>
+                          <td> {{ category.slug }} </td>
+
+                          Delete
+
+
+                          <td > 
+                            <a href="{% url 'delete_category' category.id %}">
+                            <div class="badge badge-outline-success">Delete</div>
+                        </a>
+                         </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-4 grid-margin stretch-card">
+
+
+
+            <div class="card">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                  <div class="d-flex align-items-center">
+                    <div class="alert-icon">
+                      {% if message.tags == 'success' %}
+                      <i class="fas fa-check-circle bg-success"></i>
+                      {% elif message.tags == 'warning' %}
+                      <i class="fas fa-exclamation-circle bg-warning"></i>
+                      {% elif message.tags == 'error' %}
+                      <i class="fas fa-times-circle bg-error"></i>
+                      {% endif %}
+                    </div>
+                    <div class="alert-message">
+                      <strong>Message:</strong> {{ message }}
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                </div>
+                {% endfor %}
+
+
+
+              <div class="card-body">
+                <h4 class="card-title">Add New Category</h4>
+                <form class="forms-sample" action="{% url 'add_category' %}" method = "POST">
+                    {% csrf_token %}
+                  <div class="form-group">
+                    <label for="exampleInputUsername1">Name</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="name" 
+                        name='name' 
+                        placeholder="name of the category"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Slug</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        name='slug' 
+                        id="slug" 
+                        placeholder="slug field"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Description</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        name="description" 
+                        id="description" 
+                        placeholder="Write a small description....."
+                    />
+                  </div>
+
+                  <div class="form-check form-check-muted m-0">
+                    
+                    <label class="form-check-label text-white"><input type="checkbox" class="form-check-input" name="is_available"> Is Available </label>
+                  </div>
+                  <br>
+                  <button type="submit" class="btn btn-primary mr-2">Create Category</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        {% endblock content %}
+      

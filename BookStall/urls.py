@@ -29,7 +29,10 @@ urlpatterns = [
     path('app_accounts/', include('app_accounts.urls')),
     path('shop/', include('app_products.urls')),
     path('adminpanel', include('app_admin_panel.urls')),
-] + static(settings.MEDIA_UR, document_root = settings.MEDIA_ROOT)
+    path('appadminproducts', include('app_admin_products.urls')),
+
+    
+] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 
 
 

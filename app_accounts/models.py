@@ -10,6 +10,3 @@ class Profile(BaseModel):
     otp = models.CharField(max_length=6)
 
 
-
-
-
