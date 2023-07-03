@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'BookStall.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bookstall_ecommerce',
+        'NAME': 'ecom_bookstall',
         'USER': 'postgres',
         'PASSWORD': 'vishnu2044',
         'HOST': 'localhost',

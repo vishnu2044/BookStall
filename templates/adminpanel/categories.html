@@ -3,10 +3,12 @@
     admin panel-Categories
 {% endblock %}
         {% block content %}
+
         <div class="row col-8">
             <div class="col-12 grid-margin">
               <div class="card">
                 <div class="card-body">
+
                   <h4 class="card-title">Categories</h4>
                   <p>Add, edit or delete a category</p>
                   <div class="search-bar d-flex ">
@@ -19,8 +21,8 @@
                         <tr>
                           <th> Name </th>
                           <th> Slug </th>
-                          <th> Is avaliable </th>
-                          <th> Action </th>
+                          <th> action </th>
+                          <th> Edit </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -30,14 +32,24 @@
                           <td>{{ category.category_name }}</td>
                           <td> {{ category.slug }} </td>
 
-                          Delete
-
-
-                          <td > 
-                            <a href="{% url 'delete_category' category.id %}">
-                            <div class="badge badge-outline-success">Delete</div>
-                        </a>
-                         </td>
+                          {% if category.is_available %}
+                          <td> 
+                            <a href="{% url 'unlist_category' category.id %}">
+                              <div class="badge badge-outline-danger">Unlist</div>
+                            </a>
+                          </td>
+                        {% else %}
+                          <td> 
+                            <a href="{% url 'list_category' category.id %}">
+                              <div class="badge badge-outline-success">List</div>
+                            </a>
+                          </td>
+                        {% endif %}
+                        <th>
+                          <a href="{% url 'edit_catgory' category.id %}">
+                            <button type="button" class="btn btn-primary btn-icon-text">Edit</button>
+                          </a>
+                        </th>
                         </tr>
                         {% endfor %}
                       </tbody>
@@ -52,28 +64,6 @@
 
 
             <div class="card">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                  <div class="d-flex align-items-center">
-                    <div class="alert-icon">
-                      {% if message.tags == 'success' %}
-                      <i class="fas fa-check-circle bg-success"></i>
-                      {% elif message.tags == 'warning' %}
-                      <i class="fas fa-exclamation-circle bg-warning"></i>
-                      {% elif message.tags == 'error' %}
-                      <i class="fas fa-times-circle bg-error"></i>
-                      {% endif %}
-                    </div>
-                    <div class="alert-message">
-                      <strong>Message:</strong> {{ message }}
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                  </div>
-                </div>
-                {% endfor %}
-
-
-
               <div class="card-body">
                 <h4 class="card-title">Add New Category</h4>
                 <form class="forms-sample" action="{% url 'add_category' %}" method = "POST">

@@ -9,7 +9,7 @@ urlpatterns = [
     path('', views.admin_dashboard, name="admin_dashboard"),
     path('admin_logout', views.admin_logout, name="admin_logout"),
     path('base', views.base, name="base"),
-    path('/user', views.user, name="user"),
+    path('user', views.user, name="user"),
     
 
     

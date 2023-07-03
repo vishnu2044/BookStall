@@ -1,0 +1,92 @@
+{% extends 'adminpanel/base.html' %}
+{% block title %} add - author {% endblock%}
+
+{% block content %}
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body col-12">
+            <h4 class="card-title">Basic form elements</h4>
+            <p class="card-description">Basic form elements</p>
+            <form class="forms-sample">
+                <div class="col-12">
+
+                        <div class="d-flex">
+                            <div class="form-group col-6">
+                                <label for="exampleInputName1">Name</label>
+                                <input 
+                                type="text" 
+                                class="form-control" 
+                                id="name" 
+                                name ="name" 
+                                placeholder="enter Author's name....">
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="exampleInputName1">Nation</label>
+                                <input 
+                                type="text" 
+                                class="form-control" 
+                                id ="nation"
+                                name ="nation"
+                                placeholder="enter Author's nation....">
+                            </div>
+                        </div>
+
+                        <div class="d-flex">
+                            <div class="form-group col-6">
+                                <label for="exampleInputName1">birth year</label>
+                                <input 
+                                type="number" 
+                                class="form-control" 
+                                id="birthyear"
+                                name = "birhtyear" 
+                                placeholder="enter Author's Birth year....">
+                            </div>
+                        </div>
+
+                    <div class="form-group">
+                        <label>Image</label>
+                        <input type="file" name="img[]" class="file-upload-default" />
+                        <div class="input-group col-xs-12">
+                            <input 
+                            type="text" 
+                            class="form-control file-upload-info" 
+                            disabled
+                            placeholder="Upload Image" />
+                            <span class="input-group-append">
+                                <button class="file-upload-browse btn btn-primary" type="button">
+                                    Upload
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleTextarea1">Quotes</label>
+                        <textarea 
+                        class ="form-control" 
+                        id ="quote" 
+                        name ="quote" 
+                        placeholder="Enter any quotes of author" 
+                        rows="5">
+                        </textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleTextarea1">Description</label>
+                        <textarea 
+                        class ="form-control" 
+                        id ="description" 
+                        name ="description" 
+                        placeholder="Enter details about the author...." 
+                        rows="15"></textarea>
+                    </div>
+                      
+
+                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                    <button class="btn btn-dark">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
