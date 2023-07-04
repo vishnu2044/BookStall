@@ -37,5 +37,7 @@ def admin_logout(request):
 def base(request):
     return render(request, 'adminpanel/base.html')
 
-def user(request):
-    return render(request, 'adminpanel/user.html')
+def user_details(request):
+    user = User.objects.all()
+
+    return render(request, 'adminpanel/user.html', {'users':user})

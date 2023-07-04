@@ -9,6 +9,7 @@ from django.views.decorators.cache import cache_control
 from django.conf import settings
 from django.core.mail import send_mail
 from .models import Profile
+from app_admin_panel.views import *
 
 # Create your views here.
 def signup(request):
@@ -109,22 +110,18 @@ def handle_login(request):
         username = request.POST.get("username")
         pass1 = request.POST.get('pass1')
 
-        user_obj = User.objects.filter(username= username)
-        if user_obj.exists():
-            messages.warning(request, "Acount not found")
-            return redirect('handle_login')
-
         user = authenticate(request, username = username, password = pass1)
 
         if user is not None:
             login(request, user)
-            messages.success('logged in')
+            messages.success(request,'logged in')
             return redirect('/')
         else:
             messages.error(request, "invalid username of password")
             return redirect('handle_login')
         
-
+    if request.user.is_authenticated:
+        return redirect('/')
     return render(request, "accounts/login.html")
 
 
@@ -177,8 +174,22 @@ def otp_login(request):
     return render(request, 'accounts/otp_login.html')
 
 
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect("/")
 
-def logout(request):
-    return HttpResponseRedirect(request, "/")
-
-
+def block_user(request, id):
+    user = User.objects.get(id=id)
+    name = User.first_name
+    user.is_active = False
+    user.save()
+    messages.success(request, f'User "{name}" is blocked')
+    return redirect(user_details)
+    
+def unblock_user(request, id):
+    user = User.objects.get(id=id)
+    name = User.first_name
+    user.is_active = True
+    user.save()
+    messages.success(request, f'User "{name}" is unblocked')
+    return redirect(user_details)

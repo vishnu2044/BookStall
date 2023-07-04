@@ -30,7 +30,7 @@ urlpatterns = [
     path('shop/', include('app_products.urls')),
     path('adminpanel', include('app_admin_panel.urls')),
     path('appadminproducts', include('app_admin_products.urls')),
-    path('authors', include('app_authors.urls')),
+    path('authors/', include('app_authors.urls')),
 
     
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

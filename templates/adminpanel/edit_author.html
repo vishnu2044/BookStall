@@ -1,5 +1,5 @@
 {% extends 'adminpanel/base.html' %}
-{% block title %} add - author {% endblock%}
+{% block title %} edit - author {% endblock%}
 
 {% block content %}
 
@@ -8,7 +8,7 @@
         <div class="card-body col-12">
             <h4 class="card-title">Add Author</h4>
             <p class="card-description">Add author details here</p>
-            <form class="forms-sample" method="POST" action="{% url 'add_author' %}">
+            <form class="forms-sample" method="POST" action="{% url 'edit_author' author.id %}">
                 {% csrf_token %}
                 <div class="col-12">
 
@@ -20,7 +20,8 @@
                                 class="form-control" 
                                 id="name" 
                                 name ="name" 
-                                placeholder="enter Author's name....">
+                                placeholder= "{{ author.author_name}}"
+                                value= "{{ author.author_name}}">
                             </div>
                             <div class="form-group col-6">
                                 <label for="exampleInputName1">Nation</label>
@@ -29,7 +30,8 @@
                                 class="form-control" 
                                 id ="nation"
                                 name ="nation"
-                                placeholder="enter Author's nation....">
+                                placeholder="{{ author.author_nation }}"
+                                value="{{ author.author_nation }}">
                             </div>
                         </div>
 
@@ -41,7 +43,9 @@
                                 class="form-control" 
                                 id="birthyear"
                                 name = "birthyear" 
-                                placeholder="enter Author's Birth year....">
+                                placeholder="{{ author.author_birth_year }}"
+                                value="{{ author.author_birth_year }}"
+                                >
                             </div>
                         </div>
 
@@ -53,8 +57,7 @@
                                 class="form-control file-upload-info" 
                                 name = "image"
                                 id="image"
-                                placeholder="Upload Image" 
-                                
+                                placeholder="Upload Image"                                 
                             />
                         
                     </div>
@@ -65,7 +68,7 @@
                         class ="form-control" 
                         id ="quotes" 
                         name ="quotes" 
-                        placeholder="Enter any quotes of author" 
+                        placeholder="{{ author.author_quotes }}" 
                         rows="5">
                         </textarea>
                     </div>
@@ -75,7 +78,7 @@
                         class ="form-control" 
                         id ="description" 
                         name ="description" 
-                        placeholder="Enter details about the author...." 
+                        placeholder="{{ author.author_description }}" 
                         rows="15"></textarea>
                     </div>
                       

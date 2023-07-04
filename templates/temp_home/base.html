@@ -54,6 +54,20 @@
                                             <li><a href="blog-details.html">Blog Details</a></li>
                                         </ul>
                                     </li>
+                                    <li><a href="blog.html"><span class="flaticon-user"></span></a>
+                                        {% if user.is_authenticated %}
+                                        <ul class="submenu">
+                                            <li><a href="#">{{ user.first_name}} </a></li>
+                                            <li><a href="#">My orders</a></li>
+                                            <li><a href="{% url 'user_logout' %}">Log out </a></li>
+                                        </ul>
+                                        {% else %}
+                                        <ul class="submenu">
+                                            <li><a href="{% url 'handle_login' %}">Log in </a></li>
+                                            <li><a href="{% url 'signup' %}">Sign up</a></li>
+                                        {% endif %}
+                                        </ul>
+                                    </li>
                                 </ul>
                             </nav>
                         </div>
@@ -65,7 +79,7 @@
                                         <span class="flaticon-search"></span>
                                     </div>
                                 </li>
-                                <li> <a href="{% url 'handle_login' %}"><span class="flaticon-user"></span></a></li>
+
                                 <li><a href="cart.html"><span class="flaticon-shopping-cart"></span></a> </li>
                             </ul>
                         </div>
