@@ -1,0 +1,118 @@
+{% extends 'adminpanel/base.html' %}
+{% block title %} add -products {% endblock%}
+
+{% block content %}
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body col-12">
+            <h4 class="card-title">Add Product</h4>
+            <p class="card-description">Add new Books here</p>
+            <form class="forms-sample" method="POST" action="#">
+                {% csrf_token %}
+                <div class="col-12">
+
+                        <div class="d-flex">
+                            <div class="form-group col-12">
+                                <label for="exampleInputName1">Book Name</label>
+                                <input 
+                                type="text" 
+                                class="form-control" 
+                                id="name" 
+                                name ="name" 
+                                placeholder="enter the book's name....">
+                            </div>
+ 
+                        </div>
+
+                        <div class="d-flex">
+                            <div class="form-group col-6">
+                                <label for="exampleInputName1">Price</label>
+                                <input 
+                                type="number" 
+                                class="form-control" 
+                                id="price"
+                                name = "price" 
+                                placeholder="enter the price of the book....">
+                            </div>
+                            <div class="form-group col-6">
+                                <label for="exampleInputName1">Slug</label>
+                                <input 
+                                type="text" 
+                                class="form-control" 
+                                id ="slug"
+                                name ="slug"
+                                placeholder="enter slug....">
+                            </div>
+                        </div>
+
+                        <div class="d-flex">
+                            <div class="form-group col-6">
+                                <label for="exampleInputName1">Stock</label>
+                                <input 
+                                type="number" 
+                                class="form-control" 
+                                id="stock"
+                                name = "stock" 
+                                placeholder="enter how many copies are avaliable....">
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Author Image</label>
+                                <input 
+                                    type="file" 
+                                    class="form-control file-upload-info" 
+                                    name = "image"
+                                    id="image"
+                                    placeholder="Upload Image" 
+                                /> 
+                            </div>
+                        </div>
+
+                    <div class="d-flex">
+                        <div class="form-group col-6">
+                            <label for="exampleSelectGender">Categories</label>
+                            <select class="form-control" id="category" name='category'>
+                            {% for category in categories %}
+                              <option value="{{ category.id }}">{{ category.category_name }}</option>
+                              {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="exampleSelectGender">Authors</label>
+                            <select class="form-control" id="author" name='author'>
+                            {% for author in authors %}
+                              <option value="{{ author.id }}">{{ author.author_name }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="form-group col-12">
+                            <label for="exampleTextarea1">Description</label>
+                            <textarea 
+                            class ="form-control" 
+                            id ="description" 
+                            name ="description" 
+                            placeholder="Enter any quotes of author" 
+                            rows="4">
+                            </textarea>
+                        </div>
+                    </div>
+
+
+
+                      
+
+                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                    
+            </form>
+            <a href="adminpanel/adminlogin.html">
+                <button class="btn btn-dark">Cancel</button>
+
+            </a>
+            
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

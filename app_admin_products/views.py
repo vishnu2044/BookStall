@@ -3,6 +3,7 @@ from django.contrib import messages
 from app_category.models import Category_list
 from django.shortcuts import get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
+from app_products.models import *
 
 
 # Create your views here.
@@ -10,7 +11,11 @@ from django.core.exceptions import ObjectDoesNotExist
 #<<<<<<<<<<   categories  >>>>>>>>>>
 
 def categories_list(request):
-    return render(request, 'adminpanel/categories.html')
+    categories = Category_list.objects.all()
+    context = {
+        'categories' : categories,
+    }
+    return render(request, 'adminpanel/categories.html', context)
 
 def add_category(request):
     if request.method == "POST":
@@ -108,3 +113,71 @@ def list_category(request, id):
 
 
 
+#<<<<<<<<<<   Products  >>>>>>>>>>
+
+def admin_products(request):
+    # products = product.objects.get()
+     
+    # context = {
+    #     "products" : products,
+    # }
+    return render(request, 'adminpanel/products_list.html')
+
+
+def add_product_page(request):
+    return render(request, 'adminpanel/add_product.html')
+ 
+
+def add_product(request):
+    if request.method == "POST":
+        image = ''
+        try:
+            image = request.FILES.get("image")
+        except:
+            if image =="":
+                messages.info(request, "Image field cant't be empty !")
+                return redirect(add_product)
+        
+        name = request.POST.get("name")
+        slug = request.POST.get("slug")
+        price = request.POST.get("price")
+        stock = request.POST.get("stock")
+        category = request.POST.get("category")
+        author = request.POST.get("author")
+        description = request.POST.get("description")
+
+        try:
+            product.objects.get(product_name = name)
+        except:
+            check = [name, slug, price, stock, description]
+            for values in check:
+                if values == "" :
+                    messages.info(request, "some fields are empty !")
+                    return redirect(add_product)
+                else:
+                    pass
+                author_instance = Authors.objects.get(id=author)
+                category_instance = Category_list.objects.get(id=category)
+                
+                product.objects.create(
+                        product_name = name,
+                        slug = slug,
+                        product_description = description,
+                        price = price,
+                        stock = stock,
+                        images = image,
+                        category = category,
+                        author = author
+                ).save()
+                messages.success(request,f'Book : {name} added successfully')
+                return redirect(admin_products)
+            
+    authors = Authors.objects.all()
+    categories = Category_list.objects.all()
+
+    context = {
+            'categories' : categories,
+            'authors' : authors,
+    }
+    return render(request, 'adminpanel/add_product.html', context)
+ 

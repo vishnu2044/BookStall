@@ -19,6 +19,7 @@
                     <table class="table">
                       <thead>
                         <tr>
+                          <th> Number </th>
                           <th> Name </th>
                           <th> Slug </th>
                           <th> action </th>
@@ -29,6 +30,7 @@
                         {% for category in categories  %}
                         <tr>
                           </td>
+                          <td>{{ forloop.counter }}</td>
                           <td>{{ category.category_name }}</td>
                           <td> {{ category.slug }} </td>
 

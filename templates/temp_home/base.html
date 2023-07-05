@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="manifest" href="site.webmanifest">
     <link rel="shortcut icon" type="image/x-icon" href="/static/assets/img/favicon.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <!-- CSS here -->
         <link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="/static/assets/css/owl.carousel.min.css">
@@ -63,8 +64,9 @@
                                         </ul>
                                         {% else %}
                                         <ul class="submenu">
-                                            <li><a href="{% url 'handle_login' %}">Log in </a></li>
-                                            <li><a href="{% url 'signup' %}">Sign up</a></li>
+                                            <li><a href="{% url 'handle_login' %}">Log In </a></li>
+                                            <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                                            <li><a href="{% url 'signup' %}">OTP Login</a></li>
                                         {% endif %}
                                         </ul>
                                     </li>
@@ -86,13 +88,16 @@
                     </div>
                     <!-- Mobile Menu -->
                     <div class="col-12">
+
                         <div class="mobile_menu d-block d-lg-none"></div>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- Header End -->
     </header>
+
     {% block content %} {% endblock content %}
 
 <!-- END BOX -->
@@ -224,7 +229,7 @@
         </div>
     </div>
     <!-- Search model end -->
-    
+
       
      <!-- All JS Custom Plugins Link Here here -->
      <script src="/static/assets/js/vendor/modernizr-3.5.0.min.js"></script>
@@ -260,6 +265,10 @@
      <script src="/static/assets/js/plugins.js"></script>
      <script src="/static/assets/js/main.js"></script>
 
+     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.1/dist/umd/popper.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+     
 
 </body>
     

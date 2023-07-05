@@ -132,7 +132,7 @@ def otp_login(request):
         get_otp = request.POST.get('otp')
         if not get_otp:
             email = request.POST.get('email')
-            try:
+            try: 
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
                 messages.error(request, f'This is not a valid email id!')

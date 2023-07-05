@@ -100,7 +100,7 @@
         {% if otp %}
 <div class="container">
   <div class="title">E-mail OTP verification</div>
-  <p class="text-center">check your mail for otp</p>
+  <p class="text-center"><strong>check your mail for otp</strong></p>
   <div class="content">
     <form method="post" action="{% url 'signup' %}">
       {% csrf_token %}
@@ -131,25 +131,23 @@
             <div class="col-12 col-lg-9 col-xl-7">
                 <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
 
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                      <div class="d-flex align-items-center">
-                        <div class="alert-icon">
-                          {% if message.tags == 'success' %}
-                          <i class="fas fa-check-circle bg-success"></i>
-                          {% elif message.tags == 'warning' %}
-                          <i class="fas fa-exclamation-circle bg-warning"></i>
-                          {% elif message.tags == 'error' %}
-                          <i class="fas fa-times-circle bg-error"></i>
-                          {% endif %}
+                        <!-- Notifications container -->
+                        <div class="container">
+                            {% for message in messages %}
+                            <div class="alert 
+                            {% if message.tags == 'success' %}alert-success
+                            {% elif message.tags == 'error' %}alert-danger
+                            {% elif message.tags == 'warning' %}alert-warning
+                            {% endif %} alert-dismissible fade show" role="alert">
+                                <strong>Message:</strong> {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endfor %}
                         </div>
-                        <div class="alert-message">
-                          <strong>Message:</strong> {{ message }}
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                      </div>
-                    </div>
-                    {% endfor %}
+                    
+                        <!-- Rest of your content -->
                     
                     <div class="card-body p-4 p-md-5">
                         <form action="/app_accounts/signup/" method=POST>

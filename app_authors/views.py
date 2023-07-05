@@ -71,18 +71,18 @@ def edit_author(request, id):
         quotes = request.POST.get('quotes')
         description = request.POST.get('description')
 
-        author = Authors.objects.get(id=id).update(
-                author_name = models.CharField(max_length=255)
-    author_nation = models.CharField(max_length=255, null=True, blank=True)
-    author_quotes = models.TextField(null=True, blank=True)
-    author_description = 
-    author_image = 
-    author_birth_year = 
-
+        author = Authors.objects.filter(id=id).update(
+                author_name = name,
+                author_nation = nation,
+                author_quotes = quotes,
+                author_description = description,
+                author_image = image,
+                author_birth_year = birthyear,
         )
-
-
+        messages.success(request, f'{name} updated successfully!')
+        return redirect(admin_authors)
     
+    author = Authors.objects.get(id=id)
     context = {
         'author': author,
     }
