@@ -83,19 +83,6 @@
 <!-- Hero Area End-->
 <!--================signup_part Area =================-->
 <section class="vh-100 gradient-custom">
-    <div class="slider-area ">
-        <div class="single-slider  d-flex align-items-center">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12 pt-5 pb-5">
-                        <div class="hero-cap text-center">
-                            <h2>OTP Varification</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="container py-5 h-100">
         <div class="row justify-content-center align-items-center h-100">
             <div class="col-12 col-lg-9 col-xl-7">
@@ -122,7 +109,9 @@
                     
                     
                     <div class="card-body p-5 p-md-5">
-                        <form action="/app_accounts/signup/" method=POST>
+                        <h1>OTP Login</h1>
+
+                        <form action="{% url 'otp_login' %}" method='POST'>
                             {% csrf_token %}
 
                             <div class="row">
@@ -140,13 +129,13 @@
                                     
                                     <div class="form-outline">
                                         <label class="form-label"><strong>OTP</strong></label>
-                                        <input type="password" id="otp" class="form-control form-control-lg" placeholder="Enter your OTP" />
+                                        <input type="password" id="otp" class="form-control form-control-lg" placeholder="Enter your OTP" required/>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="pl-5 pb-5">
-                                <button type="submit" value="submit" class="btn_3 mt-5 pt-4 col-md-10 ">
+                                <button type="submit" value="login" class="btn_3 mt-5 pt-4 col-md-10 ">
                                     log in
                                 </button>
                             </div >

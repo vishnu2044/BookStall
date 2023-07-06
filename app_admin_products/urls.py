@@ -13,6 +13,7 @@ urlpatterns = [
     path('admin_products/', views.admin_products, name='admin_products'),
     path('add_product_page/', views.add_product_page, name='add_product_page'),
     path('add_product/', views.add_product, name='add_product'),
+    path('edit_product/<int:id>/', views.edit_product, name='edit_product'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

@@ -12,6 +12,11 @@
     <link rel="manifest" href="site.webmanifest">
     <link rel="shortcut icon" type="image/x-icon" href="/static/assets/img/favicon.ico">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <!-- CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+
+
+
     <!-- CSS here -->
         <link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="/static/assets/css/owl.carousel.min.css">
@@ -41,9 +46,9 @@
                             <nav>                                                
                                 <ul id="navigation">  
                                     <li><a href="{% url 'home' %}">Home</a></li>
-                                    <li><a href="{% url 'shop' %}">Shop</a></li>
+                                    <li class="hot"><a href="{% url 'shop' %}">Shop</a></li>
                                     <li><a href="{% url 'about' %}">About</a></li>
-                                    <li class="hot"><a href="#">History</a>
+                                    <li ><a href="#">History</a>
                                         <ul class="submenu">
                                             <li><a href="shop.html">Order history</a></li>
                                             <li><a href="product_details.html">Previews orders</a></li>
@@ -66,7 +71,7 @@
                                         <ul class="submenu">
                                             <li><a href="{% url 'handle_login' %}">Log In </a></li>
                                             <li><a href="{% url 'signup' %}">Sign Up</a></li>
-                                            <li><a href="{% url 'signup' %}">OTP Login</a></li>
+                                            <li><a href="{% url 'otp_login' %}">OTP Login</a></li>
                                         {% endif %}
                                         </ul>
                                     </li>
@@ -269,6 +274,8 @@
      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.1/dist/umd/popper.min.js"></script>
      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
      
+         <!-- JavaScript -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
 </body>
     

@@ -83,8 +83,6 @@ def edit_catgory(request, id):
     return render(request, 'adminpanel/edit_category.html', context)
 
 
-
-
 def unlist_category(request, id):
     try:
         category = Category_list.objects.get(id=id)
@@ -95,7 +93,7 @@ def unlist_category(request, id):
     name = category.category_name
     category.is_available = False
     category.save()
-    messages.success(request, f'Category "{name}" is unlisted.')
+    messages.warning(request, f'Category "{name}" is unlisted.')
     return redirect(add_category)
 
 def list_category(request, id):
@@ -116,12 +114,12 @@ def list_category(request, id):
 #<<<<<<<<<<   Products  >>>>>>>>>>
 
 def admin_products(request):
-    # products = product.objects.get()
+    products = Product.objects.all()
      
-    # context = {
-    #     "products" : products,
-    # }
-    return render(request, 'adminpanel/products_list.html')
+    context = {
+        "products" : products,
+    }
+    return render(request, 'adminpanel/products_list.html', context)
 
 
 def add_product_page(request):
@@ -132,9 +130,9 @@ def add_product(request):
     if request.method == "POST":
         image = ''
         try:
-            image = request.FILES.get("image")
+            image = request.FILES["image"]
         except:
-            if image =="":
+            if image == '':
                 messages.info(request, "Image field cant't be empty !")
                 return redirect(add_product)
         
@@ -147,7 +145,7 @@ def add_product(request):
         description = request.POST.get("description")
 
         try:
-            product.objects.get(product_name = name)
+            Product.objects.get(product_name = name)
         except:
             check = [name, slug, price, stock, description]
             for values in check:
@@ -159,15 +157,15 @@ def add_product(request):
                 author_instance = Authors.objects.get(id=author)
                 category_instance = Category_list.objects.get(id=category)
                 
-                product.objects.create(
+                Product.objects.create(
                         product_name = name,
                         slug = slug,
                         product_description = description,
                         price = price,
                         stock = stock,
                         images = image,
-                        category = category,
-                        author = author
+                        category = category_instance,
+                        author = author_instance
                 ).save()
                 messages.success(request,f'Book : {name} added successfully')
                 return redirect(admin_products)
@@ -181,3 +179,53 @@ def add_product(request):
     }
     return render(request, 'adminpanel/add_product.html', context)
  
+
+def edit_product(request, id):
+    if request.method == 'POST':
+        image = ''
+        try:
+            image = request.FILES["image"]
+            print(image)
+            product = Product.objects.filter(id=id).first()
+            product.images = image
+            product.save()
+        except:
+            print("HI")
+
+        name = request.POST.get("name")
+        slug = request.POST.get("slug")
+        price = request.POST.get("price")
+        stock = request.POST.get("stock")
+        category = request.POST.get("category")
+        author = request.POST.get("author")
+        description = request.POST.get("description")
+
+        if name == "":
+            messages.error(request, "Product name can't be null!")
+            return redirect(edit_product)
+        
+        author_instance = Authors.objects.get(id=author)
+        categoriy_instance = Category_list.objects.get(id=category)
+
+        product = Product.objects.filter(id=id).update(
+                    product_name = name,
+                    slug = slug,
+                    product_description = description,
+                    price = price,
+                    stock = stock,
+                    author = author_instance,
+                    category = categoriy_instance,
+            )
+        messages.success(request, f'{name} updated successfully!')
+        return redirect(admin_products)
+    
+    product = Product.objects.get(id=id)
+    categories = Category_list.objects.all()
+    authors = Authors.objects.all()
+    context = {
+        "product": product,
+        "categories" : categories,
+        "authors" : authors,
+    }
+    return render(request, 'adminpanel/edit_product.html', context)
+

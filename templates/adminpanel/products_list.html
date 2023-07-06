@@ -32,7 +32,6 @@
                   <th> Price </th>
                   <th> Status </th>
                   <th> Action </th>
-                  <th> ..... </th>
 
                 </tr>
               </thead>
@@ -45,7 +44,7 @@
                   <td> {{ product.price }} </td>
                   <td> {{ product.is_available }} </td>
                 <th>
-                    <a href="3">
+                    <a href="{% url 'edit_product' product.id %}">
                       <button type="button" class="btn btn-primary btn-icon-text">Edit</button>
                     </a>
                   </th>

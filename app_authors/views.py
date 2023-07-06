@@ -19,6 +19,7 @@ def add_author(request):
         except:
             if image == "":
                 messages.info(request, "image field can't be empty")
+                return redirect(add_author)
         
         name = request.POST.get("name")
         nation = request.POST.get("nation")
@@ -63,8 +64,13 @@ def edit_author(request, id):
         image = ""
         try :
             image = request.FILES["image"]
+            print(image)
+            author = Authors.objects.filter(id=id).first()
+            author.author_image = image
+            author.save()
         except:
-            pass  
+            print("Hi")  
+            
         name = request.POST.get('name')
         nation = request.POST.get('nation')
         birthyear = request.POST.get('birthyear')
@@ -76,7 +82,6 @@ def edit_author(request, id):
                 author_nation = nation,
                 author_quotes = quotes,
                 author_description = description,
-                author_image = image,
                 author_birth_year = birthyear,
         )
         messages.success(request, f'{name} updated successfully!')

@@ -8,7 +8,7 @@
         <div class="card-body col-12">
             <h4 class="card-title">Add Author</h4>
             <p class="card-description">Add author details here</p>
-            <form class="forms-sample" method="POST" action="{% url 'add_author' %}">
+            <form class="forms-sample" method="POST" action="{% url 'add_author' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="col-12">
 
@@ -53,7 +53,7 @@
                                 class="form-control file-upload-info" 
                                 name = "image"
                                 id="image"
-                                placeholder="Upload Image" 
+                                 
                                 
                             />
                         

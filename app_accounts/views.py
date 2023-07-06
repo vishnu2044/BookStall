@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from .models import Profile
 from app_admin_panel.views import *
 
+
 # Create your views here.
 def signup(request):
 # capturing the form input values from the HTTP POST request 
@@ -125,7 +126,7 @@ def handle_login(request):
     return render(request, "accounts/login.html")
 
 
-from django.contrib.auth import authenticate, login
+
 
 def otp_login(request):
     if request.method == "POST":
@@ -134,9 +135,9 @@ def otp_login(request):
             email = request.POST.get('email')
             try: 
                 user = User.objects.get(email=email)
-            except User.DoesNotExist:
+            except:
                 messages.error(request, f'This is not a valid email id!')
-                return redirect('otp_login')
+                return redirect(otp_login)
             
             if user is not None:
                 otp = int(random.randint(1000, 9999))
@@ -154,22 +155,17 @@ def otp_login(request):
         
         else:
             get_email = request.POST.get('email')
-            try:
-                user = User.objects.get(email=get_email)
-            except User.DoesNotExist:
-                messages.error(request, f'This is not a valid email id!')
-                return redirect('otp_login')
-
+            user = User.objects.get(email=get_email)
             if get_otp == Profile.objects.filter(user=user).last().otp:
-                user = authenticate(request, username=user.username, password=user.password)
-                if user is not None:
-                    login(request, user)  # Fix: Pass the 'user' object to the login() function
-                    messages.success(request, f'Successfully logged in {user.email}')
-                    Profile.objects.filter(user=user).delete()
-                    return redirect('/')
+                login(request, user)
+                messages.success(request, f"Successfully logged in {user.email}")
+                Profile.objects.filter(user=user).delete()
+                return redirect('/')
             else:
-                messages.warning(request, f'You entered a wrong OTP')
-                return render(request, 'accounts/otp_login.html', {'otp': True, 'user': user})
+                messages.warning(request, "You entered a wrong OTP")
+                return render(request, "accounts/otp_login.html", {"otp":True, "user":user})
+    if request.user.is_authenticated:
+        return redirect('/')
 
     return render(request, 'accounts/otp_login.html')
 
