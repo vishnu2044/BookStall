@@ -135,6 +135,21 @@ def add_product(request):
             if image == '':
                 messages.info(request, "Image field cant't be empty !")
                 return redirect(add_product)
+            
+        sec_image = ''
+        try:
+            sec_image = request.FILES['sec_image']
+        except:
+            if sec_image =="":
+                messages.error(request, "secondary image cant be empty!")
+                return redirect(add_product)
+            
+        prod = Product.objects.all()
+        product_instance = Product.objects.get(id=prod)
+        ProductImage.objects.create(
+            product = product_instance,
+            image = sec_image
+        ).save()
         
         name = request.POST.get("name")
         slug = request.POST.get("slug")
@@ -172,6 +187,7 @@ def add_product(request):
             
     authors = Authors.objects.all()
     categories = Category_list.objects.all()
+    
 
     context = {
             'categories' : categories,
@@ -191,6 +207,20 @@ def edit_product(request, id):
             product.save()
         except:
             print("HI")
+        
+        sec_image = ''
+        try:
+            sec_image = request.FILES['sec_image']
+            prod = Product.objects.all()
+            product_instance = Product.objects.get(id=prod)
+            ProductImage.objects.create(
+                product = product_instance,
+                image = sec_image
+            ).save()
+        except:
+            print("Hai")
+            
+
 
         name = request.POST.get("name")
         slug = request.POST.get("slug")
