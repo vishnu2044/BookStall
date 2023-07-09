@@ -42,7 +42,19 @@
                   <td> {{ forloop.counter }} </td>
                   <td> {{ product.product_name }} </td>
                   <td> {{ product.price }} </td>
-                  <td> {{ product.is_available }} </td>
+                  {% if product.is_available %}
+                          <td> 
+                            <a href="{% url 'unlist_product' product.id %}">
+                              <div class="badge badge-outline-danger">Unlist</div>
+                            </a>
+                          </td>
+                        {% else %}
+                          <td> 
+                            <a href="{% url 'list_product' product.id %}">
+                              <div class="badge badge-outline-success">List</div>
+                            </a>
+                          </td>
+                        {% endif %}
                 <th>
                     <a href="{% url 'edit_product' product.id %}">
                       <button type="button" class="btn btn-primary btn-icon-text">Edit</button>

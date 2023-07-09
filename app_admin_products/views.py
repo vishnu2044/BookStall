@@ -136,20 +136,20 @@ def add_product(request):
                 messages.info(request, "Image field cant't be empty !")
                 return redirect(add_product)
             
-        sec_image = ''
-        try:
-            sec_image = request.FILES['sec_image']
-        except:
-            if sec_image =="":
-                messages.error(request, "secondary image cant be empty!")
-                return redirect(add_product)
+        # sec_image = ''
+        # try:
+        #     sec_image = request.FILES['sec_image']
+        # except:
+        #     if sec_image =="":
+        #         messages.error(request, "secondary image cant be empty!")
+        #         return redirect(add_product)
             
-        prod = Product.objects.all()
-        product_instance = Product.objects.get(id=prod)
-        ProductImage.objects.create(
-            product = product_instance,
-            image = sec_image
-        ).save()
+        # prod = Product.objects.all()
+        # product_instance = Product.objects.get(id=prod)
+        # ProductImage.objects.create(
+        #     product = product_instance,
+        #     image = sec_image
+        # ).save()
         
         name = request.POST.get("name")
         slug = request.POST.get("slug")
@@ -208,17 +208,17 @@ def edit_product(request, id):
         except:
             print("HI")
         
-        sec_image = ''
-        try:
-            sec_image = request.FILES['sec_image']
-            prod = Product.objects.all()
-            product_instance = Product.objects.get(id=prod)
-            ProductImage.objects.create(
-                product = product_instance,
-                image = sec_image
-            ).save()
-        except:
-            print("Hai")
+        # sec_image = ''
+        # try:
+        #     sec_image = request.FILES['sec_image']
+        #     prod = Product.objects.all()
+        #     product_instance = Product.objects.get(id=prod)
+        #     ProductImage.objects.create(
+        #         product = product_instance,
+        #         image = sec_image
+        #     ).save()
+        # except:
+        #     print("Hai")
             
 
 
@@ -259,3 +259,30 @@ def edit_product(request, id):
     }
     return render(request, 'adminpanel/edit_product.html', context)
 
+
+
+def unlist_product(request, id):
+    try:
+        product = Product.objects.get(id=id)
+    except ObjectDoesNotExist:
+        messages.error(request, 'Product does not exist.')
+        return redirect(add_category)
+
+    name = product.product_name
+    product.is_available = False
+    product.save()
+    messages.warning(request, f'Product "{name}" is unlisted.')
+    return redirect(admin_products)
+
+def list_product(request, id):
+    try:
+        product = Product.objects.get(id=id)
+    except ObjectDoesNotExist:
+        messages.error(request, 'Product does not exist.')
+        return redirect(add_category)
+
+    name = product.product_name
+    product.is_available = True
+    product.save()
+    messages.warning(request, f'Product "{name}" is listed.')
+    return redirect(admin_products)

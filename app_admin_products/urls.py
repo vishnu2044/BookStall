@@ -14,6 +14,8 @@ urlpatterns = [
     path('add_product_page/', views.add_product_page, name='add_product_page'),
     path('add_product/', views.add_product, name='add_product'),
     path('edit_product/<int:id>/', views.edit_product, name='edit_product'),
+    path('unlist_product/<int:id>/', views.unlist_product, name='unlist_product'),
+    path('list_product/<int:id>/', views.list_product, name='list_product'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
