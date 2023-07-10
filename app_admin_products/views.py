@@ -208,17 +208,17 @@ def edit_product(request, id):
         except:
             print("HI")
         
-        # sec_image = ''
-        # try:
-        #     sec_image = request.FILES['sec_image']
-        #     prod = Product.objects.all()
-        #     product_instance = Product.objects.get(id=prod)
-        #     ProductImage.objects.create(
-        #         product = product_instance,
-        #         image = sec_image
-        #     ).save()
-        # except:
-        #     print("Hai")
+        sec_image = ''
+        try:
+            sec_image = request.FILES['sec_image']
+            prod = Product.objects.all()
+            product_instance = Product.objects.get(id=prod)
+            ProductImage.objects.create(
+                product = product_instance,
+                image = sec_image
+            ).save()
+        except:
+            print("Hai")
             
 
 

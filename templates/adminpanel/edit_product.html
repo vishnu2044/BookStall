@@ -61,7 +61,7 @@
                                 placeholder="{{ product.stock }}">
                             </div>
                             <div class="form-group col-6">
-                                <label>Author Image</label>
+                                <label>Product Image</label>
                                 <input 
                                     type="file" 
                                     class="form-control file-upload-info" 
@@ -75,12 +75,12 @@
                         <div class="d-flex">
 
                             <div class="form-group col-12">
-                                <label>Author Image</label>
+                                <label>Secondary Image</label>
                                 <input 
                                     type="file" 
                                     class="form-control file-upload-info" 
-                                    name = "image"
-                                    id="image"
+                                    name = "sec_image"
+                                    id="sec_image"
                                     placeholder="Upload Image" 
                                 /> 
                             </div>
@@ -111,8 +111,8 @@
                             class ="form-control" 
                             id ="description" 
                             name ="description" 
-                            placeholder="Enter any quotes of author" 
-                            rows="4">
+                            placeholder="{{ product.product_description }}" 
+                            rows="5">
                             </textarea>
                         </div>
                     </div>

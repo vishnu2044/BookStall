@@ -29,3 +29,11 @@ def shop(request):
         
     }
     return render(request, 'temp_home/shop.html', context)
+
+
+def product_details(request, id):
+    product = Product.objects.get(id=id)
+    context = {
+        "product": product,
+    }
+    return render(request, 'temp_home/product_details.html', context)
