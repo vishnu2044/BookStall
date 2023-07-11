@@ -19,9 +19,7 @@
                   <th scope="col">SL No</th>
                   <th scope="col">Product</th>
                   <th scope="col">Price</th>
-                  <th scope="col">remove</th>
                   <th scope="col">Quantity</th>
-                  <th scope="col">add</th>
                   <th scope="col">Remove</th>
                 </tr>
               </thead>
@@ -32,15 +30,13 @@
                   <td>{{ cart_item.product.product_name }} </td>
                   <td>{{ cart_item.product.price }} </td>
                   <td>
-                    <a href="{% url 'delete_cart' cart_item.product.id %}" class="genric-btn danger-border circle arrow">-<span
-                    class="lnr lnr-arrow-right"></span></a> 
-                </td>
-                  <td>{{ cart_item.quantity }} </td>
-                  <td>                    
                     <a href="{% url 'add_cart' cart_item.product.id %}" class="genric-btn danger-border circle arrow">+<span
+                    class="lnr lnr-arrow-right"></span></a> 
+                    {{ cart_item.quantity }} 
+                   
+                    <a href="{% url 'remove_cart' cart_item.product.id %}" class="genric-btn danger-border circle arrow">-<span
                     class="lnr lnr-arrow-right"></span></a></td>
                   </td>
-                  <td> </td>
                   <td>
                     <a href="{% url 'delete_cart' cart_item.product.id %}" class="genric-btn danger-border circle arrow">Delete<span
                         class="lnr lnr-arrow-right"></span></a>
@@ -119,8 +115,8 @@
               </tbody>
             </table>
             <div class="checkout_btn_inner float-right">
-              <a class="btn_1" href="#">Continue Shopping</a>
-              <a class="btn_1 checkout_btn_1" href="#">Proceed to checkout</a>
+              <a class="btn_1" href="{% url 'shop' %}">Continue Shopping</a>
+              <a class="btn_1 checkout_btn_1" href="{% url 'checkout' %}">Proceed to checkout</a>
             </div>
           </div>
         </div>

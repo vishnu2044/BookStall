@@ -2478,7 +2478,7 @@ input:focus {
 
 @media only screen and (min-width: 480px) and (max-width: 767px) {
     .section_padding {
-        padding: 70px 0px
+        padding: 30px 0px
     }
 }
 
@@ -11448,3 +11448,5 @@ input:focus {
         font-size: 30px
     }
 }
+
+  

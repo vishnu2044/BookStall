@@ -8,8 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.conf import settings
 from django.core.mail import send_mail
-from .models import Profile
+from .models import Profile, UserAddress
 from app_admin_panel.views import *
+
 
 
 # Create your views here.
@@ -189,3 +190,32 @@ def unblock_user(request, id):
     user.save()
     messages.success(request, f'User "{name}" is unblocked')
     return redirect(user_details)
+
+
+def add_user_address(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        ph_no = request.POST.get("number")
+        house = request.POST.get("house")
+        landmark = request.POST.get("landmark")
+        district = request.POST.get("district")
+        city = request.POST.get("city")
+        state = request.POST.get("state")
+        country = request.POST.get("country")
+        pincode = request.POST.get("pincode")
+        
+        UserAddress.objects.create(
+            fullname = name,
+            contact_number = ph_no,    
+            user = request.user,
+            house_name = house,
+            landmark = landmark,
+            city = city,
+            district = district,
+            state = state,
+            country = country,
+            pincode = pincode,
+        ).save()
+        return redirect('place_order')
+        
+        
