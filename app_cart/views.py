@@ -77,11 +77,6 @@ def delete_cart(request, product_id):
     cart_items.delete()
     return redirect('cart')
 
-
-
-
-
-
 def cart(request, total=0, quantity=0, cart_items=None, count=0):
     try:
         if request.user.is_authenticated:
