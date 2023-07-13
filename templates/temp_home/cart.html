@@ -28,7 +28,7 @@
                 <tr>
                   <td>{{ cart_item.id }}</td>
                   <td>{{ cart_item.product.product_name }} </td>
-                  <td>{{ cart_item.product.price }} </td>
+                  <td>{{ cart_item.product.price }}</td>
                   <td>
                     <a href="{% url 'add_cart' cart_item.product.id %}" class="genric-btn danger-border circle arrow">+<span
                     class="lnr lnr-arrow-right"></span></a> 
