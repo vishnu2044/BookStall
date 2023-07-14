@@ -1,0 +1,109 @@
+{% extends 'temp_home/base.html' %}
+{% block title %} User-Profile {% endblock title %}
+
+        {% block content %} 
+                 <!-- Hero Area Start-->
+                 <div class="">
+                    <div class=" text-center">
+                        <h2>User Profile</h2>
+                    </div>
+                </div>
+                 <!-- Hero Area End-->
+                 <!--================ user profile part start =================-->
+      <section class="confirmation_part ">
+        <div class="container">
+          <div class="row">
+
+            <div class="col-lg-12 col-lx-12">
+              <div class="single_confirmation_details">
+                <h4>User Info</h4>
+                <ul>
+                  <li>
+                    <p>User Name</p><span>: {{ user.username }}</span>
+                  </li>
+                  <li>
+                    <p>First Name</p><span>: {{ user.first_name }}</span>
+                  </li>
+                  <li>
+                    <p>Last Name</p><span>: {{ user.last_name }}</span>
+                  </li>
+                  <li>
+                    <p>E-Mail</p><span>: {{ user.email }}</span>
+                  </li>
+                </ul>
+              </div>
+              <br>
+              <div class="col-lg-12 col-lx-12">
+                <a href="#" class="genric-btn success-border radius  col-3">change password</a>
+                <a href="#" class="genric-btn info-border radius  col-4">Edit </a>
+                <a href="#" class="genric-btn danger-border radius  col-4">Logout</a>
+
+              </div>
+              <br>
+            </div>
+            <br>
+            <br>
+
+
+            <div class="col-lg-12 col-lx-12">
+              <div class="single_confirmation_details">
+                  <div class="section-top-border single_confirmation_details">
+                    <h3 class="mb-30">Address</h3>
+                    <div class="progress-">
+                      <div class="progress-table">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>S No.</th>
+                              <th>House name</th>
+                              <th>   </th>
+                              <th>   </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for address in addresses %}
+                            <tr>
+                              <td>{{ forloop.counter }}</td>
+                              <td>{{ address.house_name }}</td>
+                              <td>
+                                <a href="#" class="genric-btn info-border rounded-50">Edit</a>
+                              </td>
+                              <td>
+                                <a href="#" class="genric-btn danger-border">Delete</a>
+                              </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+
+                  
+                 
+
+          </div>
+        </div>
+  
+      </section>
+      <!--================ user profile part end =================-->
+
+
+        {% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+        

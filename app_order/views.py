@@ -45,16 +45,31 @@ def payments(request):
 
         CartItem.objects.filter(user=request.user).delete()
 
-        mess = f'Hello\t{request.user.first_name} {request.user.last_name} \nYour order of { product_name} has confirmed.\n Thanks!'
+        # mess = f'Hello\t{request.user.first_name} {request.user.last_name} \nYour order of { product_name} has confirmed.\n Thanks!'
 
-        send_mail(
-            "Thank you\n",
-            mess,
-            settings.EMAIL_HOST_USER,
-            [request.user.email],
-            fail_silently=False,
-        )
-        return render(request, 'temp_home/confirm.html')
+        # send_mail(
+        #     "Thank you for your order",
+        #     mess,
+        #     settings.EMAIL_HOST_USER,
+        #     [request.user.email],
+        #     fail_silently=False,
+        # )
+
+        CartItem.objects.filter(user=request.user).delete()
+
+        order = Order.objects.filter(user=request.user).order_by('-id').first()
+        order_item = OrderItem.objects.filter(user=request.user)
+
+        context = {
+            "order": order,
+            "order_items": order_item,
+        }
+        
+
+        return render(request, 'temp_home/confirm.html', context)
+
+
+
     return redirect(request, 'place_order')
 
 def place_order(request):
@@ -91,7 +106,30 @@ def place_order(request):
         return render(request, 'temp_home/payments.html', context)
     return redirect(request, '/')
 
+
+def user_order_list(request):
+    order_items = OrderItem.objects.filter(user = request.user)
+
+    context  ={
+        "order_items" : order_items,
+    } 
+    return render(request, 'temp_home/user_order_list.html', context)
     
+
+
+def user_order_cancel(request, id):
+    order_item = OrderItem.objects.get(id=id)
+    if order_item.status == "accepted":
+        order_item.status = "Cancelled"
+        order_item.save()
+        return redirect(request, user_order_list , pk=id)
+    
+    order_items = OrderItem.objects.filter(user = request.user)
+
+    context  ={
+        "order_items" : order_items,
+    } 
+    return render(request, 'temp_home/user_order_list.html', context)
 
 
 

@@ -219,3 +219,19 @@ def add_user_address(request):
         return redirect('place_order')
         
         
+def user_profile(request):
+    if request.user.is_authenticated:
+
+        address = UserAddress.objects.filter(user=request.user)
+        user = request.user
+
+        context = {
+            'user' : user,
+            'addresses': address,
+        }
+
+        return render(request, 'temp_home/user_profile.html', context)
+    return redirect(request, 'home')
+
+def change_password(request):
+    return render(request, 'temp_home/changepassword.html')

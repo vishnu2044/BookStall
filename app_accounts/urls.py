@@ -12,5 +12,7 @@ urlpatterns = [
     path('block_user/<int:id>/', views.block_user, name="block_user"),
     path('unblock_user/<int:id>/', views.unblock_user, name="unblock_user"),
     path('add_user_address/', views.add_user_address, name="add_user_address"),
+    path('user_profile/', views.user_profile, name="user_profile"),
+    path('change_password/', views.change_password, name="change_password"),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
