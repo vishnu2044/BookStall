@@ -54,26 +54,34 @@
                                             <li><a href="product_details.html">Previews orders</a></li>
                                         </ul>
                                     </li>
-                                    <li><a href="blog.html">Contact Us </a>
+                                    <li><a href="#">Contact Us </a>
                                         <ul class="submenu">
-                                            <li><a href="blog.html">Blog</a></li>
-                                            <li><a href="blog-details.html">Blog Details</a></li>
+                                            <li><a href="#">Blog</a></li>
+                                            <li><a href="#">Blog Details</a></li>
                                         </ul>
                                     </li>
-                                    <li><a href="blog.html"><span class="flaticon-user"></span></a>
-                                        {% if user.is_authenticated %}
+                                    <li><a href="#"><span class="flaticon-user"></span></a>
+                                        {% if user.is_authenticated and user.is_superuser %}
                                         <ul class="submenu">
-                                            <li><a href="{% url 'user_profile' %}">{{ user.first_name}} </a></li>
+                                            <li><a href="{% url 'user_profile' %}">{{ user.username}} </a></li>
+                                            {% comment %} <li><a href="{% url 'user_order_list' %}">My orders</a></li> {% endcomment %}
+                                            <li><a href="{% url 'user_logout' %}">Log out </a></li>
+                                            <li><a href="{% url 'admin_dashboard' %}">Admin Panel </a></li>
+                                        </ul>
+                                    {% elif user.is_authenticated %}
+                                        <ul class="submenu">
+                                            <li><a href="{% url 'user_profile' %}">{{ user.username}} </a></li>
                                             <li><a href="{% url 'user_order_list' %}">My orders</a></li>
                                             <li><a href="{% url 'user_logout' %}">Log out </a></li>
                                         </ul>
-                                        {% else %}
+                                    {% else %}
                                         <ul class="submenu">
                                             <li><a href="{% url 'handle_login' %}">Log In </a></li>
                                             <li><a href="{% url 'signup' %}">Sign Up</a></li>
                                             <li><a href="{% url 'otp_login' %}">OTP Login</a></li>
-                                        {% endif %}
                                         </ul>
+                                    {% endif %}
+                                    
                                     </li>
                                 </ul>
                             </nav>
@@ -99,6 +107,23 @@
                 </div>
             </div>
         </div>
+                                <!-- Notifications container -->
+                                <div class="container">
+                                    {% for message in messages %}
+                                    <div class="alert 
+                                    {% if message.tags == 'success' %}alert-success
+                                    {% elif message.tags == 'error' %}alert-danger
+                                    {% elif message.tags == 'warning' %}alert-warning
+                                    {% endif %} alert-dismissible fade show" role="alert">
+                                        <strong>Message:</strong> {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            
+                                <!-- Rest of your content -->
 
         <!-- Header End -->
     </header>

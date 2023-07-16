@@ -13,6 +13,8 @@ urlpatterns = [
     path('unblock_user/<int:id>/', views.unblock_user, name="unblock_user"),
     path('add_user_address/', views.add_user_address, name="add_user_address"),
     path('user_profile/', views.user_profile, name="user_profile"),
-    path('change_password/', views.change_password, name="change_password"),
+    path('change_password/', views.change_password, name='change_password'),
+    path('edit_user_profile/', views.edit_user_profile, name='edit_user_profile'),
+    path('edit_user_address/<int:id>/', views.edit_user_address, name='edit_user_address'),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

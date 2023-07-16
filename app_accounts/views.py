@@ -2,7 +2,7 @@ import random
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
-from django.contrib import messages
+from django.contrib import messages ,auth
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
@@ -10,10 +10,19 @@ from django.conf import settings
 from django.core.mail import send_mail
 from .models import Profile, UserAddress
 from app_admin_panel.views import *
+# from django.contrib.auth.hashers import check_password
+import logging
 
+logger = logging.getLogger(__name__)
 
 
 # Create your views here.
+    #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
+    #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
+    #<<<<<<<<<<<<<<<<<<<<  user authentication  >>>>>>>>>>>>>>>>>>>>
+    #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
+    #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
+
 def signup(request):
 # capturing the form input values from the HTTP POST request 
     if request.method == "POST":
@@ -72,7 +81,9 @@ def signup(request):
                 messages.error(request, "password must contain minimum 10 characters!")
                 return redirect('signup')
             
-            myuser = User.objects.create_user(username = username, email = email, password = pass1)
+            
+            myuser = User.objects.create_user(username = username, email = email)
+            myuser.set_password(pass1)
             myuser.first_name = firstname
             myuser.last_name = lastname
             myuser.is_active = False
@@ -101,9 +112,7 @@ def signup(request):
             else:
                 messages.warning(request, f'You entered a wrong OTP')
                 return render(request, 'accounts/signup.html', {'otp':True, 'user':user})
-    
 
-        
     return render(request, "accounts/signup.html", {'otp':False})
 
 
@@ -112,6 +121,17 @@ def handle_login(request):
         username = request.POST.get("username")
         pass1 = request.POST.get('pass1')
 
+        if not User.objects.filter(username = username):
+            messages.error(request, "Invalid User name")
+            return redirect(handle_login)
+        
+        if username is None :
+            messages.warning("please enter username")
+            return redirect(handle_login)
+        
+        if pass1 is None:
+            messages.warning(request, "Please enter password")
+
         user = authenticate(request, username = username, password = pass1)
 
         if user is not None:
@@ -119,15 +139,15 @@ def handle_login(request):
             messages.success(request,'logged in')
             return redirect('/')
         else:
-            messages.error(request, "invalid username of password")
-            return redirect('handle_login')
+            messages.error(request, "invalid password")
+            return redirect(handle_login)
         
     if request.user.is_authenticated:
         return redirect('/')
     return render(request, "accounts/login.html")
 
 
-
+from django.db import IntegrityError
 
 def otp_login(request):
     if request.method == "POST":
@@ -136,15 +156,11 @@ def otp_login(request):
             email = request.POST.get('email')
             try: 
                 user = User.objects.get(email=email)
-            except:
-                messages.error(request, f'This is not a valid email id!')
-                return redirect(otp_login)
-            
-            if user is not None:
-                otp = int(random.randint(1000, 9999))
-                profile = Profile(user=user, otp=otp)
-                profile.save()
-                mess = f'Hello\t{user.username},\nYour OTP to login your account for BookStall is {otp}\nThank you'
+                profile, created = Profile.objects.get_or_create(user=user)
+                if not created:
+                    profile.otp = int(random.randint(1000, 9999))
+                    profile.save()
+                mess = f'Hello\t{user.username},\nYour OTP to login to your BookStall account is {profile.otp}\nThank you'
                 send_mail(
                     "Welcome to BookStall, verify your Email for login",
                     mess,
@@ -153,24 +169,33 @@ def otp_login(request):
                     fail_silently=False
                 )
                 return render(request, 'accounts/otp_login.html', {'otp': True, 'user': user})
+            except User.DoesNotExist:
+                messages.error(request, f'This is not a valid email id!')
+                return redirect('otp_login')
+            except IntegrityError:
+                messages.error(request, f'This is not a valid email id!')
+                return redirect('otp_login')
         
         else:
             get_email = request.POST.get('email')
             user = User.objects.get(email=get_email)
-            if get_otp == Profile.objects.filter(user=user).last().otp:
+            profile = Profile.objects.get(user=user)
+            if get_otp == str(profile.otp):
                 login(request, user)
                 messages.success(request, f"Successfully logged in {user.email}")
-                Profile.objects.filter(user=user).delete()
+                profile.delete()
                 return redirect('/')
             else:
-                messages.warning(request, "You entered a wrong OTP")
-                return render(request, "accounts/otp_login.html", {"otp":True, "user":user})
-    if request.user.is_authenticated:
+                messages.warning(request, "You entered the wrong OTP")
+                return render(request, "accounts/otp_login.html", {"otp": True, "user": user})
+    elif request.user.is_authenticated:
         return redirect('/')
-
+    
     return render(request, 'accounts/otp_login.html')
 
 
+
+@login_required(login_url='handle_login')
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect("/")
@@ -190,6 +215,78 @@ def unblock_user(request, id):
     user.save()
     messages.success(request, f'User "{name}" is unblocked')
     return redirect(user_details)
+
+
+
+    
+    #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
+    #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
+    #<<<<<<<<<<<<<<<<<<<< user profile settings >>>>>>>>>>>>>>>>>>>>
+    #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
+    #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
+     
+     
+def user_profile(request):
+    if request.user.is_authenticated:
+
+        address = UserAddress.objects.filter(user=request.user)
+        user = request.user
+
+        context = {
+            'user' : user,
+            'addresses': address,
+        }
+
+        return render(request, 'temp_home/user_profile.html', context)
+    return redirect('home')
+
+def change_password(request):
+
+    if request.method == "POST":
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        user = request.user
+        if not user.is_authenticated:
+            messages.error(request, 'please login first !')
+            return redirect(request, 'handle_login')
+
+        if not user.check_password(old_password):
+            messages.error(request, 'please enter the correct password !')
+            return redirect(change_password)
+
+        if new_password != confirm_password:
+            messages.error(request, "Password mismatch")
+            return redirect(request, change_password)
+
+        user.set_password(new_password)
+        user.save()
+        auth.login(request, user)
+        messages.success(request, "password changed successfully !")
+        return redirect(user_profile)
+
+    else:
+        return render(request, 'temp_home/change_password.html')
+
+
+def edit_user_profile(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        fname = request.POST.get("firstname")
+        lname = request.POST.get("lastname")
+        print(username,"   ", fname,"     ", lname)
+
+
+        edited_user = request.user
+        edited_user.first_name = fname
+        edited_user.username = username
+        edited_user.last_name = lname
+        edited_user.save()
+        
+        messages.success(request, 'profile updated successfully.')
+        return redirect(user_profile)
+    return render(request, 'temp_home/edit_profile.html')
 
 
 def add_user_address(request):
@@ -217,21 +314,37 @@ def add_user_address(request):
             pincode = pincode,
         ).save()
         return redirect('place_order')
+
+
+def edit_user_address(request, id):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        ph_no = request.POST.get("number")
+        house = request.POST.get("house")
+        landmark = request.POST.get("landmark")
+        district = request.POST.get("district")
+        city = request.POST.get("city")
+        state = request.POST.get("state")
+        country = request.POST.get("country")
+        pincode = request.POST.get("pincode")
         
+        UserAddress.objects.filter(id=id).update(
+            fullname = name,
+            contact_number = ph_no,    
+            user = request.user,
+            house_name = house,
+            landmark = landmark,
+            city = city,
+            district = district,
+            state = state,
+            country = country,
+            pincode = pincode,
+        )
+        messages.success(request, "address updated.")
+        return redirect(user_profile)
         
-def user_profile(request):
-    if request.user.is_authenticated:
-
-        address = UserAddress.objects.filter(user=request.user)
-        user = request.user
-
-        context = {
-            'user' : user,
-            'addresses': address,
-        }
-
-        return render(request, 'temp_home/user_profile.html', context)
-    return redirect(request, 'home')
-
-def change_password(request):
-    return render(request, 'temp_home/changepassword.html')
+    address = UserAddress.objects.get(id=id)
+    context = {
+        "address": address,
+    }
+    return render(request, 'temp_home/edit_address.html', context)

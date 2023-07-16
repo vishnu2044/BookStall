@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'app_cart',
     'app_checkout',
     'app_order',
+    'app_admin_order',
 
 ]
 

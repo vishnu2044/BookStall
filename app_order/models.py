@@ -69,7 +69,16 @@ class OrderItem(models.Model):
     product_price = models.FloatField()
     quantity = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=ORDER_STATUS, default='pending')
+    status = models.CharField(max_length=50, choices=ORDER_STATUS, default='pending')
+
+
+    
 
     def __str__(self):
         return self.product.product_name
+
+
+
+
+
+        
