@@ -6,7 +6,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin_order_list/', views.admin_order_list, name = 'admin_order_list'),
-    path('update_order_status//<int:id>/', views.update_order_status, name = 'update_order_status'),
+    path('update_order_status/<int:id>/', views.update_order_status, name = 'update_order_status'),
+    path('order_details/<int:id>/', views.order_details, name = 'order_details'),
 
 
 

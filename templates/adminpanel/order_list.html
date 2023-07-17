@@ -30,10 +30,11 @@
                   <th> Number </th>
                   {% comment %} <th> order id </th> {% endcomment %}
                   <th> Product name </th>
-                  <th> user </th>
                   <th> quantity </th>
+                  <th> user </th>
                   <th> Status </th>
                   <th>  </th>
+                  <th>Details</th>
 
                 </tr>
               </thead>
@@ -43,12 +44,12 @@
                     <td>{{ forloop.counter }}</td>
                     {% comment %} <td>{{ order_item.order.order_id }}</td> {% endcomment %}
                     <td>{{ order_item.product.product_name }}</td>
-                    <td>{{ order_item.user.username }}</td>
                     <td>{{ order_item.quantity }}</td>
+                    <td>{{ order_item.user.username }}</td>
                     <td>{{ order_item.status }}</td>
                     <td>
                       <div class="modal-body align-content-left">
-                        <form required action="{% url 'update_order_status' order_item.id %}"
+                        {% comment %} <form required action="{% url 'update_order_status' order_item.id %}"
                             class="mx-1 mx-md-4" method="POST">
                             {% csrf_token %}
                             
@@ -68,8 +69,13 @@
                                 
                             </div>
 
-                        </form>
+                        </form> {% endcomment %}
                     </div>
+                    </td>
+                    <td>
+                      <a href="{% url 'order_details' order_item.id %}">
+                        <button type="button" class="btn btn-outline-info btn-fw">View details</button>
+                      </a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -4,12 +4,14 @@ from app_category.models import Category_list
 from django.shortcuts import get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from app_products.models import *
+from django.contrib.auth.decorators import login_required, user_passes_test
+from app_admin_panel.views import super_admincheck
 
 
 # Create your views here.
-
-#<<<<<<<<<<   categories  >>>>>>>>>>
-
+#<<<<<<<<<<<<<<<<<<<<<<<<<  to display categories list in admin side  >>>>>>>>>>>>>>>>>>>>>>>>>
+@login_required
+@user_passes_test(super_admincheck)
 def categories_list(request):
     categories = Category_list.objects.all()
     context = {
@@ -17,6 +19,10 @@ def categories_list(request):
     }
     return render(request, 'adminpanel/categories.html', context)
 
+
+#<<<<<<<<<<<<<<<<<<<<<<<<<  add new  category to the category list   >>>>>>>>>>>>>>>>>>>>>>>>>
+@login_required
+@user_passes_test(super_admincheck)
 def add_category(request):
     if request.method == "POST":
         name = request.POST.get('name')
@@ -56,6 +62,9 @@ def add_category(request):
     return render(request, 'adminpanel/categories.html', context)
 
 
+#<<<<<<<<<<<<<<<<<<<<<<<<<  Edit the excisting category items    >>>>>>>>>>>>>>>>>>>>>>>>>
+@login_required
+@user_passes_test(super_admincheck)
 def edit_catgory(request, id):
     if request.method == "POST":
         name = request.POST.get('name')
@@ -110,9 +119,9 @@ def list_category(request, id):
     return redirect(add_category)
 
 
-
-#<<<<<<<<<<   Products  >>>>>>>>>>
-
+#<<<<<<<<<<<<<<<<<<<<<<<<<  to display all prodcuts in the admin side    >>>>>>>>>>>>>>>>>>>>>>>>>
+@login_required
+@user_passes_test(super_admincheck)
 def admin_products(request):
     products = Product.objects.all()
      
@@ -187,7 +196,6 @@ def add_product(request):
             
     authors = Authors.objects.all()
     categories = Category_list.objects.all()
-    
 
     context = {
             'categories' : categories,
@@ -196,6 +204,20 @@ def add_product(request):
     return render(request, 'adminpanel/add_product.html', context)
  
 
+def admin_search_prodcuts(request):
+    if request.method == "GET":
+        query = request.GET.get("query")
+        if query:
+            detail = Product.objects.filter(product_name=query)
+            detail = Product.objects.filter(slug=query)
+            return render(request, 'adminpanel/searchproduct.html', {"details" : detail})
+        else:
+            return render(request, 'admin_panel/search.html', {})
+
+
+#<<<<<<<<<<<<<<<<<<<<<<<<<  Edit the excisting product details    >>>>>>>>>>>>>>>>>>>>>>>>>
+@login_required
+@user_passes_test(super_admincheck)
 def edit_product(request, id):
     if request.method == 'POST':
         image = ''
@@ -261,6 +283,9 @@ def edit_product(request, id):
 
 
 
+#<<<<<<<<<<<<<<<<<<<<<<<<<  unlist the excisting prodcut details    >>>>>>>>>>>>>>>>>>>>>>>>>
+@login_required
+@user_passes_test(super_admincheck)
 def unlist_product(request, id):
     try:
         product = Product.objects.get(id=id)
@@ -274,6 +299,10 @@ def unlist_product(request, id):
     messages.warning(request, f'Product "{name}" is unlisted.')
     return redirect(admin_products)
 
+
+#<<<<<<<<<<<<<<<<<<<<<<<<<  list the excisting prodcut details    >>>>>>>>>>>>>>>>>>>>>>>>>
+@login_required
+@user_passes_test(super_admincheck)
 def list_product(request, id):
     try:
         product = Product.objects.get(id=id)

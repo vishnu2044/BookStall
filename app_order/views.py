@@ -106,6 +106,31 @@ def place_order(request):
         return render(request, 'temp_home/payments.html', context)
     return redirect(request, '/')
 
+def add_user_address(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        ph_no = request.POST.get("number")
+        house = request.POST.get("house")
+        landmark = request.POST.get("landmark")
+        district = request.POST.get("district")
+        city = request.POST.get("city")
+        state = request.POST.get("state")
+        country = request.POST.get("country")
+        pincode = request.POST.get("pincode")
+        
+        UserAddress.objects.create(
+            fullname = name,
+            contact_number = ph_no,    
+            user = request.user,
+            house_name = house,
+            landmark = landmark,
+            city = city,
+            district = district,
+            state = state,
+            country = country,
+            pincode = pincode,
+        ).save()
+        return redirect('place_order')
 
 def user_order_list(request):
     order_items = OrderItem.objects.filter(user = request.user)

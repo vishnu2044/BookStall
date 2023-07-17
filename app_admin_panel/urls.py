@@ -10,6 +10,8 @@ urlpatterns = [
     path('admin_logout', views.admin_logout, name="admin_logout"),
     path('base', views.base, name="base"),
     path('user_details', views.user_details, name="user_details"),
+    path('block_user/<int:id>/', views.block_user, name="block_user"),
+    path('unblock_user/<int:id>/', views.unblock_user, name="unblock_user"),
     
 
     

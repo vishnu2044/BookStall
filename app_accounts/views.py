@@ -10,6 +10,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from .models import Profile, UserAddress
 from app_admin_panel.views import *
+from django.db import IntegrityError
 # from django.contrib.auth.hashers import check_password
 import logging
 
@@ -23,6 +24,7 @@ logger = logging.getLogger(__name__)
     #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
     #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
 
+#<<<<<<<<<<<<<<<<<<<<  To create a new acount for a new user  >>>>>>>>>>>>>>>>>>>>
 def signup(request):
 # capturing the form input values from the HTTP POST request 
     if request.method == "POST":
@@ -116,6 +118,7 @@ def signup(request):
     return render(request, "accounts/signup.html", {'otp':False})
 
 
+#<<<<<<<<<<<<<<<<<<<<  To login a user for authorisation  >>>>>>>>>>>>>>>>>>>>
 def handle_login(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -147,8 +150,8 @@ def handle_login(request):
     return render(request, "accounts/login.html")
 
 
-from django.db import IntegrityError
 
+#<<<<<<<<<<<<<<<<<<<<  To login a user using otp  >>>>>>>>>>>>>>>>>>>>
 def otp_login(request):
     if request.method == "POST":
         get_otp = request.POST.get('otp')
@@ -194,27 +197,13 @@ def otp_login(request):
     return render(request, 'accounts/otp_login.html')
 
 
-
+#<<<<<<<<<<<<<<<<<<<<  To log out a user from the site  >>>>>>>>>>>>>>>>>>>>
 @login_required(login_url='handle_login')
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect("/")
 
-def block_user(request, id):
-    user = User.objects.get(id=id)
-    name = User.first_name
-    user.is_active = False
-    user.save()
-    messages.success(request, f'User "{name}" is blocked')
-    return redirect(user_details)
-    
-def unblock_user(request, id):
-    user = User.objects.get(id=id)
-    name = User.first_name
-    user.is_active = True
-    user.save()
-    messages.success(request, f'User "{name}" is unblocked')
-    return redirect(user_details)
+
 
 
 
@@ -289,31 +278,31 @@ def edit_user_profile(request):
     return render(request, 'temp_home/edit_profile.html')
 
 
-def add_user_address(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        ph_no = request.POST.get("number")
-        house = request.POST.get("house")
-        landmark = request.POST.get("landmark")
-        district = request.POST.get("district")
-        city = request.POST.get("city")
-        state = request.POST.get("state")
-        country = request.POST.get("country")
-        pincode = request.POST.get("pincode")
+# def add_user_address_profile(request):
+#     if request.method == "POST":
+#         name = request.POST.get("name")
+#         ph_no = request.POST.get("number")
+#         house = request.POST.get("house")
+#         landmark = request.POST.get("landmark")
+#         district = request.POST.get("district")
+#         city = request.POST.get("city")
+#         state = request.POST.get("state")
+#         country = request.POST.get("country")
+#         pincode = request.POST.get("pincode")
         
-        UserAddress.objects.create(
-            fullname = name,
-            contact_number = ph_no,    
-            user = request.user,
-            house_name = house,
-            landmark = landmark,
-            city = city,
-            district = district,
-            state = state,
-            country = country,
-            pincode = pincode,
-        ).save()
-        return redirect('place_order')
+#         UserAddress.objects.create(
+#             fullname = name,
+#             contact_number = ph_no,    
+#             user = request.user,
+#             house_name = house,
+#             landmark = landmark,
+#             city = city,
+#             district = district,
+#             state = state,
+#             country = country,
+#             pincode = pincode,
+#         ).save()
+#         return redirect(user_profile)
 
 
 def edit_user_address(request, id):
@@ -348,3 +337,9 @@ def edit_user_address(request, id):
         "address": address,
     }
     return render(request, 'temp_home/edit_address.html', context)
+
+def delete_user_address(request, id):
+    address = UserAddress.objects.get(id=id)
+    address.delete()
+    messages.success(request, "address deleted successfully.")
+    return redirect(user_profile)

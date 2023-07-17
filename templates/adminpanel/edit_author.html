@@ -21,7 +21,7 @@
                                 id="name" 
                                 name ="name" 
                                 placeholder= "{{ author.author_name}}"
-                                value= "{{ author.author_name}}">
+                                value= "{{ author.author_name}}" required>
                             </div>
                             <div class="form-group col-6">
                                 <label for="exampleInputName1">Nation</label>
@@ -31,7 +31,7 @@
                                 id ="nation"
                                 name ="nation"
                                 placeholder="{{ author.author_nation }}"
-                                value="{{ author.author_nation }}">
+                                value="{{ author.author_nation }}" required>
                             </div>
                         </div>
 
@@ -44,8 +44,7 @@
                                 id="birthyear"
                                 name = "birthyear" 
                                 placeholder="{{ author.author_birth_year }}"
-                                value="{{ author.author_birth_year }}"
-                                >
+                                value="{{ author.author_birth_year }}" required>
                             </div>
                         </div>
 
@@ -64,22 +63,27 @@
 
                     <div class="form-group">
                         <label for="exampleTextarea1">Quotes</label>
-                        <textarea 
+                        <input 
                         class ="form-control" 
                         id ="quotes" 
                         name ="quotes" 
                         placeholder="{{ author.author_quotes }}" 
-                        rows="5">
-                        </textarea>
+                        value="{{ author.author_quotes }}" 
+                        rows="5" required>
+                        
                     </div>
                     <div class="form-group">
                         <label for="exampleTextarea1">Description</label>
                         <textarea 
-                        class ="form-control" 
-                        id ="description" 
-                        name ="description" 
+                        class="form-control" 
+                        id="description" 
+                        name="description" 
                         placeholder="{{ author.author_description }}" 
-                        rows="15"></textarea>
+                        value="{{ author.author_description }}" 
+                        rows="15" 
+                        required>
+                      </textarea>
+                      
                     </div>
                       
 

@@ -34,9 +34,9 @@
               </div>
               <br>
               <div class="col-lg-12 col-lx-12">
-                <a href="{% url 'change_password'   %}" class="genric-btn success-border radius  col-3">change password</a>
-                <a href="{% url 'edit_user_profile' %}" class="genric-btn info-border radius  col-4">Edit Profile</a>
-                <a href="{% url 'user_logout' %}" class="genric-btn danger-border radius  col-4">Logout</a>
+                <a href="{% url 'change_password'   %}" class="genric-btn success-border radius  col-4">change password</a>
+                <a href="{% url 'edit_user_profile' %}" class="genric-btn info-border radius  col-5">Edit Profile</a>
+                <a href="{% url 'user_logout' %}" class="genric-btn danger-border radius  col-2">Logout</a>
 
               </div>
               <br>
@@ -48,7 +48,19 @@
             <div class="col-lg-12 col-lx-12">
               <div class="single_confirmation_details">
                   <div class="section-top-border single_confirmation_details">
-                    <h3 class="mb-30">Address</h3>
+
+                    <div class="row">
+                      <div class="col-6">
+                        <h3 class="mb-30">Address</h3>
+                      </div>
+                      {% comment %} <div class="col-6 text-right">
+                        <a href="{% url 'add_user_address_profile' %}" class="genric-btn info-border">Add Address </a>
+                      </div> {% endcomment %}
+                    </div>
+                    
+                    
+
+                    
                     <div class="progress-">
                       <div class="progress-table">
                         <table class="table">
@@ -69,7 +81,7 @@
                                 <a href="{% url 'edit_user_address' address.id %}" class="genric-btn info-border rounded-50">Edit</a>
                               </td>
                               <td>
-                                <a href="#" class="genric-btn danger-border">Delete</a>
+                                <a href="{% url 'delete_user_address' address.id %}" class="genric-btn danger-border">Delete</a>
                               </td>
                             </tr>
                             {% endfor %}
