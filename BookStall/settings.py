@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.pagination',
     'app_home',
     'app_products',
     'app_category',
@@ -49,7 +48,6 @@ INSTALLED_APPS = [
     'app_checkout',
     'app_order',
     'app_admin_order',
-
 ]
 
 MIDDLEWARE = [

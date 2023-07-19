@@ -21,39 +21,32 @@
             </div>
         </div>
         <!-- Hero Area End-->
-        {% load pagination %}
-
-        {% paginator paginator page_obj %}
-        
-        {% for author in page_obj.object_list %}
-            <section class="confirmation_part ">
-                <div class="container">
-                  <div class="row">
-                    <div class="col-lg-12 col-lx-4">
-                      <div class="single_confirmation_details">
-                        
-                            <h3 class="mb-30">{{ author.author_name }}</h3>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <img src="{{ author.author_image.url }}" alt="" class="img-fluid">
-                                </div>
-                                <div class="col-md-9 mt-sm-20">
-                                    <p>{{ author.author_description }}
-                                    </p>
-                                </div>
-                                
+        {% for author in authors %}
+        <section class="confirmation_part ">
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-12 col-lx-4">
+                  <div class="single_confirmation_details">
+                    
+                        <h3 class="mb-30">{{ author.author_name }}</h3>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img src="{{ author.author_image.url }}" alt="" class="img-fluid">
                             </div>
-                            <br>
-                            <a href="{% url 'author_books' author.id %}" class="genric-btn info radius">books</a>
-                      </div>
-                      
-                    </div> 
-                </div>
-              
-              </section>
-            {% endfor %}
-        
-        {% paginate paginator page_obj %}
-        
+                            <div class="col-md-9 mt-sm-20">
+                                <p>{{ author.author_description }}
+                                </p>
+                            </div>
+                            
+                        </div>
+                        <br>
+                        <a href="{% url 'author_books' author.id %}" class="genric-btn info radius">books</a>
+                  </div>
+                  
+                </div> 
+            </div>
+          
+          </section>
+          {% endfor %}
         {% endblock content %}
         

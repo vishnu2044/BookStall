@@ -11,7 +11,7 @@
                         
                             <div class="swiper-slide">
                                 <!-- Single Slider -->
-                                <div class="single-slider slider-height d-flex align-items-center slide-bg" style="background-color: #2a0101;">
+                                <div class="single-slider slider-height d-flex align-items-center slide-bg" style="background-color: #000000;">
 
                                     <div class="container">
                                         <div class="row justify-content-between align-items-center">
@@ -88,13 +88,13 @@
                         
                             <div class="swiper-slide">
                                 <!-- Single Slider -->
-                                <div class="single-slider slider-height d-flex align-items-center slide-bg" style="background-color: aliceblue">
+                                <div class="single-slider slider-height d-flex align-items-center slide-bg" style="background-color: rgb(0, 0, 0)">
                                     <div class="container">
                                         <div class="row justify-content-between align-items-center">
                                             <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
                                                 <div class="hero__caption">
-                                                    <h1 data-animation="fadeInLeft" data-delay=".4s" data-duration="2000ms">{{ product.product_name }}</h1>
-                                                    <p data-animation="fadeInLeft" data-delay=".7s" data-duration="2000ms">Author: {{ product.author }}</p>
+                                                    <h1 data-animation="fadeInLeft" data-delay=".4s" data-duration="2000ms" class="text-white" >{{ product.product_name }}</h1>
+                                                    <p data-animation="fadeInLeft" data-delay=".7s" data-duration="2000ms" class="text-white">Author: {{ product.author }}</p>
                                                     <!-- Hero-btn -->
                                                     <div class="hero__btn" data-animation="fadeInLeft" data-delay=".8s" data-duration="2000ms">
                                                         <a href="industries.html" class="btn hero-btn text-white">Shop Now</a>
@@ -158,39 +158,46 @@
             </div>
         </div>
         <!-- Popular Items End -->
-        <!--? Watch Choice  Start-->
-        <div class="watch-area section-padding30">
-            <div class="container">
-                <div class="row align-items-center justify-content-between padding-130">
-                    <div class="col-lg-5 col-md-6">
-                        <div class="watch-details mb-40">
-                            <h2>Watch of Choice</h2>
-                            <p>Enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse.</p>
-                            <a href="shop.html" class="btn">Show Watches</a>
+                <!--? Gallery Area Start -->
+                <div class="slider-area ">
+                    <div class="slider-active ">
+                        {% for author in authors %}
+                        <div class="swiper-container">
+                            <div class="swiper-wrapper">
+                                
+                                    <div class="swiper-slide">
+                                        <!-- Single Slider -->
+                                        <div class="single-slider slider-height d-flex align-items-center slide-bg" style="background-color: rgb(0, 0, 0)">
+                                            <div class="container">
+                                                <div class="row justify-content-between align-items-center">
+                                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
+                                                        <div class="hero__caption">
+                                                            <h1 data-animation="fadeInLeft" data-delay=".4s" data-duration="2000ms" class="text-white">{{ author.author_name }}</h1>
+                                                            <p data-animation="fadeInLeft" data-delay=".7s" data-duration="2000ms" class="text-white">"{{ author.author_quotes }}"</p>
+                                                            <!-- Hero-btn -->
+                                                            <div class="hero__btn" data-animation="fadeInLeft" data-delay=".8s" data-duration="2000ms">
+                                                                <a href="{% url 'author_books' author.id %}" class="btn hero-btn text-white">View Books</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-4 d-none d-sm-block">
+                                                        <div class="hero__img" data-animation="bounceIn" data-delay=".4s">
+                                                            <img src="{{ author.author_image.url }}" alt="" class=" heartbeat">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                            </div>
                         </div>
+                        {% endfor %}
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-10">
-                        <div class="choice-watch-img mb-40">
-                            <img src="static/assets/img/gallery/choce_watch1.png" alt="">
-                        </div>
-                    </div>
-                </div>
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-lg-6 col-md-6 col-sm-10">
-                        <div class="choice-watch-img mb-40">
-                            <img src="static/assets/img/gallery/choce_watch2.png" alt="">
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-md-6">
-                        <div class="watch-details mb-40">
-                            <h2>Watch of Choice</h2>
-                            <p>Enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse.</p>
-                            <a href="shop.html" class="btn">Show Watches</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Watch Choice  End-->
+                    <br>
+                    <br>
+                    <br>
+                <!-- Gallery Area End -->
+       
         {% endblock content %}
         

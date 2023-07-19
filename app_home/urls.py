@@ -10,6 +10,5 @@ urlpatterns = [
     path('shop/', views.shop, name="shop"),
     path('base', views.base, name="base"),
     path('product_details/<int:id>/', views.product_details, name="product_details"),
-    path('contact/', views.contact, name="contact"),
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
