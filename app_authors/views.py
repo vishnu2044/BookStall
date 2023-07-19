@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from app_authors.models import Authors
+from app_products.models import Product
 
 # Create your views here.
 def admin_authors(request):
@@ -95,4 +96,15 @@ def edit_author(request, id):
 
 
 
+def authors_page(request):
+    authors = Authors.objects.all()
+    context = {
+        "authors": authors,
+    }
+    return render(request, 'temp_home/authors_page.html', context)
 
+def author_books(request, id):
+
+    products = Product.objects.filter(author=id)
+    context = {'products': products}
+    return render(request, 'temp_home/author_books.html', context)

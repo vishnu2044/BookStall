@@ -107,13 +107,14 @@
                     <div class="d-flex">
                         <div class="form-group col-12">
                             <label for="exampleTextarea1">Description</label>
-                            <textarea 
+                            <input 
                             class ="form-control" 
                             id ="description" 
                             name ="description" 
                             placeholder="{{ product.product_description }}" 
-                            rows="5">
-                            </textarea>
+                            value="{{ product.product_description }}" 
+                            rows="5" required>
+                            
                         </div>
                     </div>
 

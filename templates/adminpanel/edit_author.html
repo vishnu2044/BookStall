@@ -64,25 +64,27 @@
                     <div class="form-group">
                         <label for="exampleTextarea1">Quotes</label>
                         <input 
-                        class ="form-control" 
-                        id ="quotes" 
-                        name ="quotes" 
-                        placeholder="{{ author.author_quotes }}" 
-                        value="{{ author.author_quotes }}" 
-                        rows="5" required>
+                            class="form-control" 
+                            id="quotes" 
+                            name="quotes" 
+                            placeholder="{{ author.author_quotes }}" 
+                            value="{{ author.author_quotes }}" 
+                            rows="5" required>
+                        
                         
                     </div>
                     <div class="form-group">
                         <label for="exampleTextarea1">Description</label>
-                        <textarea 
+                        <input 
                         class="form-control" 
                         id="description" 
                         name="description" 
-                        placeholder="{{ author.author_description }}" 
-                        value="{{ author.author_description }}" 
+                        placeholder="Enter author description" 
+                        value="{{ author.author_description  }}" 
                         rows="15" 
                         required>
-                      </textarea>
+                        
+                        
                       
                     </div>
                       

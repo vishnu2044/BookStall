@@ -20,3 +20,4 @@ class Authors(models.Model):
         return self.author_name
 
     # Rest of the model code
+

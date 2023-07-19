@@ -47,12 +47,8 @@
                                 <ul id="navigation">  
                                     <li><a href="{% url 'home' %}">Home</a></li>
                                     <li class="hot"><a href="{% url 'shop' %}">Shop</a></li>
-                                    <li><a href="{% url 'about' %}">About</a></li>
-                                    <li ><a href="#">History</a>
-                                        <ul class="submenu">
-                                            <li><a href="shop.html">Order history</a></li>
-                                            <li><a href="product_details.html">Previews orders</a></li>
-                                        </ul>
+                                    
+                                    <li ><a href="{% url 'authors_page' %}">Authors</a>
                                     </li>
                                     <li><a href="#">Contact Us </a>
                                         <ul class="submenu">
@@ -60,6 +56,7 @@
                                             <li><a href="#">Blog Details</a></li>
                                         </ul>
                                     </li>
+                                    <li><a href="{% url 'about' %}">About</a></li>
                                     <li><a href="#"><span class="flaticon-user"></span></a>
                                         {% if user.is_authenticated and user.is_superuser %}
                                         <ul class="submenu">

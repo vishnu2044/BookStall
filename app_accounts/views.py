@@ -101,7 +101,7 @@ def signup(request):
                 [myuser.email],
                 fail_silently = False
                 )
-            return render(request, "accounts/signup.html", {'otp':True, 'user':myuser})
+            return render(request, "accounts/signup.html", {'otp':True, 'usr':myuser})
         else:
             get_email = request.POST.get('email')
             user = User.objects.get(email = get_email)
@@ -113,7 +113,7 @@ def signup(request):
                 return redirect(handle_login)
             else:
                 messages.warning(request, f'You entered a wrong OTP')
-                return render(request, 'accounts/signup.html', {'otp':True, 'user':user})
+                return render(request, 'accounts/signup.html', {'otp':True, 'usr':user})
 
     return render(request, "accounts/signup.html", {'otp':False})
 
@@ -153,48 +153,50 @@ def handle_login(request):
 
 #<<<<<<<<<<<<<<<<<<<<  To login a user using otp  >>>>>>>>>>>>>>>>>>>>
 def otp_login(request):
+
     if request.method == "POST":
         get_otp = request.POST.get('otp')
         if not get_otp:
             email = request.POST.get('email')
             try: 
                 user = User.objects.get(email=email)
-                profile, created = Profile.objects.get_or_create(user=user)
-                if not created:
-                    profile.otp = int(random.randint(1000, 9999))
-                    profile.save()
-                mess = f'Hello\t{user.username},\nYour OTP to login to your BookStall account is {profile.otp}\nThank you'
+            except:
+                messages.error(request, f"This is not a valid email id ")
+                return redirect(otp_login)
+            
+            if user is not None:
+                otp = int(random.randint(1000,9999))
+                profile = Profile(user = user, otp = otp)
+                profile.save()
+                mess=f"Hello {user.username},\nYour OTP to login to your acount for BookStall is {otp}\nThanks"
                 send_mail(
-                    "Welcome to BookStall, verify your Email for login",
+                    "Welcome to BookStall Varify your email for login.",
                     mess,
                     settings.EMAIL_HOST_USER,
                     [user.email],
                     fail_silently=False
                 )
-                return render(request, 'accounts/otp_login.html', {'otp': True, 'user': user})
-            except User.DoesNotExist:
-                messages.error(request, f'This is not a valid email id!')
-                return redirect('otp_login')
-            except IntegrityError:
-                messages.error(request, f'This is not a valid email id!')
-                return redirect('otp_login')
+                return render(request, 'accounts/otp_login.html', {"otp":True, "usr":user})
         
         else:
             get_email = request.POST.get('email')
             user = User.objects.get(email=get_email)
             profile = Profile.objects.get(user=user)
-            if get_otp == str(profile.otp):
+            if get_otp == Profile.objects.filter(user=user).last().otp:
                 login(request, user)
-                messages.success(request, f"Successfully logged in {user.email}")
-                profile.delete()
+                messages.success(request, f"Successfully logined {user.email}")
+                Profile.objects.filter(user=user).delete()
                 return redirect('/')
             else:
-                messages.warning(request, "You entered the wrong OTP")
-                return render(request, "accounts/otp_login.html", {"otp": True, "user": user})
-    elif request.user.is_authenticated:
-        return redirect('/')
+                messages.warning(request, f"You entered a wrong OTP")
+                return render(request, 'accounts/otp_login.html', {"otp": True, "usr":user})
     
-    return render(request, 'accounts/otp_login.html')
+    if request.user.is_authenticated:
+        return redirect('/')
+    return render(request, 'accounts/otp_login.html' )
+    
+    
+
 
 
 #<<<<<<<<<<<<<<<<<<<<  To log out a user from the site  >>>>>>>>>>>>>>>>>>>>
