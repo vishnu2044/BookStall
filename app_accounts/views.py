@@ -43,6 +43,18 @@ def signup(request):
                 messages.error(request, "please enter the usernmae")
                 return redirect('signup')
      
+            if not phone_no.strip():
+                messages.error(request, "please enter your phone number")
+                return redirect('signup')
+            
+            if not len(phone_no) < 10:
+                messages.error(request, "phone number must be minimum 10 numbers")
+                return redirect('signup')
+      
+            if not len(phone_no) < 10:
+                messages.error(request, "phone number must be minimum 10 numbers")
+                return redirect('signup')
+      
             if User.objects.filter(username = username).exists():
                 messages.error(request, "usrename is already exists!")
                 return redirect('signup')
@@ -67,20 +79,24 @@ def signup(request):
                 messages.error(request, "mobile number is alrady taken")
                 return redirect('signup')
             
+            if User.objects.filter(username = username).exists():
+                messages.error(request, "This username  is alrady taken")
+                return redirect('signup')
+            
             if not pass1:
-                messages.error(request, "please enter a password")
+                messages.error(request, "Please enter a password")
                 return redirect('signup')
             
             if not pass2:
-                messages.error(request, "please confirm your password")
+                messages.error(request, "Please confirm your password")
                 return redirect('signup')
             
             if pass1 != pass2:
-                messages.error(request, "password does not match")
+                messages.error(request, "Password does not match")
                 return redirect('signup')
             
             if len(pass1)<8:
-                messages.error(request, "password must contain minimum 10 characters!")
+                messages.error(request, "Password must contain minimum 8 characters!")
                 return redirect('signup')
             
             

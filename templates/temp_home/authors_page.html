@@ -1,8 +1,16 @@
 
 {% extends 'temp_home/base.html' %}
 {% block title %} BookStall-Authors {% endblock title %}
-    </header>
-    <main>
+{% block search %}
+<li>
+    <form action="" method = "GET">
+        <div class="nav-search search-switch">
+            <span class="flaticon-search"></span>
+        </div>
+    </form>
+
+</li>
+{% endblock search %}
         {% block content %} 
         
     <main>
@@ -13,32 +21,39 @@
             </div>
         </div>
         <!-- Hero Area End-->
-        {% for author in authors %}
-        <section class="confirmation_part ">
-            <div class="container">
-              <div class="row">
-                <div class="col-lg-12 col-lx-4">
-                  <div class="single_confirmation_details">
-                    
-                        <h3 class="mb-30">{{ author.author_name }}</h3>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <img src="{{ author.author_image.url }}" alt="" class="img-fluid">
+        {% load pagination %}
+
+        {% paginator paginator page_obj %}
+        
+        {% for author in page_obj.object_list %}
+            <section class="confirmation_part ">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-lg-12 col-lx-4">
+                      <div class="single_confirmation_details">
+                        
+                            <h3 class="mb-30">{{ author.author_name }}</h3>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <img src="{{ author.author_image.url }}" alt="" class="img-fluid">
+                                </div>
+                                <div class="col-md-9 mt-sm-20">
+                                    <p>{{ author.author_description }}
+                                    </p>
+                                </div>
+                                
                             </div>
-                            <div class="col-md-9 mt-sm-20">
-                                <p>{{ author.author_description }}
-                                </p>
-                            </div>
-                            
-                        </div>
-                        <br>
-                        <a href="{% url 'author_books' author.id %}" class="genric-btn info radius">books</a>
-                  </div>
-                  
-                </div> 
-            </div>
-          
-          </section>
-          {% endfor %}
+                            <br>
+                            <a href="{% url 'author_books' author.id %}" class="genric-btn info radius">books</a>
+                      </div>
+                      
+                    </div> 
+                </div>
+              
+              </section>
+            {% endfor %}
+        
+        {% paginate paginator page_obj %}
+        
         {% endblock content %}
         

@@ -38,13 +38,17 @@
                               <td>{{ forloop.counter }}</td>
                               <td>{{ order_item.product.product_name }}</td>
                               <td> {{ order_item.status }}</td>
-                              {% if order_item.status != "cancelled" %}
+                              {% if order_item.status == "cancelled" %}
                               <td> 
-                                <a href="{% url 'product_details' order_item.product.id %}" class="genric-btn info-border radius d-flex col-6"> Shop </a>
+                                <a href="{% url 'user_order_cancel' order_item.id %}" class="genric-btn danger-border radius d-flex col-6"> Cancel </a>
                               </td>  
+                              {% elif order_item.status == "" %}
+                              <td> 
+                                <a href="{% url 'product_details' order_item.product.id %}" class="genric-btn info-border radius d-flex col-6">Shop</a>
+                              </td> 
                               {% else %}
                               <td> 
-                                <a href="{% url 'user_order_cancel' order_item.id %}" class="genric-btn danger-border radius d-flex col-6">Cancel</a>
+                                <a href="{% url 'product_details' order_item.product.id %}" class="genric-btn info-border radius d-flex col-6">Shop</a>
                               </td> 
                               {% endif %}
                             </tr>     

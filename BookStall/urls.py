@@ -36,6 +36,8 @@ urlpatterns = [
     path('order/', include('app_order.urls')),
     path('adminorder/', include('app_admin_order.urls')),
 
+
+
     
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 

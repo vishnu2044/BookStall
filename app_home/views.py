@@ -20,14 +20,17 @@ def about(request):
  
  
 def shop(request):
+  
     products = Product.objects.all().filter(is_available=True)
+    
     context = {
         "products": products[:3],
-        "products_new_araivals" : products[:3],
+        "products_new_araivals" : products[6:],
         "products_old_books" : products[3:],
         "products_popular" : products[2:5],
         
     }
+    
     return render(request, 'temp_home/shop.html', context)
 
 
@@ -37,3 +40,7 @@ def product_details(request, id):
         "product": product,
     }
     return render(request, 'temp_home/product_details.html', context)
+
+
+def contact(request):
+    return render(request, 'temp_home/contact.html')

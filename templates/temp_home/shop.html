@@ -1,5 +1,13 @@
 {% extends 'temp_home/base.html' %}
 {% block title %} BookStall-Shop {% endblock title %}
+{% block search %}
+<li>
+    <div class="nav-search search-switch">
+        <span class="flaticon-search"></span>
+    </div>
+</li>
+{% endblock search %}
+
         {% block content %} 
         <main>
             <!-- Hero Area Start-->
@@ -52,15 +60,17 @@
                                     <div class="single-popular-items mb-50 text-center">
                                         <div class="popular-img">
                                             <img src="{{ product.images.url }}" alt="">
-                                            <div class="img-cap">
-                                                <span>Add to cart</span>
-                                            </div>
+                                            <a href="{% url 'add_cart' product.id %}">
+                                                <div class="img-cap">
+                                                    <span>Add to cart</span>
+                                                </div>
+                                            </a>
                                             <div class="favorit-items">
                                                 <span class="flaticon-heart"></span>
                                             </div>
                                         </div>
                                         <div class="popular-caption">
-                                            <h3><a href="product_details.html">{{ product.product_name }}</a></h3>
+                                            <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
                                             <span>$ {{ product.price }}</span>
                                         </div>
                                     </div>
@@ -85,7 +95,7 @@
                                             </div>
                                         </div>
                                         <div class="popular-caption">
-                                            <h3><a href="product_details.html">{{ product.product_name }}</a></h3>
+                                            <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
                                             <span>$ {{ product.price }}</span>
                                         </div>
                                     </div>
@@ -110,7 +120,7 @@
                                             </div>
                                         </div>
                                         <div class="popular-caption">
-                                            <h3><a href="product_details.html">{{ product.product_name }}</a></h3>
+                                            <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
                                             <span>$ {{ product.price }}</span>
                                         </div>
                                     </div>

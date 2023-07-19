@@ -13,8 +13,6 @@ def super_admincheck(user):
 
 
 #<<<<<<<<<<<<<<<<<<<<   redirect to the admin dashboard  >>>>>>>>>>>>>>>>>>>>
-@login_required
-@user_passes_test(super_admincheck)
 def admin_dashboard(request):
     if request.user.is_authenticated and request.user.is_superuser:
         member = User.objects.all()

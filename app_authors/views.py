@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from app_authors.models import Authors
 from app_products.models import Product
+from django.core.paginator import Paginator
+
 
 # Create your views here.
 def admin_authors(request):
@@ -96,12 +98,30 @@ def edit_author(request, id):
 
 
 
+from django.core.paginator import Paginator
+
 def authors_page(request):
+    # Get the queryset
     authors = Authors.objects.all()
+
+    # Set the number of items per page
+    per_page = 4
+
+    # Create a paginator object
+    paginator = Paginator(authors, per_page)
+
+    # Get the current page number
+    page_number = request.GET.get('page', 1)
+
+    # Get the paginated object
+    page_obj = paginator.page(page_number)
+
     context = {
-        "authors": authors,
+        'paginator': paginator,
+        'page_obj': page_obj,
     }
     return render(request, 'temp_home/authors_page.html', context)
+
 
 def author_books(request, id):
 

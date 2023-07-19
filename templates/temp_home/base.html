@@ -50,18 +50,14 @@
                                     
                                     <li ><a href="{% url 'authors_page' %}">Authors</a>
                                     </li>
-                                    <li><a href="#">Contact Us </a>
-                                        <ul class="submenu">
-                                            <li><a href="#">Blog</a></li>
-                                            <li><a href="#">Blog Details</a></li>
-                                        </ul>
+                                    <li><a href="{% url 'contact' %}">Contact Us </a>
                                     </li>
                                     <li><a href="{% url 'about' %}">About</a></li>
                                     <li><a href="#"><span class="flaticon-user"></span></a>
                                         {% if user.is_authenticated and user.is_superuser %}
                                         <ul class="submenu">
                                             <li><a href="{% url 'user_profile' %}">{{ user.username}} </a></li>
-                                            {% comment %} <li><a href="{% url 'user_order_list' %}">My orders</a></li> {% endcomment %}
+                                            <li><a href="{% url 'user_order_list' %}">My orders</a></li>
                                             <li><a href="{% url 'user_logout' %}">Log out </a></li>
                                             <li><a href="{% url 'admin_dashboard' %}">Admin Panel </a></li>
                                         </ul>
@@ -86,11 +82,8 @@
                         <!-- Header Right -->
                         <div class="header-right">
                             <ul>
-                                <li>
-                                    <div class="nav-search search-switch">
-                                        <span class="flaticon-search"></span>
-                                    </div>
-                                </li>
+                                {% block search %} {% endblock search %}
+
 
                                 <li><a href="{% url 'cart' %}"><span class="flaticon-shopping-cart"></span></a> </li>
                             </ul>
