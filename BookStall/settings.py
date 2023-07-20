@@ -155,3 +155,9 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'bookstallecom@gmail.com'
 EMAIL_HOST_PASSWORD = 'faveadzybsxoqjbi'
+
+
+
+###############################################################################
+razor_pay_key_id = "rzp_test_fvvWsATyrA034l"
+key_secret = "3y6XK9GAZFXI4dwre79jwfxr"

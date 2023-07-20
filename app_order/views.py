@@ -5,6 +5,7 @@ from .models import *
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+import razorpay
 
 # Create your views here.
 def payments(request):
@@ -147,7 +148,7 @@ def user_order_cancel(request, id):
     if order_item.status == "accepted":
         order_item.status = "Cancelled"
         order_item.save()
-        return redirect(request, user_order_list , pk=id)
+        return redirect(user_order_list , pk=id)
     
     order_items = OrderItem.objects.filter(user = request.user)
 
