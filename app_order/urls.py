@@ -10,6 +10,7 @@ urlpatterns = [
     path('user_order_list/', views.user_order_list, name="user_order_list"),
     path('add_user_address/', views.add_user_address, name="add_user_address"),
     path('user_order_cancel/<int:id>/', views.user_order_cancel, name='user_order_cancel'),
+    path('payment_success/', views.payment_success, name='payment_success'),
 
     
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

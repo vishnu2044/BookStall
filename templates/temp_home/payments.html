@@ -58,41 +58,55 @@
         		<!-- Razorpay  -->
           <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 		
-		<script>
-			var options = {
-				"key": "rzp_test_fvvWsATyrA034l", // Enter the Key ID generated from the Dashboard
-				"amount": "500", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-				"currency": "INR",
-				"name": "BookStal",
-				//"redirect": true,
-				//"callback_url": "http://127.0.0.1:8000/order/presuccess/",
-				"description": "Purchase",
-				"image": "https://example.com/your_logo",
-				"order_id": "{{ order.order_id }}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-				"handler": function (response){
-					alert(response.razorpay_payment_id);
-					alert(response.razorpay_order_id);
-					alert(response.razorpay_signature)
-				},
-				"theme": {
-					"color": "#3399cc"
-				}
-			};
-			var rzp1 = new Razorpay(options);
-			rzp1.on('payment.failed', function (response){
-					alert(response.error.code);
-					alert(response.error.description);
-					alert(response.error.source);
-					alert(response.error.step);
-					alert(response.error.reason);
-					alert(response.error.metadata.order_id);
-					alert(response.error.metadata.payment_id);
-			});
-			document.getElementById('rzp-button1').onclick = function(e){
-				rzp1.open();
-				e.preventDefault();
-			}
-			</script>
+          <script>
+            var options = {
+                "key": "rzp_test_fvvWsATyrA034l", // Enter the Key ID generated from the Dashboard
+                "amount": "{{ payment.amount }}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "BookStall",
+                //"redirect": true,
+                //"callback_url": "http://127.0.0.1:8000/order/presuccess/",
+                "description": "Purchase",
+                "image": "https://example.com/your_logo",
+                "order_id": "{{ order_id }}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "handler": function (response) {
+                    //var paymetnStatus = response.razorpay_payment_staus;
+                   //if (paymetnStatus === "captured"){
+                      //handle_payment_success(response);
+                    //} else {
+                     // handle_payment_failure(response);
+                    //}
+                      console.log('response  :',response)
+                    alert(response.razorpay_payment_id);
+                    alert(response.razorpay_order_id);
+                    alert(response.razorpay_signature);
+                    window.location.href='http://127.0.0.1:8000/order/payment_success/'
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+        
+            var rzp1 = new Razorpay(options);
+        
+            rzp1.on('payment.failed', function (response) {
+              //console.log(response)
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
+            });
+        
+            document.getElementById('rzp-button1').onclick = function (e) {
+                let pId=rzp1.open();
+                e.preventDefault();
+                console.log("pId"+pId)
+            }
+        </script>
+        
 
       
 

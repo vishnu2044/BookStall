@@ -39,8 +39,7 @@ def payments(request):
             orderitem.save()
 
         #reduce the stock of ordered product.
-            product = cart_item.product
-            product_name = product.product_name
+            product = Product.objects.get(id=cart_item.product.id)
             product.stock -= cart_item.quantity
             product.save()
 
@@ -69,9 +68,7 @@ def payments(request):
 
         return render(request, 'temp_home/confirm.html', context)
 
-
-
-    return redirect(request, 'place_order')
+    return redirect(place_order)
 
 def place_order(request):
     if request.user.is_authenticated:
@@ -100,12 +97,67 @@ def place_order(request):
         data.save()
         order = Order.objects.get(user = current_user, status = data.status, order_id = data.order_id, order_total = data.order_total)
 
+        client = razorpay.Client(auth=( settings.KEY_ID, settings.KEY_SECRET ))
+        payment = client.order.create({"amount" : total * 100, 'currency': "INR", "payment_capture" : 1})
+
         context = {
             'order' : order,
             'cart_items' : cart_items,
+            "payment" : payment,
         }
         return render(request, 'temp_home/payments.html', context)
     return redirect(request, '/')
+
+
+def payment_success(request,):
+    if request.user.is_authenticated:
+        payment_method = PaymentMethod.objects.get(id=2)
+        payment = Payment(
+            user = request.user,
+            payment_method = payment_method,
+            status = 'paid'
+        )
+        payment.save()
+        order = Order.objects.filter(user=request.user).order_by('-id').first()
+        order.status = 'accepted'
+        order.save()
+        cart_items = CartItem.objects.filter(user = request.user)
+
+        cart_items = CartItem.objects.filter(user=request.user)
+        orderitem = None
+        for cart_item in cart_items:
+            if orderitem is None:
+                orderitem = OrderItem(
+                    user = request.user,
+                    order = order,
+                    product = cart_item.product,
+                    product_price = cart_item.product.price,
+                    quantity = cart_item.quantity,
+                    status = 'accepted',
+                )
+            else:
+                orderitem.quantity += cart_item.quantity
+            orderitem.save()
+
+        #reduce the stock of ordered product.
+            product = Product.objects.get(id=cart_item.product.id)
+            product.stock -= cart_item.quantity
+            product.save()
+
+        CartItem.objects.filter(user=request.user).delete()
+
+        order = Order.objects.filter(user=request.user).order_by('-id').first()
+        order_item = OrderItem.objects.filter(user=request.user)
+
+        context = {
+            "order": order,
+            "order_items": order_item,
+        }
+            
+
+        return render(request, 'temp_home/confirm.html', context)
+    return redirect(place_order)
+
 
 def add_user_address(request):
     if request.method == "POST":

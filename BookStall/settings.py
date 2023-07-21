@@ -159,5 +159,5 @@ EMAIL_HOST_PASSWORD = 'faveadzybsxoqjbi'
 
 
 ###############################################################################
-razor_pay_key_id = "rzp_test_fvvWsATyrA034l"
-key_secret = "3y6XK9GAZFXI4dwre79jwfxr"
+KEY_ID = "rzp_test_fvvWsATyrA034l"
+KEY_SECRET = "3y6XK9GAZFXI4dwre79jwfxr"
