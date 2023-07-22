@@ -109,42 +109,40 @@ def place_order(request):
     return redirect(request, '/')
 
 
-def payment_success(request,):
+def payment_success(request, total=0):
     if request.user.is_authenticated:
+        order = Order.objects.filter(user=request.user).order_by('-id').first()
         payment_method = PaymentMethod.objects.get(id=2)
         payment = Payment(
             user = request.user,
             payment_method = payment_method,
+            amount_paid = order.order_total,
             status = 'paid'
         )
         payment.save()
-        order = Order.objects.filter(user=request.user).order_by('-id').first()
+        
+        order.payment = payment
         order.status = 'accepted'
         order.save()
         cart_items = CartItem.objects.filter(user = request.user)
 
-        cart_items = CartItem.objects.filter(user=request.user)
-        orderitem = None
         for cart_item in cart_items:
-            if orderitem is None:
-                orderitem = OrderItem(
-                    user = request.user,
-                    order = order,
-                    product = cart_item.product,
-                    product_price = cart_item.product.price,
-                    quantity = cart_item.quantity,
-                    status = 'accepted',
-                )
-            else:
-                orderitem.quantity += cart_item.quantity
+            orderitem = OrderItem(
+                user = request.user,
+                order = order,
+                product = cart_item.product,
+                product_price = cart_item.product.price,
+                quantity = cart_item.quantity,
+                status = 'accepted',
+            )
             orderitem.save()
+            total += cart_item.sub_total()
 
         #reduce the stock of ordered product.
             product = Product.objects.get(id=cart_item.product.id)
             product.stock -= cart_item.quantity
             product.save()
 
-        CartItem.objects.filter(user=request.user).delete()
 
         order = Order.objects.filter(user=request.user).order_by('-id').first()
         order_item = OrderItem.objects.filter(user=request.user)
@@ -157,6 +155,8 @@ def payment_success(request,):
 
         return render(request, 'temp_home/confirm.html', context)
     return redirect(place_order)
+
+
 
 
 def add_user_address(request):

@@ -3,6 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.contrib.auth.models import User
+from app_order.models import *
+from app_products.models import *
+from app_authors.models import *
+from django.db.models import Q
 
 # Create your views here.
 #<<<<<<<<<<<<<<<<<<<<   checks if the user is authenticated and super user  >>>>>>>>>>>>>>>>>>>>
@@ -15,8 +19,44 @@ def super_admincheck(user):
 #<<<<<<<<<<<<<<<<<<<<   redirect to the admin dashboard  >>>>>>>>>>>>>>>>>>>>
 def admin_dashboard(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        member = User.objects.all()
-        return render(request, 'adminpanel/ad_dashboard.html',{'member':member})
+       
+       # filtering the delivered items from the OrderItem
+      
+
+
+        revenue = 0
+        order_count = OrderItem.objects.count()
+        # order_count = delivered_item.count()
+        product_count = Product.objects.count()
+        author_count = Authors.objects.count()
+        category_count = Category_list.objects.count()
+        user_count = User.objects.count()                                                                                             
+
+        #order status 
+        pending_count = OrderItem.objects.filter(Q(status="pending") | Q(status="Pending")).count()
+        accepted_count = OrderItem.objects.filter(Q(status="accepted") | Q(status="Accepted")).count()
+        shipped_count = OrderItem.objects.filter(Q(status="shipped") | Q(status="Shipped")).count()
+        delivered_count = OrderItem.objects.filter(Q(status="delivered") | Q(status="Delivered")).count()
+        cancelled_count = OrderItem.objects.filter(Q(status="cancelled") | Q(status="Cancelled")).count()
+        refunded_count = OrderItem.objects.filter(Q(status="refunded") | Q(status="Refunded")).count()
+
+        context = {
+            'order_count' : order_count,
+            'product_count' : product_count,
+            'author_count' : author_count,
+            'category_count' : category_count,
+            'user_count' : user_count,
+             #order status
+            'pending_count' : pending_count,
+            'accepted_count' : accepted_count,
+            'shipped_count' : shipped_count,
+            'delivered_count' : delivered_count,
+            'cancelled_count' : cancelled_count,
+            'refunded_count' : refunded_count,
+           
+        }
+        
+        return render(request, 'adminpanel/ad_dashboard.html', context)
     return render(request, 'adminpanel/admin_login.html')
 
 
@@ -79,6 +119,37 @@ def unblock_user(request, id):
     user.save()
     messages.success(request, f'User " {name} " is unblocked')
     return redirect(user_details)
+
+
+
+#<<<<<<<<<<<<<<<<<<<<  Sales report  >>>>>>>>>>>>>>>>>>>>
+
+def sales_report(request):
+    if not request.user.is_superuser:
+        return redirect(admin_dashboard)
+    
+    context = {}
+
+    if request.method == "POST":
+        start_date = request.POST.get("start_date")
+        end_date = request.POST.get("end_date")
+
+        if start_date == "" :
+            messages.error(request, 'start date not entered')
+            return redirect(sales_report)
+        if end_date == "" :
+            messages.error(request, 'end date not entered')
+            return redirect(sales_report)
+        
+        if start_date == end_date:
+            date_obj = datetime.strptime(start_date, '%Y-%m-%d')
+            order_items = OrderItem.objects.filter(order__created_at__date = date_obj.date())
+            if order_items:
+                context.update(sales = order_items, s_date = start_date, e_date = end_date)
+                return render(request, 'adminpanel/sales.html')
+            else:
+                pass
+            
 
 
 

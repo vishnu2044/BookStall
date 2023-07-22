@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from app_admin_panel.views import super_admincheck
+from app_order.models import *
 
 
 # Create your views here.
@@ -29,6 +30,20 @@ def update_order_status(request, id):
             status = request.POST["status"]
             order_item.status = status
             order_item.save()
+
+            try:
+                order = OrderItem.order
+                payment_method = PaymentMethod.objects.get(id=1)
+                if (order_item.status == "delivered" or order_item.status == "Delivered") and order.payment.status != "paid":
+                    payment = Payment(
+                        user = request.user,
+                        payment_method = payment_method,
+                        amount_paid = order.order_total,
+                        status = 'paid'
+                    )
+                    payment.save()
+            except:
+                pass
 
             current_user = order_item.user
             subject = f'{order_item} {order_item.status}'

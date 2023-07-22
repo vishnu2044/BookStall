@@ -23,6 +23,9 @@ def generate_order_id():
 class PaymentMethod(models.Model):
     method = models.CharField(max_length=50)
 
+    def __str__(self) -> str:
+        return self.method
+
 class Payment(models.Model):
     STATUS = [
         ('pending', 'Pending'),
