@@ -224,8 +224,6 @@ def user_logout(request):
 
 
 
-
-    
     #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
     #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
     #<<<<<<<<<<<<<<<<<<<< user profile settings >>>>>>>>>>>>>>>>>>>>
@@ -275,6 +273,46 @@ def change_password(request):
 
     else:
         return render(request, 'temp_home/change_password.html')
+
+
+def forgot_password(request):
+    if request.method == "POST":
+        get_otp = request.POST.get("otp")
+        if not get_otp:
+            email = request.POST.get("email")
+            try:
+                user = User.objects.get(email = email)
+            except:
+                messages.error(request, f"The mail id is not valid!!")
+                return redirect(forgot_password)
+            
+            if user is not None:
+                otp = int(random.randint(1000, 9999))
+                profile = Profile(user = user, otp = otp)
+                profile.save()
+                mess = f"Hello\t{user.username}, \nYour OTP to resetting password for bookstall acount is {otp}\nThanks!"
+                send_mail(
+                    "Welcome to BookStall Varify your Email for password setting",
+                    mess,
+                    settings.EMAIL_HOST_USER,
+                    [user.email],
+                    fail_silently=False
+                )
+                return render(request, 'acounts/forget_password.html', {"otp":True, "usr":user})
+        else:
+            get_email = request.POST.get("email")
+            user = User.objects.get(email = get_email)
+            if get_otp == Profile.objects.filter(user = user).last().otp:
+                Profile.objects.filter(user = user).delete()
+                return render(request, 'acounts/reset_password.html', {'otp':True, 'usr':user})
+            else:
+                messages.warning(request, 'You entered wrong otp')
+                return render(request, 'accounts/otp_login.html', {'otp':True, 'usr':user})
+            
+    if request.user.is_authenticated:
+        return redirect('/')
+
+    return render(request, 'accounts/forget_password.html')
 
 
 def edit_user_profile(request):

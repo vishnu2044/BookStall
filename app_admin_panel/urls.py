@@ -12,6 +12,7 @@ urlpatterns = [
     path('user_details', views.user_details, name="user_details"),
     path('block_user/<int:id>/', views.block_user, name="block_user"),
     path('unblock_user/<int:id>/', views.unblock_user, name="unblock_user"),
+    path('sales_report', views.sales_report, name="sales_report"),
     
 
     

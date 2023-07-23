@@ -33,6 +33,7 @@
                   <th> quantity </th>
                   <th> user </th>
                   <th> Status </th>
+                  <th> Payment method </th>
                   <th>  </th>
                   <th>Details</th>
 
@@ -47,6 +48,7 @@
                     <td>{{ order_item.quantity }}</td>
                     <td>{{ order_item.user.username }}</td>
                     <td>{{ order_item.status }}</td>
+                    <td>{{ order_item.order.payment.payment_method }}</td>
                     <td>
                       <div class="modal-body align-content-left">
                         {% comment %} <form required action="{% url 'update_order_status' order_item.id %}"

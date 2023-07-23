@@ -21,10 +21,10 @@ def admin_dashboard(request):
     if request.user.is_authenticated and request.user.is_superuser:
        
        # filtering the delivered items from the OrderItem
-      
 
 
-        revenue = 0
+
+        
         order_count = OrderItem.objects.count()
         # order_count = delivered_item.count()
         product_count = Product.objects.count()
@@ -40,7 +40,19 @@ def admin_dashboard(request):
         cancelled_count = OrderItem.objects.filter(Q(status="cancelled") | Q(status="Cancelled")).count()
         refunded_count = OrderItem.objects.filter(Q(status="refunded") | Q(status="Refunded")).count()
 
+        # Calculating revenue
+        revenue = 0
+        delivered_items = OrderItem.objects.filter(Q(status="delivered") | Q(status="Delivered"))
+        for item in delivered_items:
+            revenue += (item.product_price * item.quantity )
+
+        order_items = OrderItem.objects.all()
+
+
         context = {
+            "order_items" : order_items[:5],
+
+
             'order_count' : order_count,
             'product_count' : product_count,
             'author_count' : author_count,
@@ -53,6 +65,8 @@ def admin_dashboard(request):
             'delivered_count' : delivered_count,
             'cancelled_count' : cancelled_count,
             'refunded_count' : refunded_count,
+            #revenue count
+            'revenue' : revenue,
            
         }
         
@@ -148,8 +162,18 @@ def sales_report(request):
                 context.update(sales = order_items, s_date = start_date, e_date = end_date)
                 return render(request, 'adminpanel/sales.html')
             else:
-                pass
+                messages.error(request, "No data found for the specific date!")
+
+            return redirect(sales_report)
+        
+        order_items = OrderItem.objects.filter(order__created_at__gte=start_date, order__created_at__lte=end_date)
             
+        if order_items:
+            context.update(sales = order_items, s_date = start_date, e_date = end_date)
+        else:
+            messages.error(request, 'No data found at the specific date!')
+    
+    return render(request, 'adminpanel/sales.html', context)
 
 
 
