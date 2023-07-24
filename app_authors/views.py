@@ -110,3 +110,13 @@ def author_books(request, id):
     products = Product.objects.filter(author=id)
     context = {'products': products}
     return render(request, 'temp_home/author_books.html', context)
+
+
+def search_authors(request):
+    search_text = request.POST.get("query")
+    authors = Authors.objects.filter(author_name__icontains = search_text)
+    context = {
+        "authors": authors,
+        "search_text" : search_text,
+    }
+    return render(request, 'temp_home/authors_page.html', context)

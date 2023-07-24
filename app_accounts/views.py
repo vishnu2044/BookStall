@@ -281,38 +281,53 @@ def forgot_password(request):
         if not get_otp:
             email = request.POST.get("email")
             try:
-                user = User.objects.get(email = email)
+                user = User.objects.get(email=email)
             except:
-                messages.error(request, f"The mail id is not valid!!")
+                messages.error(request, f"This is not a valid email id")
                 return redirect(forgot_password)
-            
+
             if user is not None:
                 otp = int(random.randint(1000, 9999))
-                profile = Profile(user = user, otp = otp)
+                profile = Profile(user=user, otp=otp)
                 profile.save()
-                mess = f"Hello\t{user.username}, \nYour OTP to resetting password for bookstall acount is {otp}\nThanks!"
+                mess = f"Hello\t{user.username},\nYour OTP to resetting password for EyeEnvy account - {otp}\nThanks!"
                 send_mail(
-                    "Welcome to BookStall Varify your Email for password setting",
+                    "welcome to BookStall Verify your Email for password resetting",
                     mess,
                     settings.EMAIL_HOST_USER,
                     [user.email],
                     fail_silently=False
                 )
-                return render(request, 'acounts/forget_password.html', {"otp":True, "usr":user})
+                return render(request, "accounts/forget_password.html", {"otp": True, "user": user})
         else:
             get_email = request.POST.get("email")
-            user = User.objects.get(email = get_email)
-            if get_otp == Profile.objects.filter(user = user).last().otp:
-                Profile.objects.filter(user = user).delete()
-                return render(request, 'acounts/reset_password.html', {'otp':True, 'usr':user})
+            user = User.objects.get(email=get_email)
+            if get_otp == Profile.objects.filter(user=user).last().otp:
+                Profile.objects.filter(user=user).delete()
+                return render(request, "accounts/reset_password.html", {"user": user})
             else:
-                messages.warning(request, 'You entered wrong otp')
-                return render(request, 'accounts/otp_login.html', {'otp':True, 'usr':user})
-            
-    if request.user.is_authenticated:
-        return redirect('/')
+                messages.warning(request, f"You Entered a wrong OTP")
+                return render(request, "accounts/forget_password.html", {"otp": True, "user": user})
 
-    return render(request, 'accounts/forget_password.html')
+    if request.user.is_authenticated:
+        return redirect("/")
+
+    return render(request, "accounts/forget_password.html")
+
+
+
+def reset_password(request):
+    if request.method == "POST":
+        pass1 = request.POST.get("pass1")
+        pass2 = request.POST.get('pass2')
+
+        get_mail = request.POST.get("email")
+        user = User.objects.get(email = get_mail)
+        if pass1 == pass2:
+            user.set_password(pass1)
+            user.save()
+            messages.success(request, 'password successfully changed')
+            return redirect(handle_login)
 
 
 def edit_user_profile(request):
@@ -403,3 +418,4 @@ def delete_user_address(request, id):
     address.delete()
     messages.success(request, "address deleted successfully.")
     return redirect(user_profile)
+

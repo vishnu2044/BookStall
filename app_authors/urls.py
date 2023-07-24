@@ -11,7 +11,9 @@ urlpatterns = [
     path('edit_author/<int:id>/', views.edit_author, name = 'edit_author'),
     path('authors_page/', views.authors_page, name = 'authors_page'),
     path('author_books/<int:id>/', views.author_books, name = 'author_books'),
- 
+    path('search_authors', views.search_authors, name = 'search_authors'),
+
+    
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 

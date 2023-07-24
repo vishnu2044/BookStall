@@ -2,14 +2,27 @@
 {% extends 'temp_home/base.html' %}
 {% block title %} BookStall-Authors {% endblock title %}
 {% block search %}
-<li>
-    <form action="" method = "GET">
-        <div class="nav-search search-switch">
-            <span class="flaticon-search"></span>
-        </div>
-    </form>
 
-</li>
+<nav>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <!-- Small Search Bar -->
+            <form class="form-inline" action="{% url 'search_authors' %}" method = "POST">
+                {% csrf_token %}
+                <input class="form-control form-control-sm mr-sm-2" type="search" placeholder="Search......." name="query" id="query" aria-label="Search">
+                    <button class=""  type="submit"> 
+                        <span class="flaticon-search"></span>
+                    </button>       
+            </form>
+        </li>
+        <li class="nav-item">
+
+        </li>
+    </ul>
+</nav>
+
+
+
 {% endblock search %}
         {% block content %} 
         

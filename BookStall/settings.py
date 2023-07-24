@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'app_checkout',
     'app_order',
     'app_admin_order',
+    'app_store',
+    'app_wishlist',
 ]
 
 MIDDLEWARE = [
