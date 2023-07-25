@@ -61,6 +61,8 @@
         }
       });
     }
+
+    
     if ($("#transaction-history").length) {
       var areaData = {
         labels: ["Paypal", "Stripe","Cash"],
@@ -133,7 +135,7 @@
     }
     if ($("#transaction-history-arabic").length) {
       var areaData = {
-        labels: ["Paypal", "Stripe","Cash"],
+        labels: ["Cod", "razorpay","Cash"],
         datasets: [{
             data: [55, 25, 20],
             backgroundColor: [
@@ -159,6 +161,7 @@
           enabled: true
         }
       }
+
       var transactionhistoryChartPlugins = {
         beforeDraw: function(chart) {
           var width = chart.chart.width,
@@ -172,7 +175,7 @@
           ctx.textBaseline = "middle";
           ctx.fillStyle = "#ffffff";
       
-          var text = "$1200", 
+          var text = "1200", 
               textX = Math.round((width - ctx.measureText(text).width) / 2),
               textY = height / 2.4;
       

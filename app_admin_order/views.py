@@ -76,3 +76,25 @@ def order_details(request, id):
 
 
 
+def search_orders(request):
+    search_text = request.POST.get("query")
+    product = Product.objects.filter(product_name__icontains = search_text)
+    order_items = OrderItem.objects.filter(product = product)
+
+    context = {
+        "search_text" : search_text,
+        "order_items" : order_items
+    }
+    return render(request, 'adminpanel/order_list.html', context)
+
+
+# def search_authors(request):
+#     search_text = request.POST.get("query")
+    
+
+#     authors = Authors.objects.filter(author_name__icontains = search_text)
+#     context = {
+#         "authors": authors,
+#         "search_text" : search_text,
+#     }
+#     return render(request, 'temp_home/authors_page.html', context)

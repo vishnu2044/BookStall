@@ -23,6 +23,7 @@
                                                     <!-- Hero-btn -->
                                                     <div class="hero__btn" data-animation="fadeInLeft" data-delay=".8s" data-duration="2000ms">
                                                         <a href="{% url 'product_details' product.id %}" class="btn hero-btn text-white">Shop Now</a>
+                                                        <a href="{% url 'add_to_wishlist' product.id %}" class="btn hero-btn text-white">Wishlist</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -97,7 +98,8 @@
                                                     <p data-animation="fadeInLeft" data-delay=".7s" data-duration="2000ms" class="text-white">Author: {{ product.author }}</p>
                                                     <!-- Hero-btn -->
                                                     <div class="hero__btn" data-animation="fadeInLeft" data-delay=".8s" data-duration="2000ms">
-                                                        <a href="industries.html" class="btn hero-btn text-white">Shop Now</a>
+                                                        <a href="{% url 'product_details' product.id %}" class="btn hero-btn text-white">Shop Now</a>
+                                                        <a href="{% url 'add_to_wishlist' product.id %}" class="btn hero-btn text-white">Wishlist</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -138,7 +140,10 @@
                                     <span>Add to cart</span>
                                 </div>
                                 <div class="favorit-items">
-                                    <span class="flaticon-heart"></span>
+                                    <a href="{% url 'add_to_wishlist' product.id %}">
+                                        <span class="flaticon-heart"></span>
+                                    </a>
+                                    
                                 </div>
                             </div>
                             <div class="popular-caption">

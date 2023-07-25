@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Cart, CartItem
 from app_products.models import Product
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import messages
+
 
 # Create your views here.
 def _session_id(request):
@@ -10,45 +12,43 @@ def _session_id(request):
         cart = request.session.create()
     return cart
 
+from django.contrib import messages
+
 def add_cart(request, product_id):
-    product = Product.objects.get(id = product_id)
-    try:
-        cart = Cart.objects.get(session_id = _session_id(request))
-    except Cart.DoesNotExist:
-        cart = Cart.objects.create(
-            session_id = _session_id(request)
-        )
-    cart.save()
+    product = Product.objects.get(id=product_id)
+    cart, created = Cart.objects.get_or_create(session_id=_session_id(request))
 
     try:
-        cart_item = CartItem.objects.get(product=product, cart = cart)
-        if ((product.stock)-(cart_item.quantity + 1)) < 0:
-            print("asd")
-            return redirect('cart')
-        
-        cart_item.quantity +=1
-        cart_item.save()
+        cart_item = CartItem.objects.get(product=product, cart=cart)
+        updated_quantity = cart_item.quantity + 1
+        if updated_quantity > product.stock:
+            messages.warning(request, "Sorry, this product is out of stock.")
+        else:
+            cart_item.quantity = updated_quantity
+            cart_item.save()
     except CartItem.DoesNotExist:
         if request.user.is_authenticated:
-            if ((product.stock) - 1) <0:
-                print("asd")
-                return redirect(request, 'cart')
-            
-            cart_item = CartItem.objects.create(
-                product = product,
-                quantity=1,
-                cart = cart,
-                user = request.user,
-            )
-            cart_item.save()
+            if product.stock < 1:
+                messages.warning(request, "Sorry, this product is out of stock.")
+            else:
+                CartItem.objects.create(
+                    product=product,
+                    quantity=1,
+                    cart=cart,
+                    user=request.user,
+                )
         else:
-            cart_item = CartItem.objects.create(
-                product=product,
-                quantity =1,
-                cart = cart,
-            )
-            cart_item.save()
+            if product.stock < 1:
+                messages.warning(request, "Sorry, this product is out of stock.")
+            else:
+                CartItem.objects.create(
+                    product=product,
+                    quantity=1,
+                    cart=cart,
+                )
+    
     return redirect('cart')
+
 
 def remove_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)

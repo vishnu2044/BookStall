@@ -48,11 +48,31 @@ def admin_dashboard(request):
 
         order_items = OrderItem.objects.all()
 
+        # payement methods 
+        ## Through razorpay  ##
+        raz_total = 0
+        raz_method = PaymentMethod.objects.get(id=2)  # Use get() to retrieve the specific payment method
+        raz_orders = Order.objects.filter(payment__payment_method=raz_method)  # Double underscore to navigate to related fields
+        razorpay_items = OrderItem.objects.filter(order__in=raz_orders)  # Double underscore to navigate to related fields
+
+        for item in razorpay_items:
+            raz_total += item.product_price  # Use the correct field to calculate the sum of Razorpay payments
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", raz_total, "************************************************")
+
+        ## Through cod  ##
+        cod_total = 0
+        cod_method = PaymentMethod.objects.get(id=1)  
+        cod_orders = Order.objects.filter(payment__payment_method=cod_method)  
+        cod_items = OrderItem.objects.filter(order__in=cod_orders)  
+
+        for item in cod_items:
+            cod_total += item.product_price  
+
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", cod_total, "************************************************")
+
 
         context = {
             "order_items" : order_items[:5],
-
-
             'order_count' : order_count,
             'product_count' : product_count,
             'author_count' : author_count,
@@ -65,8 +85,12 @@ def admin_dashboard(request):
             'delivered_count' : delivered_count,
             'cancelled_count' : cancelled_count,
             'refunded_count' : refunded_count,
+
             #revenue count
             'revenue' : revenue,
+            'raz_total' : raz_total,
+            'cod_total' : cod_total,
+
            
         }
         

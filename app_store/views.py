@@ -8,8 +8,7 @@ def shop(request):
     cart_items = CartItem.objects.all()
     
     context = {
-        "products": products[:3],
-        "products_new_araivals" : products,
+        "products": products,
         "products_old_books" : products[3:],
         "products_popular" : products[2:5], 
         "cart_items" : cart_items,
