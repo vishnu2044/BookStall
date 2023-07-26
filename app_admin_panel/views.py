@@ -167,6 +167,8 @@ def sales_report(request):
         return redirect(admin_dashboard)
     
     context = {}
+    s_date = None
+    e_date = None
 
     if request.method == "POST":
         start_date = request.POST.get("start_date")
@@ -184,6 +186,8 @@ def sales_report(request):
             order_items = OrderItem.objects.filter(order__created_at__date = date_obj.date())
             if order_items:
                 context.update(sales = order_items, s_date = start_date, e_date = end_date)
+                s_date = start_date
+                e_date = end_date
                 return render(request, 'adminpanel/sales.html')
             else:
                 messages.error(request, "No data found for the specific date!")
@@ -197,6 +201,7 @@ def sales_report(request):
         else:
             messages.error(request, 'No data found at the specific date!')
     
+    messages.success(request, f'here is your sales report from {s_date} to {e_date}.')
     return render(request, 'adminpanel/sales.html', context)
 
 

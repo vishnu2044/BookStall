@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 import razorpay
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 def payments(request):
@@ -152,7 +153,7 @@ def payment_success(request, total=0):
             "order_items": order_item,
         }
             
-
+  
         return render(request, 'temp_home/confirm.html', context)
     return redirect(place_order)
 
@@ -185,11 +186,25 @@ def add_user_address(request):
         ).save()
         return redirect('place_order')
 
+
 def user_order_list(request):
     order_items = OrderItem.objects.filter(user = request.user)
 
+    per_page = 5
+    page_number = request.GET.get('page')
+    paginator = Paginator(order_items, per_page)
+
+    try:
+        current_page = paginator.page(page_number)
+
+    except PageNotAnInteger:
+        current_page = paginator.page(1)
+
+    except EmptyPage:
+        current_page = paginator.page(paginator.num_pages)
+
     context  ={
-        "order_items" : order_items,
+        "current_page" : current_page,
     } 
     return render(request, 'temp_home/user_order_list.html', context)
     
@@ -200,14 +215,8 @@ def user_order_cancel(request, id):
     if order_item.status == "accepted":
         order_item.status = "Cancelled"
         order_item.save()
-        return redirect(user_order_list , pk=id)
-    
-    order_items = OrderItem.objects.filter(user = request.user)
+    return redirect(user_order_list )
 
-    context  ={
-        "order_items" : order_items,
-    } 
-    return render(request, 'temp_home/user_order_list.html', context)
 
 
 

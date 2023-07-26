@@ -6,15 +6,32 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from app_admin_panel.views import super_admincheck
 from app_order.models import *
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # Create your views here.
+
 #<<<<<<<<<<<<<<<<<<<<  To display order list in the admin side  >>>>>>>>>>>>>>>>>>>>
 @login_required
 @user_passes_test(super_admincheck)
 def admin_order_list(request):
     order_items = OrderItem.objects.all()
+
+    per_page = 10
+    page_number = request.GET.get('page')
+    paginator = Paginator(order_items, per_page) 
+
+    try:
+        current_page = paginator.page(page_number)
+
+    except PageNotAnInteger:
+        current_page = paginator.page(1)
+
+    except EmptyPage:
+        current_page = paginator.page(paginator.num_pages)
+
     context = {
+        "current_page" : current_page,
         "order_items" : order_items
     }
     return render(request, 'adminpanel/order_list.html', context)
@@ -79,22 +96,31 @@ def order_details(request, id):
 def search_orders(request):
     search_text = request.POST.get("query")
     product = Product.objects.filter(product_name__icontains = search_text)
-    order_items = OrderItem.objects.filter(product = product)
+    product_ids = product.values_list('id', flat=True)
+    order_items = OrderItem.objects.filter(product_id__in = product_ids)
+
+    # context = {
+    #     "search_text" : search_text,
+    #     "order_items" : order_items
+    # }
+    per_page = 10
+    page_number = request.GET.get('page')
+    paginator = Paginator(order_items, per_page) 
+
+    try:
+        current_page = paginator.page(page_number)
+
+    except PageNotAnInteger:
+        current_page = paginator.page(1)
+
+    except EmptyPage:
+        current_page = paginator.page(paginator.num_pages)
 
     context = {
-        "search_text" : search_text,
+        "current_page" : current_page,
         "order_items" : order_items
     }
     return render(request, 'adminpanel/order_list.html', context)
 
 
-# def search_authors(request):
-#     search_text = request.POST.get("query")
-    
 
-#     authors = Authors.objects.filter(author_name__icontains = search_text)
-#     context = {
-#         "authors": authors,
-#         "search_text" : search_text,
-#     }
-#     return render(request, 'temp_home/authors_page.html', context)

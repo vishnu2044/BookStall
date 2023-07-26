@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from app_authors.models import Authors
 from app_products.models import Product
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # Create your views here.
+#<<<<<<<<<<<<<<<< authors admin side >>>>>>>>>>>>>>>
+
 def admin_authors(request):
     author = Authors.objects.all()
 
@@ -98,10 +100,27 @@ def edit_author(request, id):
 
 
 
+#<<<<<<<<<<<<<<<< authors user side >>>>>>>>>>>>>>>
+
 def authors_page(request):
     authors = Authors.objects.all()
+
+    per_page = 2
+    page_number = request.GET.get('page')
+    paginator = Paginator(authors, per_page)
+
+    try:
+        current_page = paginator.page(page_number)
+
+    except PageNotAnInteger:
+        current_page = paginator.page(1)
+
+    except EmptyPage:
+        current_page = paginator.page(paginator.num_pages)
+
     context = {
         "authors": authors,
+        "current_page": current_page,
     }
     return render(request, 'temp_home/authors_page.html', context)
 

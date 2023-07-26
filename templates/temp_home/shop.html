@@ -52,24 +52,38 @@
                         </div>
                         <!-- Select items -->
                         <div class="select-this">
-                            <form action="#">
-                                <div class="select-itms">
-                                    <select name="select" id="select1">
-                                        <option value="">40 per page</option>
-                                        <option value="">50 per page</option>
-                                        <option value="">60 per page</option>
-                                        <option value="">70 per page</option>
-                                    </select>
+                            <div class="select-this">
+                                <div class="select-this">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <div class="select-this">
+                                          {{ form.as_p }}
+                                        </div>
+                                        <input type="submit" value="Submit">
+                                      </form>
                                 </div>
-                            </form>
+                                
+                                <div class="select-this" id="subListDiv" style="display: none;">
+                                    <form action="#">
+                                        <div class="select-itms">
+                                            <select name="sub_select" id="subList">
+                                                <!-- Sub-options will be dynamically added here -->
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                                
+                            </div>
+    
                         </div>
+
                     </div>
                     <!-- Nav Card -->
                     <div class="tab-content" id="nav-tabContent">
                         <!-- card one -->
                         <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                             <div class="row">
-                                {% for product in products %}
+                                {% for product in current_page %}
 
                                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
                                     <div class="single-popular-items mb-50 text-center">
@@ -81,7 +95,11 @@
                                                 </div>
                                             </a>
                                             <div class="favorit-items">
-                                                <a href="{% url 'add_to_wishlist' product.id %}"><span class="flaticon-heart"></span></a>
+                                                <a href="{% url 'add_to_wishlist' product.id %}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" class="bi bi-heart" viewBox="0 0 16 16">
+                                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+                                                      </svg>
+                                                </a>
                                                 
                                             </div>
                                         </div>
@@ -95,8 +113,42 @@
                                 
                             </div>
                         </div>
+                        <!-- temp_home/shop.html -->
+
+
+                            <!-- Display pagination links -->
+                            <div class="pagination">
+                            <span class="step-links">
+                                {% if current_page.has_previous %}
+                                    <a href="?page=1">&laquo; first</a>
+                                    <a href="?page={{ current_page.previous_page_number }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
+                                            <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1z"/>
+                                          </svg>
+                                    </a>
+                                {% endif %}
+
+                                <span class="current">
+                                    Page {{ current_page.number }} of {{ current_page.paginator.num_pages }}.
+                                </span>
+
+                                {% if current_page.has_next %}
+                                    <a href="?page={{ current_page.next_page_number }}"class="text-black">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red" class="bi bi-arrow-right-square-fill" viewBox="0 0 16 16">
+                                            <path d="M0 14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12zm4.5-6.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5a.5.5 0 0 1 0-1z"/>
+                                          </svg>
+                                          
+                                          
+                                    </a>
+                                    <a href="?page={{ current_page.paginator.num_pages }}">last &raquo;</a>
+                                {% endif %}
+                            </span>
+                            </div>
+                            <br>
+
+
                         <!-- Card two -->
-                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        {% comment %} <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                             <div class="row">
                                 {% for product in products_old_books %}
                                 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
@@ -144,10 +196,44 @@
                                 {% endfor %}
                                 
                             </div>
-                        </div>
+                        </div> {% endcomment %}
                     </div>
                     <!-- End Nav Card -->
                 </div>
             </section>
+
+            <script>
+                function updateSubList(selectedOption) {
+                    const subListDiv = document.getElementById('subListDiv');
+                    const subList = document.getElementById('subList');
+                    subList.innerHTML = ''; // Clear existing sub-options
+                
+                    if (selectedOption === 'author') {
+                        const authors = ['Author 1', 'Author 2', 'Author 3']; // Replace with actual author list
+                        authors.forEach(author => {
+                            const option = document.createElement('option');
+                            option.value = author;
+                            option.textContent = author;
+                            subList.appendChild(option);
+                        });
+                    } else if (selectedOption === 'price') {
+                        const prices = ['Price 1', 'Price 2', 'Price 3']; // Replace with actual price list
+                        prices.forEach(price => {
+                            const option = document.createElement('option');
+                            option.value = price;
+                            option.textContent = price;
+                            subList.appendChild(option);
+                        });
+                    }
+                    // Add more conditions for other options if needed
+                
+                    if (selectedOption === 'author' || selectedOption === 'price') {
+                        subListDiv.style.display = 'block'; // Show sub-list if selectedOption is author or price
+                    } else {
+                        subListDiv.style.display = 'none'; // Hide sub-list for other options
+                    }
+                }
+                </script>
+                
         {% endblock content %}
         

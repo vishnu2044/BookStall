@@ -1,13 +1,30 @@
 from django.shortcuts import render
 from app_products.models import *
 from app_cart.models import CartItem
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 def shop(request):
   
     products = Product.objects.all().filter(is_available=True)
     cart_items = CartItem.objects.all()
+
+    per_page = 6
+    page_number = request.GET.get('page')
+    paginator = Paginator(products, per_page)
+
+    try:
+        current_page = paginator.page(page_number)
+    
+    except PageNotAnInteger:
+        # If the 'page' parameter is not an integer, display the first page
+        current_page = paginator.page(1)
+
+    except EmptyPage:
+        current_page = paginator.page(paginator.num_pages)
+
     
     context = {
+        "current_page": current_page,
         "products": products,
         "products_old_books" : products[3:],
         "products_popular" : products[2:5], 
