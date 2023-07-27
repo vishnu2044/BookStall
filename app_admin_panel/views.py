@@ -57,7 +57,6 @@ def admin_dashboard(request):
 
         for item in razorpay_items:
             raz_total += item.product_price  # Use the correct field to calculate the sum of Razorpay payments
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", raz_total, "************************************************")
 
         ## Through cod  ##
         cod_total = 0
@@ -67,8 +66,6 @@ def admin_dashboard(request):
 
         for item in cod_items:
             cod_total += item.product_price  
-
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", cod_total, "************************************************")
 
 
         context = {
