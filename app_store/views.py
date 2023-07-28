@@ -4,34 +4,14 @@ from app_cart.models import CartItem
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from app_authors.models import *
+
 # Create your views here.
 def shop(request):
   
     products = Product.objects.all().filter(is_available=True)
     cart_items = CartItem.objects.all()
-
-   
-
+    Categories = Category_list.objects.all()
     authors = Authors.objects.all()
-    categories = Category_list.objects.all()
-
-    #filtering products
-    price_range = request.GET.get('price_range')
-    category = request.GET.get('category')
-    author = request.GET.get('author')
-
-    if price_range:
-        min_price , max_price = map(int, price_range.split("-"))
-        products = Product.objects.filter(price__gte = min_price, price__lte = max_price)
-
-    if category:
-        categ = Category_list.objects.filter(category_name = category)
-        products = Product.objects.filter(category = categ)
-
-    if author:
-        author_filter = Authors.objects.filter(author_name = author)
-        products = Product.objects.filter(author = author_filter)
-
 
     per_page = 6
     page_number = request.GET.get('page')
@@ -49,8 +29,8 @@ def shop(request):
 
     context = {
         "current_page": current_page,
+        "categories": Categories,
         "authors": authors,
-        "categories": categories,
         "products": products,
         "products_old_books" : products[3:],
         "products_popular" : products[2:5], 
@@ -89,7 +69,6 @@ def product_search(request):
    
     context = {
         "current_page": current_page,
-
         "products": products,
         "search_text" : search_text,
     }
@@ -154,16 +133,13 @@ def sorting_products(request):
     low_to_high = request.GET.get('low_to_high')
 
     if a_to_z:
-        products = Product.objects.all().order_by('product_name')
-
-    if z_to_a:
-        products = Product.objects.all().order_by('-product_name')
-
-    if high_to_low:
-        products = Product.objects.all().order_by('price')
-
-    if low_to_high:
-        products = Product.objects.all().order_by('-price')
+        products = Product.objects.filter(is_available=True).order_by('product_name')
+    elif z_to_a:
+        products = Product.objects.filter(is_available=True).order_by('-product_name')
+    elif high_to_low:
+        products = Product.objects.filter(is_available=True).order_by('-price')
+    elif low_to_high:
+        products = Product.objects.filter(is_available=True).order_by('price')
 
     per_page = 6
     page_number = request.GET.get('page')
@@ -178,7 +154,7 @@ def sorting_products(request):
 
     context = {
         "current_page": current_page,
-        "products": products,
+
     }
 
     return render(request, 'temp_home/shop.html', context)

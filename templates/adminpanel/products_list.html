@@ -33,6 +33,7 @@
                   <th> Number </th>
                   <th> book Name </th>
                   <th> Price </th>
+                  <th> Stock </th>
                   <th> Status </th>
                   <th> Action </th>
 
@@ -45,6 +46,7 @@
                   <td> {{ forloop.counter }} </td>
                   <td> {{ product.product_name }} </td>
                   <td> {{ product.price }} </td>
+                  <td> {{ product.stock }} </td>
                   {% if product.is_available %}
                           <td> 
                             <a href="{% url 'unlist_product' product.id %}">

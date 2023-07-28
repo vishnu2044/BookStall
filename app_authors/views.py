@@ -134,8 +134,22 @@ def author_books(request, id):
 def search_authors(request):
     search_text = request.POST.get("query")
     authors = Authors.objects.filter(author_name__icontains = search_text)
+
+    per_page = 2
+    page_number = request.GET.get('page')
+    paginator = Paginator(authors, per_page)
+   
+    try:
+        current_page = paginator.page(page_number)
+
+    except PageNotAnInteger:
+        current_page = paginator.page(1)
+
+    except EmptyPage:
+        current_page = paginator.page(paginator.num_pages)
+
     context = {
         "authors": authors,
-        "search_text" : search_text,
+        "current_page": current_page,
     }
     return render(request, 'temp_home/authors_page.html', context)

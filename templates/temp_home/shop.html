@@ -29,7 +29,7 @@
             <!-- Filtering options -->
    
             <!-- Hero Area Start-->
-            <div class="slider-area ">
+            <div class="slider-area " >
                 <div class="hero-cap text-center">
                     <h2>Shop</h2>
                 </div>
@@ -39,9 +39,27 @@
               <!-- Filtering options as a list -->
     
             <section class="popular-items d-flex"> 
-                <div class="confirmation_part col-3" style="background-color: #f0f0f0;">
+                <div class="confirmation_part col-3" >
                     <br>
-                    <h4>Filter Books</h4>
+                    <h4>Sorting </h4>
+                    <form action="{% url 'sorting_products' %}" method="GET">
+                        <div class="default-select">
+                            <select name="a-z" id="select1">
+                                <option value="">order by</option>
+                                <option value="a-z">A - Z</option>
+                                <option value="z-a">Z - A</option>
+                                <option value="high_to_low">Price High to low</option>
+                                <option value="low_to_high">Price low to high</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="col-md-12">
+                            <button class="btn_3 col-md-12 text-center" type="submit">Filter</button>
+                        </div>
+                    </form>
+                    
+                    <br>
+                    <h4>Filter </h4>
                     <form method="GET" action="{% url 'filtering_products' %}">
                         {% csrf_token %}
                         <ul class="filter-list">
@@ -117,17 +135,7 @@
                         <!-- Select items -->
                         <div class="select-this">
                             <div class="select-this">
-                        <form action="{% url 'sorting_products' %}" method ="GET" >
-                            <div class="select-itms">
-                                <select name="select" id="select1">
-                                    <a href=""><option value="">order by </option></a>
-                                    <a href=""><option value="a-z">A - Z</option></a>
-                                    <a href=""><option value="z-a">Z - A</option></a>
-                                    <a href=""><option value="high_to_low">Price High to low</option></a>
-                                    <a href=""><option value="low_to_high">Price low to high</option></a>
-                                </select>
-                            </div>
-                        </form>
+                        
                     </div>
     
                         </div>
@@ -182,10 +190,15 @@
                                           </svg>
                                     </a>
                                 {% endif %}
-
-                                <span class="current">
-                                    Page {{ current_page.number }} of {{ current_page.paginator.num_pages }}.
-                                </span>
+                                {% for i in current_page.paginator.page_range %}
+                                    {% if i == current_page.number %}
+                                        <span class="current">
+                                            Page {{ i }}
+                                        </span>
+                                    {% else %}
+                                        <a href="?page={{ i }}">{{ i }}</a>
+                                    {% endif %}
+                                {% endfor %}
 
                                 {% if current_page.has_next %}
                                     <a href="?page={{ current_page.next_page_number }}"class="text-black">
