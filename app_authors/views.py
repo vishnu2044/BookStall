@@ -11,7 +11,20 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def admin_authors(request):
     author = Authors.objects.all()
 
-    return render(request, 'adminpanel/authors.html', {'authors':author})
+    per_page = 10
+    page_number = request.GET.get('page')
+    paginator = Paginator(author, per_page) 
+
+    try:
+        current_page = paginator.page(page_number)
+
+    except PageNotAnInteger:
+        current_page = paginator.page(1)
+
+    except EmptyPage:
+        current_page = paginator.page(paginator.num_pages)
+
+    return render(request, 'adminpanel/authors.html', {'current_page':current_page})
 
 def add_author_page(request):
     return render(request, 'adminpanel/add_author.html' )

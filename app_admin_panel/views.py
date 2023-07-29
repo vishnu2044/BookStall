@@ -46,7 +46,7 @@ def admin_dashboard(request):
         for item in delivered_items:
             revenue += (item.product_price * item.quantity )
 
-        order_items = OrderItem.objects.all()
+        order_items = OrderItem.objects.all().order_by('-id')[:5]
 
         # payement methods 
         ## Through razorpay  ##
@@ -101,18 +101,29 @@ def adminlogin(request):
         username = request.POST.get('username')
         password = request.POST.get('pass1')
 
-        user = authenticate(username = username, password = password)
+        if not username.strip():
+            messages.error(request, 'Please enter username.')
+            return redirect('admin_login')
+
+        if not password.strip():
+            messages.error(request, 'Please enter password.')
+            return redirect('admin_login')
+
+        user = authenticate(username=username, password=password)
 
         if user is not None and user.is_superuser:
             login(request, user)
+            messages.success(request, f' {username} logined succesfully ')
             return redirect('admin_dashboard')
         else:
-            messages.error(request, 'invalid superuser credentials')
-            login(request, 'adminlogin')
+            messages.error(request, 'Invalid superuser credentials')
+            return redirect('admin_login')
 
     if request.user.is_authenticated and request.user.is_superuser:
         return redirect('admin_dashboard')
+
     return render(request, 'adminpanel/admin_login.html')
+
 
 
 #<<<<<<<<<<<<<<<<<<<<   admin logout function  >>>>>>>>>>>>>>>>>>>>
@@ -180,12 +191,11 @@ def sales_report(request):
         
         if start_date == end_date:
             date_obj = datetime.strptime(start_date, '%Y-%m-%d')
-            order_items = OrderItem.objects.filter(order__created_at__date = date_obj.date())
+            order_items = OrderItem.objects.filter(order__created_at__date=date_obj.date())
             if order_items:
                 context.update(sales = order_items, s_date = start_date, e_date = end_date)
-                s_date = start_date
-                e_date = end_date
-                return render(request, 'adminpanel/sales.html')
+                messages.success(request, f'Here is the sales report as of {end_date}. ')
+                return render(request, 'adminpanel/sales.html' ,context)
             else:
                 messages.error(request, "No data found for the specific date!")
 
@@ -198,7 +208,7 @@ def sales_report(request):
         else:
             messages.error(request, 'No data found at the specific date!')
     
-    messages.success(request, f'here is your sales report from {s_date} to {e_date}.')
+    messages.success(request, f'Here is the sales report covering the period from {start_date} to {end_date}.')
     return render(request, 'adminpanel/sales.html', context)
 
 

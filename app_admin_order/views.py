@@ -15,7 +15,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 @login_required
 @user_passes_test(super_admincheck)
 def admin_order_list(request):
-    order_items = OrderItem.objects.all()
+    order_items = OrderItem.objects.all().order_by('-id')
+
 
     per_page = 10
     page_number = request.GET.get('page')
@@ -98,6 +99,7 @@ def search_orders(request):
     product = Product.objects.filter(product_name__icontains = search_text)
     product_ids = product.values_list('id', flat=True)
     order_items = OrderItem.objects.filter(product_id__in = product_ids)
+
 
     # context = {
     #     "search_text" : search_text,

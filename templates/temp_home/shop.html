@@ -79,10 +79,11 @@
                                 </div>
                             </li>
                             <li>
+
                                 <div class="single-element-widget mt-30">
                                     <h6 class="mb-30"><strong>Category</strong></h6>
-                                    <div class="default-select" id="default-select">
-                                        <select name="category">
+                                    <div class="default-select" >
+                                        <select name="category" name="category" id="categorySelect">
                                             <option value="">Select Category</option>
                                             {% for category in categories %}
                                             <option value="{{ category.category_name }}">{{ category.category_name }}</option>
@@ -90,8 +91,10 @@
                                         </select>
                                     </div>
                                 </div>
+
                             </li>
                             <li>
+
                                 <div class="single-element-widget mt-30">
                                     <h6 class="mb-30"><strong>Authors</strong></h6>
                                     <div class="default-select" id="default-select">
@@ -103,6 +106,7 @@
                                         </select>
                                     </div>
                                 </div>
+
                             </li>
                         </ul>
                         <br>
@@ -168,7 +172,7 @@
                                         </div>
                                         <div class="popular-caption">
                                             <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
-                                            <span>$ {{ product.price }}</span>
+                                            <span>₹ {{ product.price }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -271,51 +275,34 @@
             </section>
 
             <script>
-                function updateSubList(selectedOption) {
-                    const subListDiv = document.getElementById('subListDiv');
-                    const subList = document.getElementById('subList');
-                    subList.innerHTML = ''; // Clear existing sub-options
-                
-                    if (selectedOption === 'author') {
-                        const authors = ['Author 1', 'Author 2', 'Author 3']; // Replace with actual author list
-                        authors.forEach(author => {
-                            const option = document.createElement('option');
-                            option.value = author;
-                            option.textContent = author;
-                            subList.appendChild(option);
-                        });
-                    } else if (selectedOption === 'price') {
-                        const prices = ['Price 1', 'Price 2', 'Price 3']; // Replace with actual price list
-                        prices.forEach(price => {
-                            const option = document.createElement('option');
-                            option.value = price;
-                            option.textContent = price;
-                            subList.appendChild(option);
-                        });
+                document.addEventListener("DOMContentLoaded", function () {
+                    const categorySelect = document.getElementById("categorySelect");
+            
+                    // Get the selected category value from the URL query string (if present)
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const selectedCategory = urlParams.get("category");
+            
+                    // Set the selected option in the <select> element based on the URL parameter
+                    if (selectedCategory) {
+                        for (let option of categorySelect.options) {
+                            if (option.value === selectedCategory) {
+                                option.selected = true;
+                                break;
+                            }
+                        }
                     }
-                    // Add more conditions for other options if needed
-                
-                    if (selectedOption === 'author' || selectedOption === 'price') {
-                        subListDiv.style.display = 'block'; // Show sub-list if selectedOption is author or price
-                    } else {
-                        subListDiv.style.display = 'none'; // Hide sub-list for other options
-                    }
-                }
-
-                
-                    // Wait for the document to be ready
-                    document.addEventListener("DOMContentLoaded", function () {
-                        // Get the select element by its id
-                        var selectElement = document.getElementById("select1");
-                
-                        // Add an event listener for the change event
-                        selectElement.addEventListener("change", function () {
-                            // Automatically submit the form when the selection changes
-                            this.form.submit();
-                        });
+            
+                    // Add an event listener to the <select> element to update the URL when a new option is selected
+                    categorySelect.addEventListener("change", function () {
+                        const selectedValue = categorySelect.value;
+                        const currentUrl = window.location.href;
+                        const baseUrl = currentUrl.split("?")[0]; // Remove existing query parameters
+                        const newUrl = baseUrl + "?category=" + encodeURIComponent(selectedValue);
+                        window.location.href = newUrl;
                     });
-                </script>
-                
+                });
+            </script>
+            
                 
                 
         {% endblock content %}

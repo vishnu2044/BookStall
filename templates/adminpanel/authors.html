@@ -35,7 +35,7 @@
                 </tr>
               </thead>
               <tbody>
-                {% for author in authors %}
+                {% for author in current_page %}
 
                 <tr>
                   <td> {{ forloop.counter }} </td>
@@ -53,6 +53,32 @@
               </tbody>
             </table>
           </div>
+
+           <!-- Display pagination links -->
+           <div class="pagination">
+            <span class="step-links">
+                {% if current_page.has_previous %}
+                    <a href="?page=1" class="text-white">&laquo; first</a>
+                    <a href="?page={{ current_page.previous_page_number }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="white" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
+                          <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1z"/>
+                        </svg>   
+                    </a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ current_page.number }} of {{ current_page.paginator.num_pages }}.
+                </span>
+
+                {% if current_page.has_next %}
+                    <a href="?page={{ current_page.next_page_number }}"class="text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="white" class="bi bi-arrow-right-square-fill" viewBox="0 0 16 16">
+                            <path d="M0 14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12zm4.5-6.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5a.5.5 0 0 1 0-1z"/>
+                          </svg> 
+                    </a>
+                    <a href="?page={{ current_page.paginator.num_pages }}" class="text-white">last &raquo;</a>
+                {% endif %}
+
         </div>
       </div>
     </div>

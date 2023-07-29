@@ -74,9 +74,6 @@ class OrderItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, choices=ORDER_STATUS, default='pending')
 
-
-    
-
     def __str__(self):
         return self.product.product_name
 
@@ -84,4 +81,13 @@ class OrderItem(models.Model):
 
 
 
-        
+
+
+
+
+
+
+
+
+
+

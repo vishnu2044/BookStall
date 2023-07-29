@@ -43,7 +43,10 @@
                 <br>
                 <div class="col-md-12">
                     <a href="{% url 'home' %}">
-                        <button class="btn_3 col-md-12 text-center" type="submit">Return to home</button>
+                        <button class="btn_3 col-md-12 text-center" >Return to home</button>
+                    </a>
+                    <a href="{% url 'order_invoice' order.id %}">
+                        <button class="btn_3 col-md-12 text-center">Invoice</button>
                     </a>
 
                     
