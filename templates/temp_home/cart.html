@@ -9,129 +9,158 @@
             </div>
         </div>
     <!--================Cart Area =================-->
-    <section class="cart_area section_padding">
-      <div class="container">
-        <div class="cart_inner">
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">SL No</th>
-                  <th scope="col">Product</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">Remove</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for cart_item in cart_items %}
-                <tr>
-                  <td>{{ forloop.counter }}</td>
-                  <td>{{ cart_item.product.product_name }} </td>
-                  <td>{{ cart_item.product.price }}</td>
-                  <td>
-                    <a href="{% url 'add_cart' cart_item.product.id %}">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-chevron-double-up" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z"/>
-                        <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
-                      </svg>
-                      
-                  </a> 
 
-                    {{ cart_item.quantity }} 
-                   
-                    <a href="{% url 'remove_cart' cart_item.product.id %}">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-chevron-double-down" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                      </svg>
-                      
-                  </a>
-                </td>
-                  </td>
-                  <td>
-                    <a href="{% url 'delete_cart' cart_item.product.id %}" class="genric-btn danger circle">Delete<span
-                        class="lnr lnr-arrow-right"></span></a>
-                  </td>
-                </tr>
-                {% endfor %}
-                </tr>
-                <tr class="bottom_button">
-                  <td>
-                    <a class="btn_1" href="#">Update Cart</a>
-                  </td>
-                  <td></td>
-                  <td></td>
-                  <td>
-                    <div class="cupon_text float-right">
-                      <a class="btn_1" href="#">Close Coupon</a>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  
-                  <td>
-                    <h5>Total</h5>
-                  </td>
-                  <td>
-                    <h5>{{ total }}</h5>
-                  </td>
-                </tr>
-                <tr class="shipping_area">
-                  <td></td>
-                  <td></td>
-                  <td>
-                    <h5>Shipping</h5>
-                  </td>
-                  <td>
-                    <div class="shipping_box">
-                      <ul class="list">
-                        <li>
-                          Flat Rate: $5.00
-                          <input type="radio" aria-label="Radio button for following text input">
-                        </li>
-                        <li>
-                          Free Shipping
-                          <input type="radio" aria-label="Radio button for following text input">
-                        </li>
-                        <li>
-                          Flat Rate: $10.00
-                          <input type="radio" aria-label="Radio button for following text input">
-                        </li>
-                        <li class="active">
-                          Local Delivery: $2.00
-                          <input type="radio" aria-label="Radio button for following text input">
-                        </li>
-                      </ul>
-                      <h6>
-                        Calculate Shipping
-                        <i class="fa fa-caret-down" aria-hidden="true"></i>
-                      </h6>
-                      <select class="shipping_select">
-                        <option value="1">Bangladesh</option>
-                        <option value="2">India</option>
-                        <option value="4">Pakistan</option>
-                      </select>
-                      <select class="shipping_select section_bg">
-                        <option value="1">Select a State</option>
-                        <option value="2">Select a State</option>
-                        <option value="4">Select a State</option>
-                      </select>
-                      <input class="post_code" type="text" placeholder="Postcode/Zipcode" />
-                      <a class="btn_1" href="#">Update Details</a>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="checkout_btn_inner float-right">
-              <a class="btn_1" href="{% url 'shop' %}">Continue Shopping</a>
-              <a class="btn_1 checkout_btn_1" href="{% url 'checkout' %}">Proceed to checkout</a>
-            </div>
+    <section class="cart_area ">
+      <div class="container d-flex">
+        <div class="col-4">
+          <div class="single_confirmation_details" style="background-color: #f0f0f0;">
+            <h4>Billing Address</h4>
+            <ul>
+              <li>
+                <p>Street</p><span>: 56/8</span>
+              </li>
+              <li>
+                <p>city</p><span>: Los Angeles</span>
+              </li>
+              <li>
+                <p>country</p><span>: United States</span>
+              </li>
+              <li>
+                <p>postcode</p><span>: 36952</span>
+              </li>
+            </ul>
           </div>
         </div>
+        <div class="col-8">
+          <div class="single_confirmation_details" style="background-color: #f0f0f0;">
+
+            <div class="cart_inner">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">SL No</th>
+                      <th scope="col">Product</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Remove</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for cart_item in cart_items %}
+                    <tr>
+                      <td>{{ forloop.counter }}</td>
+                      <td>{{ cart_item.product.product_name }} </td>
+                      <td>{{ cart_item.product.price }}</td>
+                      <td>
+                        <a href="{% url 'add_cart' cart_item.product.id %}">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-chevron-double-up" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z"/>
+                            <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+                          </svg>
+                          
+                      </a> 
+    
+                        {{ cart_item.quantity }} 
+                       
+                        <a href="{% url 'remove_cart' cart_item.product.id %}">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-chevron-double-down" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                            <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                          </svg>
+                          
+                      </a>
+                    </td>
+                      </td>
+                      <td>
+                        <a href="{% url 'delete_cart' cart_item.product.id %}" class="genric-btn danger circle">Delete<span
+                            class="lnr lnr-arrow-right"></span></a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                    </tr>
+                    <tr class="bottom_button">
+                      <td>
+                        <a class="btn_1" href="#">Update Cart</a>
+                      </td>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <div class="cupon_text float-right">
+                          <a class="btn_1" href="#">Close Coupon</a>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      
+                      <td>
+                        <h5>Total</h5>
+                      </td>
+                      <td>
+                        <h5>{{ total }}</h5>
+                      </td>
+                    </tr>
+                    <tr class="shipping_area">
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <h5>Shipping</h5>
+                      </td>
+                      <td>
+                        <div class="shipping_box">
+                          <ul class="list">
+                            <li>
+                              Flat Rate: $5.00
+                              <input type="radio" aria-label="Radio button for following text input">
+                            </li>
+                            <li>
+                              Free Shipping
+                              <input type="radio" aria-label="Radio button for following text input">
+                            </li>
+                            <li>
+                              Flat Rate: $10.00
+                              <input type="radio" aria-label="Radio button for following text input">
+                            </li>
+                            <li class="active">
+                              Local Delivery: $2.00
+                              <input type="radio" aria-label="Radio button for following text input">
+                            </li>
+                          </ul>
+                          <h6>
+                            Calculate Shipping
+                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                          </h6>
+                          <select class="shipping_select">
+                            <option value="1">Bangladesh</option>
+                            <option value="2">India</option>
+                            <option value="4">Pakistan</option>
+                          </select>
+                          <select class="shipping_select section_bg">
+                            <option value="1">Select a State</option>
+                            <option value="2">Select a State</option>
+                            <option value="4">Select a State</option>
+                          </select>
+                          <input class="post_code" type="text" placeholder="Postcode/Zipcode" />
+                          <a class="btn_1" href="#">Update Details</a>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="checkout_btn_inner float-right">
+                  <a class="btn_1" href="{% url 'shop' %}">Continue Shopping</a>
+                  <a class="btn_1 checkout_btn_1" href="{% url 'checkout' %}">Proceed to checkout</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        
+      </div>
+
     </section>
     <!--================End Cart Area =================-->
       

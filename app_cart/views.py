@@ -4,7 +4,6 @@ from app_products.models import Product
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 
-
 # Create your views here.
 def _session_id(request):
     cart = request.session.session_key
@@ -97,6 +96,11 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0):
     except Cart.DoesNotExist:
         # Handle the case where no cart exists for the session
         cart_items = None
+
+
+    #adding coupons 
+    
+
 
     context = {
         "total": total,

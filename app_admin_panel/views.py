@@ -7,7 +7,12 @@ from app_order.models import *
 from app_products.models import *
 from app_authors.models import *
 from django.db.models import Q
-
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models.functions import TruncMonth
+from django.db.models import F
+from django.db.models import Sum
+import calendar
 # Create your views here.
 #<<<<<<<<<<<<<<<<<<<<   checks if the user is authenticated and super user  >>>>>>>>>>>>>>>>>>>>
 def super_admincheck(user):
@@ -17,14 +22,17 @@ def super_admincheck(user):
 
 
 #<<<<<<<<<<<<<<<<<<<<   redirect to the admin dashboard  >>>>>>>>>>>>>>>>>>>>
+def get_month_name(month_number):
+    if 1 <= month_number <= 12:
+        return calendar.month_name[month_number]
+    else:
+        return None
+
+
 def admin_dashboard(request):
     if request.user.is_authenticated and request.user.is_superuser:
        
-       # filtering the delivered items from the OrderItem
-
-
-
-        
+       
         order_count = OrderItem.objects.count()
         # order_count = delivered_item.count()
         product_count = Product.objects.count()
@@ -32,23 +40,40 @@ def admin_dashboard(request):
         category_count = Category_list.objects.count()
         user_count = User.objects.count()                                                                                             
 
-        #order status 
-        pending_count = OrderItem.objects.filter(Q(status="pending") | Q(status="Pending")).count()
-        accepted_count = OrderItem.objects.filter(Q(status="accepted") | Q(status="Accepted")).count()
-        shipped_count = OrderItem.objects.filter(Q(status="shipped") | Q(status="Shipped")).count()
-        delivered_count = OrderItem.objects.filter(Q(status="delivered") | Q(status="Delivered")).count()
-        cancelled_count = OrderItem.objects.filter(Q(status="cancelled") | Q(status="Cancelled")).count()
-        refunded_count = OrderItem.objects.filter(Q(status="refunded") | Q(status="Refunded")).count()
+        #<<<<<<<<<< order status >>>>>>>>>>>
+        pending_count = OrderItem.objects.filter(status__iexact="pending").count()
+        accepted_count = OrderItem.objects.filter(status__iexact="accepted").count()
+        shipped_count = OrderItem.objects.filter(status__iexact="shipped").count()
+        delivered_count = OrderItem.objects.filter(status__iexact="delivered").count()
+        cancelled_count = OrderItem.objects.filter(status__iexact="cancelled").count()
+        refunded_count = OrderItem.objects.filter(status__iexact="refunded").count()
 
         # Calculating revenue
+        
+        # filtering the delivered items from the OrderItem
+        delivered_items = OrderItem.objects.filter(status__iexact="delivered")
+
+        # sales report by month for the graph
+        today = timezone.now().date()
+        five_months_ago = today - timedelta(days=150)
+        sales_report = (
+            OrderItem.objects.annotate(month=TruncMonth('created_at'))
+            .filter(created_at__gte= five_months_ago, status__iexact="delivered")
+            .values(month = F('month__month'))
+            .annotate(total_sales= Sum('product_price'), total_number_orders = Sum('quantity'))
+            .order_by('month')
+        )
+        for entry in sales_report:
+            entry['month_name'] = get_month_name(entry['month'])
+        print("**********************************************************", sales_report)
+
         revenue = 0
-        delivered_items = OrderItem.objects.filter(Q(status="delivered") | Q(status="Delivered"))
         for item in delivered_items:
             revenue += (item.product_price * item.quantity )
 
-        order_items = OrderItem.objects.all().order_by('-id')[:5]
+        
 
-        # payement methods 
+        # <<<<<<<<<< payement methods >>>>>>>>>>>
         ## Through razorpay  ##
         raz_total = 0
         raz_method = PaymentMethod.objects.get(id=2)  # Use get() to retrieve the specific payment method
@@ -63,6 +88,9 @@ def admin_dashboard(request):
         cod_method = PaymentMethod.objects.get(id=1)  
         cod_orders = Order.objects.filter(payment__payment_method=cod_method)  
         cod_items = OrderItem.objects.filter(order__in=cod_orders)  
+
+        # latest orders
+        order_items = OrderItem.objects.all().order_by('-id')[:5]
 
         for item in cod_items:
             cod_total += item.product_price  
@@ -87,6 +115,9 @@ def admin_dashboard(request):
             'revenue' : revenue,
             'raz_total' : raz_total,
             'cod_total' : cod_total,
+
+
+            'sales_report' : sales_report,
 
            
         }

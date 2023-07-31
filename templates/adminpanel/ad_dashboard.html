@@ -94,6 +94,7 @@
                   </div>
                 </div>
               </div>
+
               <div class="row">
                 <div class="col-md-4 grid-margin stretch-card">
                   <div class="card">
@@ -126,9 +127,57 @@
                     </div>
                   </div>
                 </div>
-                
 
                 <div class="col-md-8 grid-margin stretch-card">
+                  <div class="card">
+                    <div class="card-body">
+                      <div>
+                        <canvas id="myChart"></canvas>
+                      </div>
+                      
+                      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                      
+                      <script>
+                        const ctx = document.getElementById('myChart');
+                      
+                        new Chart(ctx, {
+                          type: 'bar',
+                          data: {
+                            labels: [{% for entry in sales_report %}
+                            '{{ entry.month_name }}',
+                            {% endfor %}],
+                            datasets: [{
+                              label: 'Number of prodcuts delivered',
+                              data: [{% for entry in sales_report %}
+                                    {{ entry.total_number_orders }},
+                                    {% endfor %}],
+                              borderWidth: 1
+                            }]
+                          },
+                          options: {
+                            scales: {
+                              y: {
+                                beginAtZero: true
+                              }
+                            }
+                          }
+                        });
+                      </script>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="row">
+
+
+                
+                
+
+                <div class="col-md-12 grid-margin stretch-card">
                   <div class="card">
                     <div class="card-body">
                       <div class="d-flex flex-row justify-content-between">
@@ -228,6 +277,12 @@
                   </div>
                 </div>
               </div>
+
+
+
+            
+
+
               {% comment %} <div class="row">
                 <div class="col-sm-6 grid-margin">
                   <div class="card">

@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'app_store',
     'app_wishlist',
     'app_admin_category',
+    'app_offer',
+    'app_admin_coupons',
 ]
 
 MIDDLEWARE = [

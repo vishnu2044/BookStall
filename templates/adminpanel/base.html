@@ -10,7 +10,8 @@
     </title>
     <meta content="e-commerce website deliver books" name="description">
     <meta content="e-commerce" name="books, amazone, flipkart, e-books">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 
 
     <!-- plugins:css -->
@@ -29,6 +30,10 @@
     <link rel="stylesheet" href="/static/admin/css/style.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="/static/admin/images/favicon.png" />
+
+    <!-- chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
   </head>
   <body>
     <div class="container-scroller">
@@ -113,12 +118,19 @@
             </div>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="http://www.bootstrapdash.com/demo/corona-free/jquery/documentation/documentation.html">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
               <span class="menu-icon">
-                <i class="mdi mdi-file-document-box"></i>
+                <i class="mdi mdi-laptop"></i>
               </span>
               <span class="menu-title">Coupons</span>
+              <i class="menu-arrow"></i>
             </a>
+            <div class="collapse" id="ui-basic">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{% url 'coupons_list' %}">View Coupons</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{% url 'add_coupon' %}">Add Coupon</a></li>
+              </ul>
+            </div>
           </li>
         </ul>
       </nav>
@@ -362,6 +374,8 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="/static/admin/vendors/js/vendor.bundle.base.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <!-- endinject -->
     <!-- Plugin js for this page -->
     <script src="/static/admin/vendors/chart.js/Chart.min.js"></script>
