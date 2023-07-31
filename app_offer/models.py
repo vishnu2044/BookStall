@@ -22,5 +22,7 @@ class Coupon(models.Model):
         return self.coupon_code
     
     def is_expired(self):
-        return self.expiry_date > date.today()
+        if self.coupon_stock == 0 or self.expiry_date < date.today():
+            return True
+        return False
 

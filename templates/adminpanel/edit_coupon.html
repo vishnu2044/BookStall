@@ -1,17 +1,16 @@
 {% extends 'adminpanel/base.html' %}
-{% block title %} add - coupons {% endblock%}
+{% block title %} Edit - Coupons {% endblock%}
 
 {% block content %}
 
 <div class="col-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body col-12">
-            <h4 class="card-title">Add Coupon</h4>
-            <p class="card-description">Add new coupons here</p>
-            <form class="forms-sample" method="POST" action="{% url 'add_coupon' %}" enctype="multipart/form-data">
+            <h4 class="card-title">Edit Coupon</h4>
+            <p class="card-description">Edit your coupon here</p>
+            <form class="forms-sample" method="POST" action="{% url 'edit_coupon' coupon.id %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="col-12">
-
                         <div class="d-flex">
                             <div class="form-group col-6">
                                 <label for="exampleInputName1">Coupon Code</label>
@@ -20,7 +19,8 @@
                                 class="form-control" 
                                 id="coupon_code" 
                                 name ="coupon_code" 
-                                placeholder="enter coupon code...."
+                                value ="{{ coupon.coupon_code }}" 
+                                placeholder="{{ coupon.coupon_code }}"
                                 required>
                             </div>
                             <div class="form-group col-6">
@@ -30,7 +30,8 @@
                                 class="form-control" 
                                 id ="min_amount"
                                 name ="min_amount"
-                                placeholder="enter minimum amount"
+                                value ="{{ coupon.min_amount }}"
+                                placeholder="{{ coupon.min_amount }}"
                                 required>
                             </div>
                         </div>
@@ -43,7 +44,8 @@
                                 class="form-control" 
                                 id="off_percent" 
                                 name ="off_percent" 
-                                placeholder="enter off percentage...."
+                                value ="{{ coupon.off_percent }}"
+                                placeholder ="{{ coupon.off_percent }}"
                                 required>
                             </div>
                             <div class="form-group col-6">
@@ -53,7 +55,8 @@
                                 class="form-control" 
                                 id ="max_discount"
                                 name ="max_discount"
-                                placeholder="enter maximum discount"
+                                value ="{{ coupon.max_discount }}"
+                                placeholder ="{{ coupon.max_discount }}"
                                 required>
                             </div>
                         </div>
@@ -66,7 +69,8 @@
                                 class="form-control" 
                                 id ="coupon_stock"
                                 name ="coupon_stock"
-                                placeholder="enter number of stock"
+                                value ="{{ coupon.coupon_stock }}"
+                                placeholder ="{{ coupon.coupon_stock }}"
                                 required>
                             </div>
                             <div class="form-group col-6">
@@ -76,11 +80,12 @@
                                 class="form-control" 
                                 id="expairy_date"
                                 name = "expairy_date" 
-                                placeholder="enter expairy date of the coupon"
+                                value ="{{ coupon.expiry_date }}"
+                                placeholder ="{{ coupon.expiry_date }}"
                                 required>
                             </div>
                         </div>
-                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                    <button type="submit" class="btn btn-primary mr-2">Update</button>
                     
             </form>
             <a href="adminpanel/adminlogin.html">

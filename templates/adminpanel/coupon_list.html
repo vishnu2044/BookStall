@@ -20,7 +20,7 @@
               </form>
             </div>
             <div class="add-items col-2" >
-                <a href="{% url 'add_product' %}" class="btn btn-success">Add Product </a>
+                <a href="{% url 'add_coupon' %}" class="btn btn-success">Add Coupon </a>
             </div>
         </div>
 
@@ -30,41 +30,31 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th> Number </th>
+                  <th> S.No </th>
                   <th> Coupon code </th>
-                  <th> start date </th>
+                  <th> Min Amount </th>
+                  <th> Max Discount </th>
                   <th> End date </th>
-                  <th> Status </th>
+                  <th> Stock </th>
                   <th> Action </th>
 
                 </tr>
               </thead>
               <tbody>
-                {% for coupons in coupons %}
+                {% for coupon in coupons %}
 
                 <tr>
                   <td> {{ forloop.counter }} </td>
-                  <td> {{ product.product_name }} </td>
-                  <td> {{ product.price }} </td>
-                  <td> {{ product.stock }} </td>
-                  {% if product.is_available %}
-                          <td> 
-                            <a href="">
-                              <div class="badge badge-outline-danger">Unlist</div>
-                            </a>
-                          </td>
-                        {% else %}
-                          <td> 
-                            <a href="">
-                              <div class="badge badge-outline-success">List</div>
-                            </a>
-                          </td>
-                        {% endif %}
-                <th>
-                    <a href="{% url 'edit_product' product.id %}">
-                      <button type="button" class="btn btn-primary btn-icon-text">Edit</button>
+                  <td> {{ coupon.coupon_code }} </td>
+                  <td> {{ coupon.min_amount }}</td>
+                  <td> {{ coupon.max_discount }} </td>
+                  <td> {{ coupon.expiry_date }} </td>
+                  <td> {{ coupon.coupon_stock }} </td>
+                  <td> 
+                    <a href="{% url 'edit_coupon' coupon.id %}">
+                      <div class="badge badge-outline-info">Edit Coupon</div>
                     </a>
-                  </th>
+                  </td>
                 </tr>
                 {% endfor %}
               

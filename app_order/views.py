@@ -24,21 +24,18 @@ def payments(request):
     
         # move the cart items into ordered items
         cart_items = CartItem.objects.filter(user=request.user)
-        orderitem = None
         for cart_item in cart_items:
-            if orderitem is None:
-                orderitem = OrderItem(
-                    user = request.user,
-                    order = order,
-                    product = cart_item.product,
-                    product_price = cart_item.product.price,
-                    quantity = cart_item.quantity,
-                    status = 'accepted',
-                )
-                orderitem.save()
-            else:
-                orderitem.quantity += cart_item.quantity
-            
+            orderitem = OrderItem(
+                user = request.user,
+                order = order,
+                product = cart_item.product,
+                product_price = cart_item.product.price,
+                quantity = cart_item.quantity,
+                status = 'accepted',
+            )
+            orderitem.save()
+            total += cart_item.sub_total()
+        # total -= cart_item.cart.coupon.
 
         #reduce the stock of ordered product.
             product = Product.objects.get(id=cart_item.product.id)
@@ -82,7 +79,8 @@ def place_order(request):
             if cart_item.quantity > cart_item.product.stock:
                 print("cart item out of stock")
                 return redirect('cart')
-            total += ((cart_item.product.price) * (cart_item.quantity))
+            total += cart_item.sub_total()
+            total -= cart
         if cart_count <= 0:
             return redirect('home')
 

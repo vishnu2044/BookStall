@@ -7,9 +7,9 @@ from app_products.models import *
 from django.contrib.auth.decorators import login_required, user_passes_test
 from app_admin_panel.views import super_admincheck
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from app_admin_category.views import add_category
 
-
-# Create your views her
+# Create your views here
 #<<<<<<<<<<<<<<<<<<<<<<<<<  to display all prodcuts in the admin side    >>>>>>>>>>>>>>>>>>>>>>>>>
 @login_required
 @user_passes_test(super_admincheck)

@@ -3,6 +3,7 @@ from .models import Cart, CartItem
 from app_products.models import Product
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
+from app_offer.models import *
 
 # Create your views here.
 def _session_id(request):
@@ -76,7 +77,7 @@ def delete_cart(request, product_id):
     cart_items.delete()
     return redirect('cart')
 
-def cart(request, total=0, quantity=0, cart_items=None, count=0):
+def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount=0, cart=None, coupons=None):
     try:
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user)
@@ -99,14 +100,37 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0):
 
 
     #adding coupons 
-    
+    if request.method == "POST":
+        coupon_obj = request.POST.get("search")
+        try:
+            coupon = Coupon.objects.get(coupon_code = coupon_obj)
+            if coupon.is_expired():
+                messages.error(request, 'coupon is expaired')
+                return redirect('cart')
+            if coupon.min_amount > total:
+                messages.error(request, f'Amount should be greater than {coupon.min_amount}')
+                return redirect('cart')
+            discount_amount = total * coupon.off_percent / 100
 
+            cart = Cart.objects.get(session_id= _session_id(request))
+            if discount_amount > coupon.max_discount:
+                discount_amount = coupon.max_discount
+            total -= discount_amount
+            cart.coupon = coupon
+            cart.save()
+            coupon.coupon_stock -= 1
+            coupon.save()
+        except:
+            messages.error(request, 'coupon not found')
 
     context = {
         "total": total,
         "quantity": quantity,
         "cart_items": cart_items,
         "count": count,
+        "coupons": coupons,
+        "cart": cart,
+        "discount_amount": discount_amount,
     }
 
     return render(request, "temp_home/cart.html", context)
