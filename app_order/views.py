@@ -9,6 +9,13 @@ import razorpay
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
+def _session_id(request):
+    cart = request.session.session_key
+    if not cart:
+        cart = request.session.create()
+    return cart  
+
+
 def payments(request):
     if request.user.is_authenticated:
         payment_method = PaymentMethod.objects.get(id=1)
@@ -35,12 +42,16 @@ def payments(request):
             )
             orderitem.save()
             total += cart_item.sub_total()
-        # total -= cart_item.cart.coupon.
-
         #reduce the stock of ordered product.
             product = Product.objects.get(id=cart_item.product.id)
             product.stock -= cart_item.quantity
             product.save()
+
+        cart = Cart.objects.get(session_id=_session_id(request))
+        discount_amount = total * cart.coupon.off_percent / 100
+        if discount_amount > cart.coupon.max_discount:
+            discount_amount = cart.coupon.max_discount
+        print("*******************************************", discount_amount,"****************************")
 
         CartItem.objects.filter(user=request.user).delete()
 
@@ -80,7 +91,13 @@ def place_order(request):
                 print("cart item out of stock")
                 return redirect('cart')
             total += cart_item.sub_total()
-            total -= cart
+        
+        cart = Cart.objects.get(session_id=_session_id(request))
+        discount_amount = total * cart.coupon.off_percent / 100
+        if discount_amount > cart.coupon.max_discount:
+            discount_amount = cart.coupon.max_discount
+        total -= discount_amount
+
         if cart_count <= 0:
             return redirect('home')
 
@@ -95,7 +112,11 @@ def place_order(request):
         data.address = address
         data.order_total = total
         data.save()
-        order = Order.objects.get(user = current_user, status = data.status, order_id = data.order_id, order_total = data.order_total)
+        order = Order.objects.get(user = current_user, 
+                                  status = data.status, 
+                                  order_id = data.order_id, 
+                                  order_total = data.order_total
+                                )
 
         client = razorpay.Client(auth=( settings.KEY_ID, settings.KEY_SECRET ))
         payment = client.order.create({"amount" : total * 100, 'currency': "INR", "payment_capture" : 1})

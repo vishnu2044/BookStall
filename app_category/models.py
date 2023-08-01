@@ -1,4 +1,5 @@
 from django.db import models
+from app_offer.models import Offer
 
 
 # Create your models here.
@@ -7,8 +8,7 @@ class Category_list(models.Model):
     slug = models.SlugField(max_length=100, unique=True, blank= True)
     category_description = models.TextField()
     is_available = models.BooleanField(default=False)
-
-
+    offer = models.ForeignKey(Offer, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         verbose_name = 'category'

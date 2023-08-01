@@ -12,7 +12,6 @@ def _session_id(request):
         cart = request.session.create()
     return cart
 
-from django.contrib import messages
 
 def add_cart(request, product_id):
     product = Product.objects.get(id=product_id)
@@ -118,6 +117,8 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
             total -= discount_amount
             cart.coupon = coupon
             cart.save()
+            cart_item.coupon_discount = discount_amount
+            cart_item
             coupon.coupon_stock -= 1
             coupon.save()
         except:

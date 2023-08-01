@@ -26,3 +26,12 @@ class Coupon(models.Model):
             return True
         return False
 
+
+class Offer(models.Model):
+    name = models.CharField(max_length=100)
+    off_percent = models.PositiveBigIntegerField()
+    start_date = models.DateField(validators=[validate_expiry_date])
+    end_date = models.DateField()
+
+    def __str__(self) -> str:
+        return self.name

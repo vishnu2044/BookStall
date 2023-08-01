@@ -5,12 +5,10 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('', views.offers, name = 'offers'),
+    path('offers_list/', views.offers_list, name = 'offers_list'),
+    path('add_offer/', views.add_offer, name = 'add_offer'),
 
 
-
-
- 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 

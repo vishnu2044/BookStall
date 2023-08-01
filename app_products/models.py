@@ -2,7 +2,7 @@ from django.db import models
 from app_category.models import Category_list
 from app_authors.models import Authors
 from django.urls import reverse
-
+from app_offer.models import Offer
 # Create your models here.
 
 class Product(models.Model):
@@ -17,8 +17,9 @@ class Product(models.Model):
     author = models.ForeignKey(Authors, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
+    offer = models.ForeignKey(Offer, on_delete=models.SET_NULL, null=True, blank=True)
 
-
+    
     def is_outofstock(self):
         return self. stock <=0
     

@@ -39,6 +39,7 @@ urlpatterns = [
     path('wishlist/', include('app_wishlist.urls')),
     path('admin_category/', include('app_admin_category.urls')),
     path('app_admin_coupons/', include('app_admin_coupons.urls')),
+    path('app_admin_coupons/', include('app_offer.urls')),
 
 
 
