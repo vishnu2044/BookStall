@@ -71,7 +71,13 @@
                     <tr>
                       <td>{{ forloop.counter }}</td>
                       <td>{{ cart_item.product.product_name }} </td>
+                      {% if cart_item.product.offer %}
+                      <td>{{ cart_item.product.get_offer_price }}</td>
+                      {% elif cart_item.product.category.offer %}
+                      <td>{{ cart_item.product.get_offer_price_by_category }}</td>
+                      {% else %}
                       <td>{{ cart_item.product.price }}</td>
+                      {% endif %}
                       <td>
                         <a href="{% url 'add_cart' cart_item.product.id %}">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-chevron-double-up" viewBox="0 0 16 16">
@@ -99,10 +105,11 @@
                     </tr>
                     {% endfor %}
                     </tr>
-                    <tr class="bottom_button">
+                    {% comment %} <tr class="bottom_button">
                       <td>
-                        <a class="btn_1" href="{% url 'shop' %}">back to shop</a>
+                        <a class="btn_1" href="{% url 'shop' %}">Shop</a>
                       </td>
+                      <td></td>
                       <td></td>
                       <td></td>
                       <td>
@@ -110,55 +117,55 @@
                           <a class="btn_1" href="#">Close Coupon</a>
                         </div>
                       </td>
+                    </tr> {% endcomment %}
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td><h5>Total</h5></td>
+                      <td><h5>{{ og_total }}</h5></td>
                     </tr>
                     <tr>
                       <td></td>
                       <td></td>
-                      
-                      <td>
-                        <h5>Total</h5>
-                      </td>
-                      <td>
-                        <h5>{{ total }}</h5>
-                      </td>
+                      <td></td>
+                      <td><h5>Discount</h5></td>
+                      <td><span style="color: red;"> - {{ discount_amnt }}</span></td>
                     </tr>
+                    {% if cart.coupon %}
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>Coupon : <span style="color: rgb(0, 146, 10);">{{ cart.coupon.coupon_code }}</td>
+                      <td><span style="color: red;"> - {{ discount_amount }}</span></td>
+                    </tr>
+                    {% endif %}
+                    {% comment %} <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>Service Charges </td>
+                      <td><span><del  style="color: red;">99</del> </span></td>
+                    </tr> {% endcomment %}
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>Total</td>
+                      <td>{{ total }}</td>
+                    </tr>
+
                     <tr class="shipping_area">
                       <td></td>
-                      <td></td>
                       <td>
+                        <a class="btn_1" href="{% url 'shop' %}">Shop</a>
                       </td>
+                      <td></td>
+                      <td></td>
                       <td>
                         <div class="shipping_box">
                           <ul style="border: 1px solid black dashed;">
-                            {% for cart_item in cart_items %}
-                            
-                            
-                            <li>{{ cart_item.product.product_name }}
-                              <i>-</i>
-                              <span style="color: black;">{{ cart_item.sub_total }}</span>
-                            </li>
-                            {% endfor %}
-                            {% if cart.coupon %}
-                            <li>Coupon : <span style="color: rgb(0, 146, 10);">{{ cart.coupon.coupon_code }}</span> discount
-                              
-                              <span style="color: red;"> - {{ discount_amount }}</span>
-                            </li>
-                            {% endif %}
-                            <li>Total Service Charges
-                              <i>-</i>
-                              <span>Free Delivery <del>99</del> </span>
-                            </li>
-                            <li style="font-size: 1em;
-                            color: #212121;
-                            font-weight: 600;
-                            padding: 1em 0;
-                            border-top: 1px solid #DDD;
-                            border-bottom: 1px solid #DDD;
-                            margin: 2em 0 0;"><b>Total</b>
-                              <i>-</i>
-                              <span><b>{{ total }}</b></span>
-                            </li>
-                            <li>
                               <div class="checkout_btn_inner float-right">
                                 <a class="btn_1 checkout_btn_1" href="{% url 'checkout' %}">Proceed to checkout</a>
                               </div>

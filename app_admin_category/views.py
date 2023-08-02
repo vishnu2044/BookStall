@@ -7,6 +7,7 @@ from app_products.models import *
 from django.contrib.auth.decorators import login_required, user_passes_test
 from app_admin_panel.views import super_admincheck
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from app_offer.models import Offer
 
 
 # Create your views here.
@@ -28,7 +29,9 @@ def categories_list(request):
     except EmptyPage:
         current_page = paginator.page(paginator.num_pages)
 
+    offers = Offer.objects.all()
     context = {
+        'offers' : offers,
         'current_page' : current_page,
     }
     return render(request, 'adminpanel/categories.html', context)
@@ -42,6 +45,9 @@ def add_category(request):
         name = request.POST.get('name')
         slug = request.POST.get('slug')
         descripiton = request.POST.get('description')
+        offer = request.POST.get('offer_name')
+        
+        offer_id = Offer.objects.get(id=offer)
         check = [name, slug]
         is_available = request.POST.get('is_available', False)
         if is_available:
@@ -60,7 +66,8 @@ def add_category(request):
             Category_list.objects.create(
                                     category_name = name, 
                                     slug = slug , 
-                                    category_description = descripiton
+                                    category_description = descripiton,
+                                    offer = offer_id,
                                     )
             messages.success(request,f'Category "{name}" succesfully added')
         else:
@@ -70,7 +77,9 @@ def add_category(request):
     if not request.user.is_authenticated and not request.user.is_superuser:
         return redirect('admin_dashboard')
     categories = Category_list.objects.all()
+    offers = Offer.objects.all()
     context = {
+        'offers' : offers,
         'categories' : categories,
     }
     return render(request, 'adminpanel/categories.html', context)
@@ -84,12 +93,13 @@ def edit_catgory(request, id):
         name = request.POST.get('name')
         slug = request.POST.get('slug')
         description = request.POST.get('description')
-
+        offer = request.POST.get('offer_name')
 
         category = Category_list.objects.filter(id=id).update(
                     category_name = name,
                     slug = slug,
-                    category_description = description
+                    category_description = description,
+                    offer = offer
         )
         messages.success(request, f'{name} updated successfully')
         return redirect('categories_list')
@@ -99,8 +109,11 @@ def edit_catgory(request, id):
     except Category_list.DoesNotExist:
         messages.error(request, 'Category does not exist.')
         return redirect(categories_list)
+    
+    offers = Offer.objects.all()
 
     context = {
+        "offers": offers,
         "category": category
     }
     return render(request, 'adminpanel/edit_category.html', context)

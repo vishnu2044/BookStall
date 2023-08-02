@@ -15,7 +15,7 @@ def _session_id(request):
         cart = request.session.create()
     return cart  
 
-
+# payment for cashon delivery 
 def payments(request):
     if request.user.is_authenticated:
         payment_method = PaymentMethod.objects.get(id=1)
@@ -32,11 +32,19 @@ def payments(request):
         # move the cart items into ordered items
         cart_items = CartItem.objects.filter(user=request.user)
         for cart_item in cart_items:
+            product_price = 0
+            if cart_item.product.offer:
+                product_price = cart_item.product.get_offer_price()
+            if cart_item.product.category.offer:
+                product_price = cart_item.product.get_offer_price_by_category()
+            else:
+                product_price = cart_item.product.price
+
             orderitem = OrderItem(
                 user = request.user,
                 order = order,
                 product = cart_item.product,
-                product_price = cart_item.product.price,
+                product_price = product_price,
                 quantity = cart_item.quantity,
                 status = 'accepted',
             )
@@ -147,12 +155,21 @@ def payment_success(request, total=0):
         order.save()
         cart_items = CartItem.objects.filter(user = request.user)
 
+        cart_items = CartItem.objects.filter(user=request.user)
         for cart_item in cart_items:
+            product_price = 0
+            if cart_item.product.offer:
+                product_price = cart_item.product.get_offer_price()
+            if cart_item.product.category.offer:
+                product_price = cart_item.product.get_offer_price_by_category()
+            else:
+                product_price = cart_item.product.price
+                
             orderitem = OrderItem(
                 user = request.user,
                 order = order,
                 product = cart_item.product,
-                product_price = cart_item.product.price,
+                product_price = product_price,
                 quantity = cart_item.quantity,
                 status = 'accepted',
             )

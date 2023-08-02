@@ -47,14 +47,14 @@ def add_product(request):
             if image == '':
                 messages.info(request, "Image field cant't be empty !")
                 return redirect(add_product)
-            
-        
+
         name = request.POST.get("name")
         slug = request.POST.get("slug")
         price = request.POST.get("price")
         stock = request.POST.get("stock")
         category = request.POST.get("category")
         author = request.POST.get("author")
+        offer = request.POST.get('offer_name')
         description = request.POST.get("description")
 
         if not name.strip():
@@ -68,7 +68,6 @@ def add_product(request):
         if category == "":
             messages.warning(request, 'please select a category.')
             return redirect(add_product)
-        
 
         try:
             Product.objects.get(product_name = name)
@@ -82,6 +81,7 @@ def add_product(request):
                     pass
                 author_instance = Authors.objects.get(id=author)
                 category_instance = Category_list.objects.get(id=category)
+                offer_instance = Offer.objects.get(id=offer)
                 
                 Product.objects.create(
                         product_name = name,
@@ -91,15 +91,18 @@ def add_product(request):
                         stock = stock,
                         images = image,
                         category = category_instance,
-                        author = author_instance
+                        author = author_instance,
+                        offer = offer_instance
                 ).save()
                 messages.success(request,f'Book : {name} added successfully')
                 return redirect(admin_products)
             
     authors = Authors.objects.all()
     categories = Category_list.objects.all()
+    offers = Offer.objects.all()
 
     context = {
+            'offers' : offers,
             'categories' : categories,
             'authors' : authors,
     }
@@ -143,9 +146,7 @@ def edit_product(request, id):
             ).save()
         except:
             print("Hai")
-            
-
-
+        
         name = request.POST.get("name")
         slug = request.POST.get("slug")
         price = request.POST.get("price")
@@ -153,6 +154,7 @@ def edit_product(request, id):
         category = request.POST.get("category")
         author = request.POST.get("author")
         description = request.POST.get("description")
+        offer = request.POST.get("offer_name")
 
         if name == "":
             messages.error(request, "Product name can't be null!")
@@ -160,6 +162,7 @@ def edit_product(request, id):
         
         author_instance = Authors.objects.get(id=author)
         categoriy_instance = Category_list.objects.get(id=category)
+        offer_instance = Offer.objects.get(id=offer)
 
         product = Product.objects.filter(id=id).update(
                     product_name = name,
@@ -169,6 +172,7 @@ def edit_product(request, id):
                     stock = stock,
                     author = author_instance,
                     category = categoriy_instance,
+                    offer = offer_instance,
             )
         messages.success(request, f'{name} updated successfully!')
         return redirect(admin_products)
@@ -176,7 +180,9 @@ def edit_product(request, id):
     product = Product.objects.get(id=id)
     categories = Category_list.objects.all()
     authors = Authors.objects.all()
+    offers = Offer.objects.all()
     context = {
+        "offers": offers,
         "product": product,
         "categories" : categories,
         "authors" : authors,

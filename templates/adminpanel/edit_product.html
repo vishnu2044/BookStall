@@ -72,7 +72,7 @@
                             </div>
                         </div>
                         
-                        <div class="d-flex">
+                        {% comment %} <div class="d-flex">
 
                             <div class="form-group col-12">
                                 <label>Secondary Image</label>
@@ -84,25 +84,43 @@
                                     placeholder="Upload Image" 
                                 /> 
                             </div>
-                        </div>
+                        </div> {% endcomment %}
 
                     <div class="d-flex">
                         <div class="form-group col-6">
                             <label for="exampleSelectGender">Categories</label>
                             <select class="form-control" id="category" name='category'>
+                                <option value="{{ product.category.id }}">{{ product.category.category_name }}</option>
+
                             {% for category in categories %}
                               <option value="{{ category.id }}">{{ category.category_name }}</option>
                               {% endfor %}
+
                             </select>
                         </div>
                         <div class="form-group col-6">
                             <label for="exampleSelectGender">Authors</label>
                             <select class="form-control" id="author" name='author'>
-                            {% for author in authors %}
-                              <option value="{{ author.id }}">{{ author.author_name }}</option>
-                            {% endfor %}
+                                <option value="{{ product.author.id }}">{{ product.author.author_name }}</option>
+
+                                {% for author in authors %}
+                                <option value="{{ author.id }}">{{ author.author_name }}</option>
+                                {% endfor %}
+
                             </select>
                         </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="form-group col-12">
+                            <label for="exampleInputPassword1">offers</label>
+                            <select class="form-control" id="offer_name" name='offer_name'>
+                                <option value="{{ product.offer.id }}">{{ product.offer.name }}</option>
+                                {% for offer  in offers %}
+                                <option value="{{ offer.id }}">{{ offer.name }}</option>
+                                {% endfor %}
+
+                            </select>
+                          </div>
                     </div>
                     <div class="d-flex">
                         <div class="form-group col-12">

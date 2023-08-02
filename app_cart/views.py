@@ -76,7 +76,7 @@ def delete_cart(request, product_id):
     cart_items.delete()
     return redirect('cart')
 
-def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount=0, cart=None, coupons=None):
+def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount=0, cart=None, coupons=None, subtotal=0, og_total=0,):
     try:
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user)
@@ -85,9 +85,21 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
             cart_items = CartItem.objects.filter(cart=cart)
 
         for cart_item in cart_items:
-            total += cart_item.sub_total()
+            og_total += cart_item.sub_total()
+            if cart_item.product.offer:
+                total += cart_item.sub_total_with_offer()
+            elif cart_item.product.category.offer:
+                total += cart_item.sub_total_with_category_offer()
+            else:
+                total += cart_item.sub_total()
+
             quantity += cart_item.quantity
             count += 1
+            subtotal = total
+            discount_amnt = og_total - total
+            
+        print("*")
+        
 
     except CartItem.DoesNotExist:
         # Handle the case where no cart items exist for the user or session
@@ -114,6 +126,8 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
             cart = Cart.objects.get(session_id= _session_id(request))
             if discount_amount > coupon.max_discount:
                 discount_amount = coupon.max_discount
+
+            subtotal = total
             total -= discount_amount
             cart.coupon = coupon
             cart.save()
@@ -125,6 +139,8 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
             messages.error(request, 'coupon not found')
 
     context = {
+        "discount_amnt": discount_amnt,
+        "og_total": og_total,
         "total": total,
         "quantity": quantity,
         "cart_items": cart_items,
@@ -132,6 +148,7 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
         "coupons": coupons,
         "cart": cart,
         "discount_amount": discount_amount,
+        "sub_total": subtotal,
     }
 
     return render(request, "temp_home/cart.html", context)

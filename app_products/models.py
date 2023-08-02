@@ -29,9 +29,13 @@ class Product(models.Model):
     def __str__(self):
         return self.product_name
 
+    def get_offer_price(self):
+        return int((self.price) - (self.price * self.offer.off_percent / 100))
+    
+    def get_offer_price_by_category(self):
+        return int((self.price) - (self.price * self.category.offer.off_percent / 100))
 
-
-
+ 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = models.ImageField(upload_to = 'product')
