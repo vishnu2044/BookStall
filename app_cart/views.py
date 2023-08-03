@@ -76,7 +76,7 @@ def delete_cart(request, product_id):
     cart_items.delete()
     return redirect('cart')
 
-def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount=0, cart=None, coupons=None, subtotal=0, og_total=0,):
+def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount=0, cart=None, coupons=None, subtotal=0, og_total=0,discount_amnt=0):
     try:
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user)
@@ -138,6 +138,8 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
         except:
             messages.error(request, 'coupon not found')
 
+
+
     context = {
         "discount_amnt": discount_amnt,
         "og_total": og_total,
@@ -152,3 +154,5 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
     }
 
     return render(request, "temp_home/cart.html", context)
+
+

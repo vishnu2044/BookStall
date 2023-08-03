@@ -23,7 +23,13 @@
                         <li>
                           <a href="#">{{ cart_item.product.product_name }}
                             <span class="middle">{{ cart_item.quantity }} </span>
-                            <span class="last">₹ {{ cart_item.product.price }}</span>
+                            {% if cart_item.product.offer %}
+                            <span class="last">₹ {{ cart_item.sub_total_with_offer }}</span>
+                            {% elif cart_item.product.category.offer %}
+                            <span class="last">₹ {{ cart_item.sub_total_with_category_offer }}</span>
+                            {% else %}
+                            <span class="last">₹ {{ cart_item.sub_total }}</span>
+                            {% endif %}
                           </a>
                         </li>
                         {% endfor %}
@@ -32,7 +38,12 @@
                       <ul class="list list_2">
                         <li>
                           <a href="#">Subtotal
-                            <span>₹ {{ order.order_total }}</span>
+                            <span>₹ {{ og_total }}</span>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">Coupon offer
+                            <span>₹ {{ discount_amount }}</span>
                           </a>
                         </li>
                         <li>
@@ -42,7 +53,7 @@
                         </li>
                         <li>
                           <a href="#">Total
-                            <span>{{ order.order_total }}</span>
+                            <span>{{ total }}</span>
                           </a>
                         </li>
                       </ul>

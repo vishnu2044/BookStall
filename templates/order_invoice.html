@@ -58,9 +58,9 @@
                                     <tr>
                                         <td class="center">{{ forloop.counter }}</td>
                                         <td class="left strong">{{ order_item.product.product_name }}</td>
-                                        <td class="right">₹ {{ order_item.product.price }}</td>
+                                        <td class="right">₹ {{ order_item.product_price }}</td>
                                         <td class="center">{{ order_item.quantity }}</td>
-                                        <td class="right">₹ {{ order_item.total_price }}</td>
+                                        <td class="right">₹ {{ order_item.sub_total }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -78,23 +78,13 @@
                                 <tbody>
                                     <tr>
                                         <td class="left">
-                                            <strong class="text-dark">Subtotal</strong>
-                                        </td>
-                                        <td class="right">₹ {{ order.order_total }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="left">
-                                            <strong class="text-dark">Discount (20%)</strong>
-                                        </td>
-                                        <td class="right">$5,761.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="left">
                                             <strong class="text-dark">Total</strong>
                                         </td>
                                         <td class="right">
                                             <strong class="text-dark">₹ {{ order.order_total }}</strong>
                                         </td>
+                                    </tr>
+                                    <tr><td class="right">You saved  {{ order.discount_amount }} from this order</td>
                                     </tr>
                                 </tbody>
                             </table>

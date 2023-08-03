@@ -133,13 +133,13 @@ def sorting_products(request):
     low_to_high = request.GET.get('low_to_high')
 
     if a_to_z:
-        products = Product.objects.filter(is_available=True).order_by('product_name')
+        products = products.order_by('product_name')
     elif z_to_a:
-        products = Product.objects.filter(is_available=True).order_by('-product_name')
+        products =  products.order_by('-product_name')
     elif high_to_low:
-        products = Product.objects.filter(is_available=True).order_by('-price')
+        products =  products.order_by('-price')
     elif low_to_high:
-        products = Product.objects.filter(is_available=True).order_by('price')
+        products =  products.order_by('price')
 
     per_page = 6
     page_number = request.GET.get('page')

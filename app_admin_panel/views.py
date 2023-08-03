@@ -134,11 +134,11 @@ def adminlogin(request):
 
         if not username.strip():
             messages.error(request, 'Please enter username.')
-            return redirect('admin_login')
+            return redirect(adminlogin)
 
         if not password.strip():
             messages.error(request, 'Please enter password.')
-            return redirect('admin_login')
+            return redirect(adminlogin)
 
         user = authenticate(username=username, password=password)
 
@@ -148,10 +148,10 @@ def adminlogin(request):
             return redirect('admin_dashboard')
         else:
             messages.error(request, 'Invalid superuser credentials')
-            return redirect('admin_login')
+            return redirect(adminlogin)
 
     if request.user.is_authenticated and request.user.is_superuser:
-        return redirect('admin_dashboard')
+        return redirect(admin_dashboard)
 
     return render(request, 'adminpanel/admin_login.html')
 

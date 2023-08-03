@@ -16,7 +16,7 @@ def _session_id(request):
     return cart  
 
 # payment for cashon delivery 
-def payments(request):
+def payments(request, total=0, ):
     if request.user.is_authenticated:
         payment_method = PaymentMethod.objects.get(id=1)
         payment = Payment(
@@ -49,16 +49,21 @@ def payments(request):
                 status = 'accepted',
             )
             orderitem.save()
-            total += cart_item.sub_total()
+
+            total += orderitem.sub_total()
+
+
         #reduce the stock of ordered product.
             product = Product.objects.get(id=cart_item.product.id)
             product.stock -= cart_item.quantity
             product.save()
-
+        print("*******************", total, "******************************")
         cart = Cart.objects.get(session_id=_session_id(request))
         discount_amount = total * cart.coupon.off_percent / 100
         if discount_amount > cart.coupon.max_discount:
             discount_amount = cart.coupon.max_discount
+        if discount_amount:
+            total -= discount_amount
         print("*******************************************", discount_amount,"****************************")
 
         CartItem.objects.filter(user=request.user).delete()
@@ -79,6 +84,7 @@ def payments(request):
         order_item = OrderItem.objects.filter(user=request.user)
 
         context = {
+            "total": total,
             "order": order,
             "order_items": order_item,
         }
@@ -94,17 +100,26 @@ def place_order(request):
         total = 0
         cart_items = CartItem.objects.filter(user = current_user)
         cart_count = cart_items.count()
+        og_total = 0
         for cart_item in cart_items:
             if cart_item.quantity > cart_item.product.stock:
                 print("cart item out of stock")
                 return redirect('cart')
-            total += cart_item.sub_total()
+            og_total += cart_item.sub_total()
+            if cart_item.product.offer:
+                total += cart_item.sub_total_with_offer()
+            elif cart_item.product.category.offer:
+                total += cart_item.sub_total_with_category_offer()
+            else:
+                total += cart_item.sub_total()
         
         cart = Cart.objects.get(session_id=_session_id(request))
-        discount_amount = total * cart.coupon.off_percent / 100
-        if discount_amount > cart.coupon.max_discount:
-            discount_amount = cart.coupon.max_discount
-        total -= discount_amount
+        discount_amount = 0
+        if cart.coupon:
+            discount_amount = total * cart.coupon.off_percent / 100
+            if discount_amount > cart.coupon.max_discount:
+                discount_amount = cart.coupon.max_discount
+            total -= discount_amount
 
         if cart_count <= 0:
             return redirect('home')
@@ -119,6 +134,7 @@ def place_order(request):
         data.user = current_user
         data.address = address
         data.order_total = total
+        data.discount_amount = discount_amount
         data.save()
         order = Order.objects.get(user = current_user, 
                                   status = data.status, 
@@ -130,6 +146,9 @@ def place_order(request):
         payment = client.order.create({"amount" : total * 100, 'currency': "INR", "payment_capture" : 1})
 
         context = {
+            'total' : total,
+            'og_total' : og_total,
+            'discount_amount' : discount_amount,
             'order' : order,
             'cart_items' : cart_items,
             "payment" : payment,
@@ -164,7 +183,7 @@ def payment_success(request, total=0):
                 product_price = cart_item.product.get_offer_price_by_category()
             else:
                 product_price = cart_item.product.price
-                
+            print("****************", product_price, "***********************")
             orderitem = OrderItem(
                 user = request.user,
                 order = order,
@@ -184,6 +203,7 @@ def payment_success(request, total=0):
 
         order = Order.objects.filter(user=request.user).order_by('-id').first()
         order_item = OrderItem.objects.filter(user=request.user)
+        CartItem.objects.filter(user=request.user).delete()
 
         context = {
             "order": order,
@@ -269,5 +289,4 @@ def order_invoice(request, id):
         "order": order,
         "order_items": order_items,
     }
-
     return render(request, 'order_invoice.html', context)

@@ -70,7 +70,7 @@
                     {% for cart_item in cart_items %}
                     <tr>
                       <td>{{ forloop.counter }}</td>
-                      <td>{{ cart_item.product.product_name }} </td>
+                      <td>{{ cart_item.product.product_name }}</td>
                       {% if cart_item.product.offer %}
                       <td>{{ cart_item.product.get_offer_price }}</td>
                       {% elif cart_item.product.category.offer %}
@@ -84,19 +84,14 @@
                             <path fill-rule="evenodd" d="M7.646 2.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 3.707 2.354 9.354a.5.5 0 1 1-.708-.708l6-6z"/>
                             <path fill-rule="evenodd" d="M7.646 6.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 7.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
                           </svg>
-                          
-                      </a> 
-    
-                        {{ cart_item.quantity }} 
-                       
+                        </a>
+                        {{ cart_item.quantity }}
                         <a href="{% url 'remove_cart' cart_item.product.id %}">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-chevron-double-down" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
                             <path fill-rule="evenodd" d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
                           </svg>
-                          
-                      </a>
-                    </td>
+                        </a>
                       </td>
                       <td>
                         <a href="{% url 'delete_cart' cart_item.product.id %}" class="genric-btn danger circle">Delete<span
@@ -104,20 +99,7 @@
                       </td>
                     </tr>
                     {% endfor %}
-                    </tr>
-                    {% comment %} <tr class="bottom_button">
-                      <td>
-                        <a class="btn_1" href="{% url 'shop' %}">Shop</a>
-                      </td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <div class="cupon_text float-right">
-                          <a class="btn_1" href="#">Close Coupon</a>
-                        </div>
-                      </td>
-                    </tr> {% endcomment %}
+
                     <tr>
                       <td></td>
                       <td></td>
