@@ -30,6 +30,7 @@
                               <th>Prodcut Name</th>
                               <th>Status</th>
                               <th></th>
+                              <th>order details</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -38,6 +39,7 @@
                               <td>{{ forloop.counter }}</td>
                               <td>{{ order_item.product.product_name }}</td>
                               <td> {{ order_item.status }}</td>
+                              
                               {% if order_item.status == "cancelled" or order_item.status == "Cancelled" or order_item.status == "delivered" or order_item.status == "Delivered" %}
                               <td> 
                                 <a href="{% url 'product_details' order_item.product.id %}" class="genric-btn info radius d-flex col-6"> Shop </a>
@@ -47,6 +49,10 @@
                                 <a href="{% url 'user_order_cancel' order_item.id %}" class="genric-btn danger radius d-flex col-6">Cancel</a>
                               </td> 
                               {% endif %}
+                              <td>
+                                <a href="{% url 'user_order_detail' order_item.id %}" class="genric-btn primary radius d-flex col-6">Details  </a>
+
+                              </td>
                             </tr>     
                             {% endfor %}
 

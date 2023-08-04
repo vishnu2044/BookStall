@@ -275,6 +275,13 @@ def user_order_cancel(request, id):
     return redirect(user_order_list )
 
 
+def user_order_detail(request, id):
+    order_item = OrderItem.objects.get(id=id)
+    context = {
+        'order_item': order_item
+    }
+    return render(request, 'temp_home/order_item_details.html', context)
+
 
 def order_invoice(request, id):
     order = Order.objects.get(id=id, user = request.user)

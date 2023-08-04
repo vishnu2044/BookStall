@@ -3,6 +3,7 @@ from app_category.models import Category_list
 from app_authors.models import Authors
 from django.urls import reverse
 from app_offer.models import Offer
+from django.contrib.auth.models import User
 # Create your models here.
 
 class Product(models.Model):
@@ -40,4 +41,10 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     image = models.ImageField(upload_to = 'product')
 
- 
+
+class ProductReview(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    rating = models.IntegerField(default=0)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

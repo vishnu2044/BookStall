@@ -5,6 +5,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from app_authors.models import *
 
+
 # Create your views here.
 def shop(request):
   
@@ -33,7 +34,7 @@ def shop(request):
         "authors": authors,
         "products": products,
         "products_old_books" : products[3:],
-        "products_popular" : products[2:5], 
+        "products_popular" : products[2:5],
         "cart_items" : cart_items,
     }
     
@@ -42,7 +43,10 @@ def shop(request):
 
 def product_details(request, id):
     product = Product.objects.get(id=id)
+    product_reviews = ProductReview.objects.filter(product = product)
+    print("***********************", product_reviews , "**********************")
     context = {
+        "product_reviews": product_reviews,
         "product": product,
     }
     return render(request, 'temp_home/product_details.html', context)

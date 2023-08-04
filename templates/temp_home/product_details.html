@@ -58,53 +58,54 @@
 
 
         <div class="d-flex">
-         <div class="col-8">
-            <div>
-               <div class="comment-list" style="background-color: rgb(222, 222, 222)">
-                  <div class="single-comment justify-content-between d-flex">
-                     <div class="user justify-content-between d-flex">
-                        <div class="thumb">
-                           <img src="/static/assets/img/comment/comment_1.png" alt="">
+
+            <div class="col-8" style="background-color: rgb(255, 255, 255); border: 2px solid rgb(237, 237, 237);">
+                <h2>reviews</h2>
+                
+                <div class="col-12">
+                    {% for review in product_reviews %}
+                    <div class="comment-list" style="background-color: rgb(255, 255, 255); border: 2px solid rgb(246, 242, 242);" >
+                        <div class="single-comment justify-content-between d-flex">
+                            <div class="user justify-content-between p-3">
+                                <div class="desc">
+                                    <div class="d-flex align-items-center"> <!-- Add this div for icon -->
+                                        <i class="fa fa-user-circle"></i> <!-- Assuming you're using Font Awesome for icons -->
+                                        <h5 class="ml-2">{{ review.user.first_name }} {{ review.user.last_name }}</h5>
+                                    </div>
+                                    <p class="comment">{{ review.text }}</p>
+                                    <div class="reply-btn">
+                                        <h6 class='text-black'>{{ review.created_at }}</h6>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="desc">
-                           <h5>Emily</h5>
-                           <p class="comment">
-                              Multiply sea night grass fourth day sea lesser rule open subdue female fill which them
-                              Blessed, give fill lesser bearing multiply sea night grass fourth day sea lesser
-                           </p>
-                           <div class="d-flex justify-content-between">
-                              <div class="d-flex align-items-center">
-                                 <h5>
-                                    <a href="#">Emilly Blunt</a>
-                                 </h5>
-                                 <p class="date">December 4, 2017 at 3:12 pm </p>
-                              </div>
-                              <div class="reply-btn">
-                                 <a href="#" class="btn-reply text-uppercase">reply</a>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+                    </div>
+                    {% endfor %}
+                    <br>
+                    <div class="form-group col-12">
+                        <button  class="genric-btn primary circle">More comments</button>
+                    </div>
+                </div>
+                
+                <br>
 
             </div>
 
-            </div>
-
-            <div class="col-lg-6 col-lx-4 ">
-               <div class="single_confirmation_details p-4" style="background-color: rgb(255, 255, 255)">
+            <div class="col-4" style="background-color: rgb(255, 255, 255); border: 2px solid rgb(246, 242, 242);" >
+               <div class=" p-4" style="background-color: rgb(255, 255, 255)">
                  <h4>Add a review</h4>
-                 <form class="form-contact contact_form" action="" method="post" id="" >
-                  <div class="row">
-                      <div class="col-12">
-                          <div class="form-group">
-                              <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Message'" placeholder=" Enter Message"></textarea>
-                          </div>
-                      </div>
+                 <form class="form-contact contact_form" action="{% url 'user_product_review' product.id %}" method="post">
+                    {% csrf_token %}
+                  <div class="row col-12 d-flex">
+                        <div class="form-group col-12">
+                            <textarea class="form-control w-100" name="review" id="review"  rows="4"  placeholder=" Enter Message"></textarea>
+                        </div>
+                        <div class="form-group col-12">
+                            <input class="form-control valid" name="rating" id="rating" type="number" placeholder="Enter rating from 1 to 5..">
+                        </div>
                   </div>
-                  <div class="form-group mt-3">
-                      <button type="submit" class="button button-contactForm boxed-btn">Send</button>
+                  <div class="form-group col-12">
+                      <button type="submit" class="genric-btn danger circle">Send</button>
                   </div>
               </form>
                </div>

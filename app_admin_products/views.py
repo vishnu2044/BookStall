@@ -223,3 +223,24 @@ def list_product(request, id):
     product.save()
     messages.warning(request, f'Product "{name}" is listed.')
     return redirect(admin_products)
+
+
+def admin_product_reviews(request, id):
+    reviews = ProductReview.objects.filter(product = id)
+    
+    per_page = 10
+    page_number = request.GET.get('page')
+    paginator = Paginator(reviews, per_page) 
+
+    try:
+        current_page = paginator.page(page_number)
+
+    except PageNotAnInteger:
+        current_page = paginator.page(1)
+
+    except EmptyPage:
+        current_page = paginator.page(paginator.num_pages)
+    context = {
+        'reviews': current_page
+    }
+    return render(request, 'adminpanel/user_reviews_admin.html', context)
