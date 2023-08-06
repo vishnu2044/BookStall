@@ -133,8 +133,6 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
             cart.save()
             cart_item.coupon_discount = discount_amount
             cart_item
-            coupon.coupon_stock -= 1
-            coupon.save()
         except:
             messages.error(request, 'coupon not found')
 

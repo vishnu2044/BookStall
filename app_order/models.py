@@ -81,6 +81,11 @@ class OrderItem(models.Model):
     def sub_total(self):
         return self.product_price * self.quantity
 
+    def sub_total_with_offer(self):
+        return int((self.sub_total()) - (self.sub_total() * self.product.offer.off_percent) / 100)
+    
+    def sub_total_with_category_offer(self):
+        return int((self.sub_total()) - (self.sub_total() * self.product.category.offer.off_percent)/100 )
 
 
 

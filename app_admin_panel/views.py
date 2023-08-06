@@ -13,12 +13,14 @@ from django.db.models.functions import TruncMonth
 from django.db.models import F
 from django.db.models import Sum
 import calendar
+from django.db.models import Count
 # Create your views here.
 #<<<<<<<<<<<<<<<<<<<<   checks if the user is authenticated and super user  >>>>>>>>>>>>>>>>>>>>
 def super_admincheck(user):
     if user.is_authenticated and user.is_superuser:
         return True
     return False
+
 
 
 #<<<<<<<<<<<<<<<<<<<<   redirect to the admin dashboard  >>>>>>>>>>>>>>>>>>>>
@@ -70,30 +72,26 @@ def admin_dashboard(request):
         for item in delivered_items:
             revenue += (item.product_price * item.quantity )
 
-        
-
-        # <<<<<<<<<< payement methods >>>>>>>>>>>
-        ## Through razorpay  ##
         raz_total = 0
         raz_method = PaymentMethod.objects.get(id=2)  # Use get() to retrieve the specific payment method
         raz_orders = Order.objects.filter(payment__payment_method=raz_method)  # Double underscore to navigate to related fields
-        razorpay_items = OrderItem.objects.filter(order__in=raz_orders)  # Double underscore to navigate to related fields
+        razorpay_items = delivered_items.filter(order__in=raz_orders)
+  # Double underscore to navigate to related fields
 
         for item in razorpay_items:
-            raz_total += item.product_price  # Use the correct field to calculate the sum of Razorpay payments
+            raz_total += (item.product_price * item.quantity)
 
         ## Through cod  ##
         cod_total = 0
         cod_method = PaymentMethod.objects.get(id=1)  
         cod_orders = Order.objects.filter(payment__payment_method=cod_method)  
-        cod_items = OrderItem.objects.filter(order__in=cod_orders)  
-
-        # latest orders
-        order_items = OrderItem.objects.all().order_by('-id')[:5]
+        cod_items = delivered_items.filter(order__in=cod_orders)  
 
         for item in cod_items:
-            cod_total += item.product_price  
-
+            cod_total += item.product_price * item.quantity
+        
+        # latest orders
+        order_items = OrderItem.objects.all().order_by('-id')[:5]
 
         context = {
             "order_items" : order_items[:5],
@@ -195,67 +193,15 @@ def unblock_user(request, id):
 
 
 
-#<<<<<<<<<<<<<<<<<<<<  Sales report  >>>>>>>>>>>>>>>>>>>>
 
-def sales_report(request):
-    if not request.user.is_superuser:
-        return redirect(admin_dashboard)
-    
-    context = {}
-    s_date = None
-    e_date = None
 
-    start_date = None
-    end_date = None
-    if request.method == "POST":
-        start_date = request.POST.get("start_date")
-        end_date = request.POST.get("end_date")
 
-        if start_date == "" :
-            messages.error(request, 'start date not entered')
-            return redirect(sales_report)
-        if end_date == "" :
-            messages.error(request, 'end date not entered')
-            return redirect(sales_report)
-        
-        if start_date == end_date:
-            date_obj = datetime.strptime(start_date, '%Y-%m-%d')
-            order_items = OrderItem.objects.filter(order__created_at__date=date_obj.date())
-            if order_items:
-                context.update(sales = order_items, s_date = start_date, e_date = end_date)
-                messages.success(request, f'Here is the sales report as of {end_date}. ')
-                return render(request, 'adminpanel/sales.html' ,context)
-            else:
-                messages.error(request, "No data found for the specific date!")
 
-            return redirect(sales_report)
-        
-        order_items = OrderItem.objects.filter(order__created_at__gte=start_date, order__created_at__lte=end_date)
-            
-        if order_items:
-            context.update(sales = order_items, s_date = start_date, e_date = end_date)
-            messages.success(request, f'Here is the sales report covering the period from {start_date} to {end_date}.')
-        else:
-            messages.error(request, 'No data found at the specific date!')
-    
 
-    return render(request, 'adminpanel/sales.html', context)
-
-from datetime import date
-
-def today_report(request):
-    context = {}
-    today = date.today()
-    dt = str(today)
-    date_obj = datetime.strptime(dt, "%Y-%m'%d")
-    order_items = OrderItem.objects.filter(order_created_at__date = date_obj.date())
-    if order_items:
-        context.update(sales = order_items, s_date=today, e_date=today)
-        return render(request, 'adminpanel/sales.html' ,context)
-    else:
-        messages.error(request, 'no data found.')
 
 
 def base(request):
     return render(request, 'adminpanel/base.html')
+
+
 

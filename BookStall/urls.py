@@ -40,6 +40,7 @@ urlpatterns = [
     path('admin_category/', include('app_admin_category.urls')),
     path('app_admin_coupons/', include('app_admin_coupons.urls')),
     path('app_admin_coupons/', include('app_offer.urls')),
+    path('app_sales_report/', include('app_sales_report.urls')),
 
 
 

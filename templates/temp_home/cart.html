@@ -22,12 +22,9 @@
                       <!-- Small Search Bar -->
                       <form class="form-inline" action="{% url 'cart' %}" method = "POST">
                           {% csrf_token %}
-                          <div class="d-flex">
+                          <div class="">
                             <input class="genric-btn border-success radius" type="search" placeholder="Enter coupon code......." name="search" id="search" aria-label="Search">
-                            <button class="genric-btn success radius"  type="submit"> 
-                              <a href="#" class=""></a>
-                                <span class="flaticon-search"></span>
-                            </button> 
+                            <button class="genric-btn success radius"  type="submit">Apply</button> 
                           </div>
                       </form>
                   </li>

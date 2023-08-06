@@ -57,9 +57,24 @@
                                     <tr>
                                         <td class="center">{{ forloop.counter }}</td>
                                         <td class="left strong">{{ order_item.product.product_name }}</td>
-                                        <td class="right">₹ {{ order_item.product_price }}</td>
+                                        
+                                        {% if order_item.product.offer %}
+                                        <td class="right">₹ {{ order_item.product.get_offer_price }}</td>
+                                        {% elif order_item.product.category.offer %}
+                                        <td class="right">₹ {{ order_item.product.get_offer_price_by_category }}</td>
+                                        {% else %}
+                                        <td class="right">₹ {{ order_item.product.price }}</td>
+                                        {% endif %}
+
                                         <td class="center">{{ order_item.quantity }}</td>
-                                        <td class="right">₹ {{ order_item.sub_total }}</td>
+
+                                        {% if order_item.product.offer %}
+                                        <td class="right">₹ {{ order_item.product.get_offer_price }}</td>
+                                        {% elif order_item.product.category.offer %}
+                                        <td class="right">₹ {{ order_item.product.get_offer_price_by_category }}</td>
+                                        {% else %}
+                                        <td class="right">₹ {{ order_item.product.price }}</td>
+                                        {% endif %}
                                     </tr>
                                 </tbody>
                             </tbody>
@@ -76,13 +91,18 @@
                                             <strong class="text-dark">Total</strong>
                                         </td>
                                         <td class="right">
-                                            <strong class="text-dark">₹ {{ order.order_total }}</strong>
+                                            <strong class="text-dark">₹ {{ order_item.order.order_total }}</strong>
                                         </td>
                                     </tr>
-                                    <tr><td class="right">You saved  {{ order_item.order.discount_amount }} from this order</td>
-                                    </tr>
+
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    <div class="d-print-none mt-4">
+                        <div class="float-end">
+                            <a href="javascript:window.print()" class="btn btn-success me-1"><i class="fa fa-print"></i></a>
+                            <a href="#" class="btn btn-primary w-md">Send</a>
                         </div>
                     </div>
                 </div>

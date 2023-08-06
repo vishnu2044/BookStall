@@ -65,6 +65,7 @@ def payments(request, total=0, ):
                 discount_amount = cart.coupon.max_discount
             if discount_amount:
                 total -= discount_amount
+            
         print("*******************************************", discount_amount,"****************************")
 
         CartItem.objects.filter(user=request.user).delete()
@@ -122,7 +123,10 @@ def place_order(request):
             if discount_amount > cart.coupon.max_discount:
                 discount_amount = cart.coupon.max_discount
             total -= discount_amount
-
+            coupon = Coupon.objects.get(id = cart.coupon.id)
+            coupon.coupon_stock -= 1
+            coupon.save()
+            
         if cart_count <= 0:
             return redirect('home')
 
