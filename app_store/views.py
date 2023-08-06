@@ -144,20 +144,12 @@ def sorting_products(request):
         products =  products.order_by('-price')
     elif low_to_high:
         products =  products.order_by('price')
+    else:
+        products = Product.objects.filter(is_available=True)
 
-    per_page = 6
-    page_number = request.GET.get('page')
-    paginator = Paginator(products, per_page)
-
-    try:
-        current_page = paginator.page(page_number)
-    except PageNotAnInteger:
-        current_page = paginator.page(1)
-    except EmptyPage:
-        current_page = paginator.page(paginator.num_pages)
 
     context = {
-        "current_page": current_page,
+        "current_page": products,
 
     }
 

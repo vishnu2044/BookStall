@@ -32,7 +32,6 @@ def get_month_name(month_number):
 def admin_dashboard(request):
     if request.user.is_authenticated and request.user.is_superuser:
        
-       
         order_count = OrderItem.objects.count()
         # order_count = delivered_item.count()
         product_count = Product.objects.count()
@@ -117,14 +116,11 @@ def admin_dashboard(request):
             'cod_total' : cod_total,
 
 
-            'sales_report' : sales_report,
-
-           
+            'sales_report' : sales_report,  
         }
         
         return render(request, 'adminpanel/ad_dashboard.html', context)
     return render(request, 'adminpanel/admin_login.html')
-
 
 #<<<<<<<<<<<<<<<<<<<<   admin login function  >>>>>>>>>>>>>>>>>>>>
 def adminlogin(request):
@@ -209,6 +205,8 @@ def sales_report(request):
     s_date = None
     e_date = None
 
+    start_date = None
+    end_date = None
     if request.method == "POST":
         start_date = request.POST.get("start_date")
         end_date = request.POST.get("end_date")
@@ -236,14 +234,28 @@ def sales_report(request):
             
         if order_items:
             context.update(sales = order_items, s_date = start_date, e_date = end_date)
+            messages.success(request, f'Here is the sales report covering the period from {start_date} to {end_date}.')
         else:
             messages.error(request, 'No data found at the specific date!')
     
-    messages.success(request, f'Here is the sales report covering the period from {start_date} to {end_date}.')
+
     return render(request, 'adminpanel/sales.html', context)
 
+from datetime import date
 
+def today_report(request):
+    context = {}
+    today = date.today()
+    dt = str(today)
+    date_obj = datetime.strptime(dt, "%Y-%m'%d")
+    order_items = OrderItem.objects.filter(order_created_at__date = date_obj.date())
+    if order_items:
+        context.update(sales = order_items, s_date=today, e_date=today)
+        return render(request, 'adminpanel/sales.html' ,context)
+    else:
+        messages.error(request, 'no data found.')
 
 
 def base(request):
     return render(request, 'adminpanel/base.html')
+

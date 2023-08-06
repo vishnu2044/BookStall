@@ -42,10 +42,10 @@
                 <div class="confirmation_part col-3" >
                     <br>
                     <h4>Sorting </h4>
-                    <form action="{% url 'sorting_products' %}" method="GET">
+                    <form id="sorting-form" action="{% url 'sorting_products' %}" method="GET">
                         <div class="default-select">
-                            <select name="a-z" id="select1">
-                                <option value="">order by</option>
+                            <select name="sort" id="select1">
+                                <option value="">Order by</option>
                                 <option value="a-z">A - Z</option>
                                 <option value="z-a">Z - A</option>
                                 <option value="high_to_low">Price High to low</option>
@@ -54,9 +54,37 @@
                         </div>
                         <br>
                         <div class="col-md-12">
-                            <button class="btn_3 col-md-12 text-center" type="submit">Filter</button>
+                            <button  class="btn_3 col-md-12 text-center" type="submit">Sort</button>
                         </div>
                     </form>
+
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $('#select1').change(function() {
+                                var sort = $(this).val();
+                                var url = '{% url "sorting_products" %}';
+                                var data = {
+                                    'sort': sort
+                                };
+                                $.ajax({
+                                    type: 'GET',
+                                    url: url,
+                                    data: data,
+                                    success: function(data) {
+                                        // Handle the success response here, e.g., update the product listing
+                                        $('#product-list').html(data); // Assuming 'product-list' is the container for the product listing
+                                    },
+                                    error: function(xhr, textStatus, errorThrown) {
+                                        // Handle errors here
+                                        console.log('Error:', errorThrown);
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                    
+
                     
                     <br>
                     <h4>Filter </h4>

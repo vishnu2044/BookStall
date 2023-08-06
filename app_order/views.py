@@ -39,7 +39,7 @@ def payments(request, total=0, ):
                 product_price = cart_item.product.get_offer_price_by_category()
             else:
                 product_price = cart_item.product.price
-
+            
             orderitem = OrderItem(
                 user = request.user,
                 order = order,
@@ -59,11 +59,12 @@ def payments(request, total=0, ):
             product.save()
         print("*******************", total, "******************************")
         cart = Cart.objects.get(session_id=_session_id(request))
-        discount_amount = total * cart.coupon.off_percent / 100
-        if discount_amount > cart.coupon.max_discount:
-            discount_amount = cart.coupon.max_discount
-        if discount_amount:
-            total -= discount_amount
+        if cart.coupon:
+            discount_amount = total * cart.coupon.off_percent / 100
+            if discount_amount > cart.coupon.max_discount:
+                discount_amount = cart.coupon.max_discount
+            if discount_amount:
+                total -= discount_amount
         print("*******************************************", discount_amount,"****************************")
 
         CartItem.objects.filter(user=request.user).delete()
@@ -101,6 +102,7 @@ def place_order(request):
         cart_items = CartItem.objects.filter(user = current_user)
         cart_count = cart_items.count()
         og_total = 0
+        off_percent = None
         for cart_item in cart_items:
             if cart_item.quantity > cart_item.product.stock:
                 print("cart item out of stock")
@@ -245,7 +247,7 @@ def add_user_address(request):
 
 
 def user_order_list(request):
-    order_items = OrderItem.objects.filter(user = request.user)
+    order_items = OrderItem.objects.filter(user = request.user).order_by('-id')
 
     per_page = 5
     page_number = request.GET.get('page')

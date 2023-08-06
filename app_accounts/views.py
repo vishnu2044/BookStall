@@ -335,6 +335,9 @@ def edit_user_profile(request):
         username = request.POST.get("username")
         fname = request.POST.get("firstname")
         lname = request.POST.get("lastname")
+        email = request.POST.get("email")
+        
+        
         print(username,"   ", fname,"     ", lname)
 
         if User.objects.filter(username = username).exists():
@@ -346,6 +349,7 @@ def edit_user_profile(request):
         edited_user.first_name = fname
         edited_user.username = username
         edited_user.last_name = lname
+        edited_user.email = email
         edited_user.save()
         
         messages.success(request, 'profile updated successfully.')

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from app_admin_panel.views import super_admincheck
 from app_order.models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 
 
 # Create your views here.
@@ -96,15 +97,23 @@ def order_details(request, id):
 
 def search_orders(request):
     search_text = request.POST.get("query")
+
     product = Product.objects.filter(product_name__icontains = search_text)
-    product_ids = product.values_list('id', flat=True)
-    order_items = OrderItem.objects.filter(product_id__in = product_ids)
+
+    order_id = Order.objects.filter(order_id__icontains = search_text)
+
+    username = User.objects.filter(username__icontains = search_text)
 
 
-    # context = {
-    #     "search_text" : search_text,
-    #     "order_items" : order_items
-    # }
+
+
+    combined_query = Q()
+    combined_query |= Q(product_id__in=product.values_list('id', flat=True))
+    combined_query |= Q(order_id__in=order_id.values_list('id', flat=True))
+    combined_query |= Q(user_id__in=username.values_list('id', flat=True))
+
+    order_items = OrderItem.objects.filter(combined_query)
+
     per_page = 10
     page_number = request.GET.get('page')
     paginator = Paginator(order_items, per_page) 
@@ -119,7 +128,7 @@ def search_orders(request):
         current_page = paginator.page(paginator.num_pages)
 
     context = {
-        "current_page" : current_page,
+        "current_page" : order_items,
         "order_items" : order_items
     }
     return render(request, 'adminpanel/order_list.html', context)

@@ -18,7 +18,7 @@
               <div class="single_confirmation_details">
                 <div class="col-lg-10">
                     <h5>Edit your personal details</h5>
-                    <form class="row contact_form" action="{% url 'edit_user_profile' %}" method="POST">
+                    <form class="row contact_form" id='edit-user' action-"{% url 'edit_user_profile' %}" method='POST'>
                         {% csrf_token %}
                         <div class="col-md-12 form-group">
                           <label for="">Username</label>
@@ -40,8 +40,9 @@
                           <button type="submit" class="btn_3 col-5 justify-content-center">Update</button>
                         </div>
                       </form>
-                      
-                      
+
+
+            
                   </div>
 
            
