@@ -44,12 +44,41 @@ def shop(request):
 def product_details(request, id):
     product = Product.objects.get(id=id)
     product_reviews = ProductReview.objects.filter(product = product)
+    count = 0
+    total_review = 0
+    for review in product_reviews:
+        count += 1 
+        total_review += review.rating
+    if count != 0 :
+        review_rate =  (total_review/count)
+    else:
+        review_rate = 0
 
     context = {
-        "product_reviews": product_reviews,
+        "review_rate": review_rate,
+        "product_reviews": product_reviews[:3],
         "product": product,
     }
     return render(request, 'temp_home/product_details.html', context)
+
+def all_reviews(request, id):
+    product = Product.objects.get(id=id)
+    product_reviews = ProductReview.objects.filter(product = product)
+    count = 0
+    total_review = 0
+    for review in product_reviews:
+        count += 1 
+        total_review += review.rating
+
+    review_rate =  (total_review/count)
+
+    context = {
+        "product": product,
+        "review_rate": review_rate,
+        "product_reviews": product_reviews,
+    }
+    return render(request, 'temp_home/all_reviews.html', context)
+
 
 
 def product_search(request):

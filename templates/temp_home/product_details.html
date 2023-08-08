@@ -24,7 +24,7 @@
                                                             <a href="{% url 'add_cart' product.id %}" class="btn hero-btn text-white">Add TO Cart</a>
                                                         </div>
                                                         <div class="hero__btn" data-animation="fadeInLeft" data-delay=".8s" data-duration="2000ms">
-                                                            <a href="industries.html" class="btn hero-btn text-white">Wish List</a>
+                                                            <a href="" class="btn hero-btn text-white">Wish List</a>
                                                         </div>
 
                                                     </div>
@@ -43,17 +43,23 @@
                     </div>
             </div>
         </div>
-        <div class="section-top-border">
-            <h3 class="mb-30">Description</h3>
+        <div class="section-top-border p-4">
+            <div class="row p-4 ">
+                <div class="col-10 p-4 ">
+                    <p>{{ product.product_description }}</p>
+                </div>
+            </div>
+            <h3 class="mb-30 text-white">Author: {{ product.author.author_name }}</h3>
             <div class="row">
                 <div class="col-md-3">
                     <img src="{{ product.author.author_image.url }}" alt="" class="img-fluid">
                 </div>
                 <div class="col-md-9 mt-sm-20">
-                    <p>{{ product.product_description }}</p>
+                    <p>{{ product.author.author_description }}</p>
                 </div>
             </div>
         </div>
+        
 
 
 
@@ -61,6 +67,18 @@
 
             <div class="col-8" style="background-color: rgb(255, 255, 255); border: 2px solid rgb(237, 237, 237);">
                 <h2>reviews</h2>
+
+                <h5>
+                    {% if review_rate >= 4 %}
+                        <span style="color: rgb(3, 153, 25);">Rating: {{ review_rate }}</span>
+                    {% elif review_rate >= 3 %}
+                        <span style="color: rgb(189, 199, 49);">Rating: {{ review_rate }}</span>
+                    {% elif review_rate == 0 %}
+                        <span>No reviews</span>
+                    {% else %}
+                        <span style="color: red;">Rating: {{ review_rate }}</span>
+                    {% endif %}
+                </h5>
                 
                 <div class="col-12">
                     {% for review in product_reviews %}
@@ -70,7 +88,17 @@
                                 <div class="desc">
                                     <div class="d-flex align-items-center"> <!-- Add this div for icon -->
                                         <i class="fa fa-user-circle"></i> <!-- Assuming you're using Font Awesome for icons -->
-                                        <h5 class="ml-2">{{ review.user.first_name }} {{ review.user.last_name }}</h5>
+                                        <h5 class="ml-2">{{ review.user.first_name }} {{ review.user.last_name }}, 
+                                            {% if review.rating == 5 %}
+                                                <span style="color: rgb(3, 153, 25);">Rating: {{ review.rating }}</span>
+                                            {% elif review.rating == 4 %}
+                                                <span style="color: rgb(3, 153, 25);">Rating: {{ review.rating }}</span>
+                                            {% elif review.rating == 3 %}
+                                                <span style="color: rgb(189, 199, 49);">Rating: {{ review.rating }}</span>
+                                            {% else %}
+                                                <span style="color: red;">Rating: {{ review.rating }}</span>
+                                            {% endif %}
+                                        </h5>
                                     </div>
                                     <p class="comment">{{ review.text }}</p>
                                     <div class="reply-btn">
@@ -83,7 +111,11 @@
                     {% endfor %}
                     <br>
                     <div class="form-group col-12">
-                        <button  class="genric-btn primary circle">More comments</button>
+                        {% if review_rate == 0 %}
+                        {% else %}
+                        <a href="{% url 'all_reviews' product.id %}" class="genric-btn primary circle">More Comments</a>
+                        {% endif %}
+
                     </div>
                 </div>
                 

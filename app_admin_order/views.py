@@ -84,7 +84,8 @@ def update_order_status(request, id):
     return render(order_details, context )
 
 
-
+@login_required
+@user_passes_test(super_admincheck)
 def order_details(request, id):
     order_item = OrderItem.objects.get(id=id)
     context = {
@@ -94,7 +95,8 @@ def order_details(request, id):
     return render(request, 'adminpanel/order_details.html', context)
 
 
-
+@login_required
+@user_passes_test(super_admincheck)
 def search_orders(request):
     search_text = request.POST.get("query")
 
@@ -103,9 +105,6 @@ def search_orders(request):
     order_id = Order.objects.filter(order_id__icontains = search_text)
 
     username = User.objects.filter(username__icontains = search_text)
-
-
-
 
     combined_query = Q()
     combined_query |= Q(product_id__in=product.values_list('id', flat=True))

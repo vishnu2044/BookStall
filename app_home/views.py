@@ -15,8 +15,6 @@ def home(request):
     }
     return render(request, "temp_home/home.html",context)
 
-def base(request):
-    return render(request, "temp_home/base.html")
  
 def about(request):
     return render(request, "temp_home/about.html")

@@ -195,13 +195,3 @@ def unblock_user(request, id):
 
 
 
-
-
-
-
-
-def base(request):
-    return render(request, 'adminpanel/base.html')
-
-
-

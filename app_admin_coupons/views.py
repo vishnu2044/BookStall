@@ -2,7 +2,17 @@ from django.shortcuts import render, redirect
 from app_offer.models import Coupon
 from django.contrib import messages
 from django.utils import timezone
+from django.contrib import messages
+from django.shortcuts import redirect, render
+from datetime import datetime
+from django.contrib.auth.decorators import login_required, user_passes_test
+from app_admin_panel.views import super_admincheck
+
+
+
 # Create your views here.
+@login_required
+@user_passes_test(super_admincheck)
 def coupons_list(request):
     coupons = Coupon.objects.all()
     context = {
@@ -11,10 +21,9 @@ def coupons_list(request):
     return render(request, 'adminpanel/coupon_list.html', context)
 
 
-from django.contrib import messages
-from django.shortcuts import redirect, render
-from datetime import datetime
 
+@login_required
+@user_passes_test(super_admincheck)
 def add_coupon(request):
     if request.method == "POST":
         coupon_code = request.POST.get("coupon_code")
@@ -80,6 +89,8 @@ def add_coupon(request):
     return render(request, "adminpanel/add_coupon.html")
 
 
+@login_required
+@user_passes_test(super_admincheck)
 def edit_coupon(request, id):
 
     if request.method == "POST":

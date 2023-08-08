@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from .models import Profile, UserAddress
 from app_admin_panel.views import *
 from django.db import IntegrityError
+from app_home.views import home
 # from django.contrib.auth.hashers import check_password
 import logging
 
@@ -161,7 +162,6 @@ def handle_login(request):
 
 #<<<<<<<<<<<<<<<<<<<<  To login a user using otp  >>>>>>>>>>>>>>>>>>>>
 def otp_login(request):
-
     if request.method == "POST":
         get_otp = request.POST.get('otp')
         if not get_otp:
@@ -210,8 +210,12 @@ def otp_login(request):
 #<<<<<<<<<<<<<<<<<<<<  To log out a user from the site  >>>>>>>>>>>>>>>>>>>>
 @login_required(login_url='handle_login')
 def user_logout(request):
-    logout(request)
-    return HttpResponseRedirect("/")
+    if request.user.is_authenticated:
+        logout(request)
+        return HttpResponseRedirect("/")
+    else:
+        messages.error(request, 'You need to login first')
+        return render(home)
 
 
 
@@ -222,7 +226,7 @@ def user_logout(request):
     #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
     #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
      
-     
+#<<<<<<<<<<<<<<<<<<<<  To get user profile  >>>>>>>>>>>>>>>>>>>>
 def user_profile(request):
     if request.user.is_authenticated:
 
@@ -235,11 +239,13 @@ def user_profile(request):
         }
 
         return render(request, 'temp_home/user_profile.html', context)
+    messages.error(request, 'You need to login first')
     return redirect('home')
 
+#<<<<<<<<<<<<<<<<<<<<  To change user password with using old password  >>>>>>>>>>>>>>>>>>>>
 def change_password(request):
 
-    if request.method == "POST":
+
         old_password = request.POST.get('old_password')
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
@@ -248,9 +254,31 @@ def change_password(request):
         if not user.is_authenticated:
             messages.error(request, 'please login first !')
             return redirect(request, 'handle_login')
+        
+        if new_password is None:
+            messages.error(request, 'please enter new password')
+            return redirect(change_password)
+        
+        if confirm_password is None:
+            messages.error(request, 'please confirm your  password')
+            return redirect(change_password)
+        
+        if old_password is None:
+            messages.error(request, 'please enter old password ')
+            return redirect(change_password)
+        
 
         if not user.check_password(old_password):
             messages.error(request, 'please enter the correct password !')
+            return redirect(change_password)
+        
+        if len(new_password) < 8:
+            messages.warning(request, 'password length must be greater than 8')
+            return redirect(change_password)
+        
+        
+        if old_password == new_password or old_password == confirm_password:
+            messages.warning(request, 'the new password is same as your old password please change')
             return redirect(change_password)
 
         if new_password != confirm_password:
@@ -263,10 +291,8 @@ def change_password(request):
         messages.success(request, "password changed successfully !")
         return redirect(user_profile)
 
-    else:
-        return render(request, 'temp_home/change_password.html')
 
-
+#<<<<<<<<<<<<<<<<<<<<    >>>>>>>>>>>>>>>>>>>>
 def forgot_password(request):
     if request.method == "POST":
         get_otp = request.POST.get("otp")
@@ -282,7 +308,7 @@ def forgot_password(request):
                 otp = int(random.randint(1000, 9999))
                 profile = Profile(user=user, otp=otp)
                 profile.save()
-                mess = f"Hello\t{user.username},\nYour OTP to resetting password for EyeEnvy account - {otp}\nThanks!"
+                mess = f"Hello\t{user.username},\nYour OTP to resetting password for BookStall account - {otp}\nThanks!"
                 send_mail(
                     "welcome to BookStall Verify your Email for password resetting",
                     mess,
@@ -309,12 +335,14 @@ def forgot_password(request):
 
 
 def reset_password(request):
+
     if request.method == "POST":
         pass1 = request.POST.get("pass1")
         pass2 = request.POST.get('pass2')
 
         get_mail = request.POST.get("email")
         user = User.objects.get(email = get_mail)
+
         if pass1 == pass2:
             user.set_password(pass1)
             user.save()
@@ -322,96 +350,118 @@ def reset_password(request):
             return redirect(handle_login)
 
 
+
 def edit_user_profile(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        fname = request.POST.get("firstname")
-        lname = request.POST.get("lastname")
-        email = request.POST.get("email")
-        
-        
-        print(username,"   ", fname,"     ", lname)
+    if request.user.is_authenticated:
 
-        if User.objects.filter(username = username).exists():
-            messages.error(request, "usrename is already exists!")
-            return redirect('edit_user_profile ')
+        if request.method == "POST":
+            username = request.POST.get("username")
+            fname = request.POST.get("firstname")
+            lname = request.POST.get("lastname")
+            email = request.POST.get("email")
+            
+            
+            print(username,"   ", fname,"     ", lname)
 
-
-        edited_user = request.user
-        edited_user.first_name = fname
-        edited_user.username = username
-        edited_user.last_name = lname
-        edited_user.email = email
-        edited_user.save()
-        
-        messages.success(request, 'profile updated successfully.')
-        return redirect(user_profile)
-    return render(request, 'temp_home/edit_profile.html')
+            if User.objects.filter(username = username).exists():
+                messages.error(request, "usrename is already exists!")
+                return redirect('edit_user_profile ')
 
 
-# def add_user_address_profile(request):
-#     if request.method == "POST":
-#         name = request.POST.get("name")
-#         ph_no = request.POST.get("number")
-#         house = request.POST.get("house")
-#         landmark = request.POST.get("landmark")
-#         district = request.POST.get("district")
-#         city = request.POST.get("city")
-#         state = request.POST.get("state")
-#         country = request.POST.get("country")
-#         pincode = request.POST.get("pincode")
-        
-#         UserAddress.objects.create(
-#             fullname = name,
-#             contact_number = ph_no,    
-#             user = request.user,
-#             house_name = house,
-#             landmark = landmark,
-#             city = city,
-#             district = district,
-#             state = state,
-#             country = country,
-#             pincode = pincode,
-#         ).save()
-#         return redirect(user_profile)
+            edited_user = request.user
+            edited_user.first_name = fname
+            edited_user.username = username
+            edited_user.last_name = lname
+            edited_user.email = email
+            edited_user.save()
+            
+            messages.success(request, 'profile updated successfully.')
+            return redirect(user_profile)
+        return render(request, 'temp_home/edit_profile.html')
+    else:
+        messages.error(request, 'You need to login first')
+        return redirect(home)
+
+
+def add_user_address_profile(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            name = request.POST.get("name")
+            ph_no = request.POST.get("number")
+            house = request.POST.get("house")
+            landmark = request.POST.get("landmark")
+            district = request.POST.get("district")
+            city = request.POST.get("city")
+            state = request.POST.get("state")
+            country = request.POST.get("country")
+            pincode = request.POST.get("pincode")
+            
+            UserAddress.objects.create(
+                fullname = name,
+                contact_number = ph_no,    
+                user = request.user,
+                house_name = house,
+                landmark = landmark,
+                city = city,
+                district = district,
+                state = state,
+                country = country,
+                pincode = pincode,
+            ).save()
+            return redirect(user_profile)
+        return render(request, 'temp_home/add_user_address.html')
+    else:
+        messages.error(request, 'You need to login first')
+        return redirect(home)
 
 
 def edit_user_address(request, id):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        ph_no = request.POST.get("number")
-        house = request.POST.get("house")
-        landmark = request.POST.get("landmark")
-        district = request.POST.get("district")
-        city = request.POST.get("city")
-        state = request.POST.get("state")
-        country = request.POST.get("country")
-        pincode = request.POST.get("pincode")
-        
-        UserAddress.objects.filter(id=id).update(
-            fullname = name,
-            contact_number = ph_no,    
-            user = request.user,
-            house_name = house,
-            landmark = landmark,
-            city = city,
-            district = district,
-            state = state,
-            country = country,
-            pincode = pincode,
-        )
-        messages.success(request, "address updated.")
-        return redirect(user_profile)
-        
-    address = UserAddress.objects.get(id=id)
-    context = {
-        "address": address,
-    }
-    return render(request, 'temp_home/edit_address.html', context)
+    if request.user.is_authenticated:
+
+        if request.method == "POST":
+            name = request.POST.get("name")
+            ph_no = request.POST.get("number")
+            house = request.POST.get("house")
+            landmark = request.POST.get("landmark")
+            district = request.POST.get("district")
+            city = request.POST.get("city")
+            state = request.POST.get("state")
+            country = request.POST.get("country")
+            pincode = request.POST.get("pincode")
+            
+            UserAddress.objects.filter(id=id).update(
+                fullname = name,
+                contact_number = ph_no,    
+                user = request.user,
+                house_name = house,
+                landmark = landmark,
+                city = city,
+                district = district,
+                state = state,
+                country = country,
+                pincode = pincode,
+            )
+            messages.success(request, "address updated.")
+            return redirect(user_profile)
+              
+        address = UserAddress.objects.get(id=id)
+        context = {
+            "address": address,
+        }
+        return render(request, 'temp_home/edit_address.html', context)
+    else:
+        messages.error(request, 'You need to login first')
+        return redirect(home)
+    
 
 def delete_user_address(request, id):
-    address = UserAddress.objects.get(id=id)
-    address.delete()
-    messages.success(request, "address deleted successfully.")
-    return redirect(user_profile)
+    if request.user.is_authenticated:
+
+        address = UserAddress.objects.get(id=id)
+        address.delete()
+        messages.success(request, "address deleted successfully.")
+        return redirect(user_profile)
+    else:
+        messages.error(request, 'You need to login first')
+        return redirect(home)
 
