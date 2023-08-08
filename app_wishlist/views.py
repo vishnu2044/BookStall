@@ -23,7 +23,7 @@ def add_to_wishlist(request, id):
     user = request.user
 
     if Wishlist.objects.filter(user=user, product=product).exists():
-        messages.info(request, f'{product.product_name} already in the wishlist!')
+        messages.info(request, f' "{product.product_name}" is already in the wishlist!')
         referring_url = request.META.get('HTTP_REFERER')
 
         if referring_url:
@@ -33,7 +33,7 @@ def add_to_wishlist(request, id):
     else:
         wishlist_item = Wishlist.objects.create(user=request.user, product=product)
         wishlist_item.save()
-        messages.success(request, "Added successfully!")
+        messages.success(request, f" '{ product.product_name }' Added to wishlist successfully!")
 
     # Get the referring URL
         referring_url = request.META.get('HTTP_REFERER')
@@ -62,7 +62,7 @@ def remove_from_wishlist(request, id):
     else:
         messages.warning(request, f"{product.product_name} not present in wishlist")
 
-                # Get the referring URL
+        # Get the referring URL
         referring_url = request.META.get('HTTP_REFERER')
         if referring_url:
             return redirect(referring_url)

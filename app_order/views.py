@@ -104,6 +104,7 @@ def place_order(request):
         cart_count = cart_items.count()
         og_total = 0
         off_percent = None
+        discount_amnt = 0
         for cart_item in cart_items:
             if cart_item.quantity > cart_item.product.stock:
                 print("cart item out of stock")
@@ -115,17 +116,12 @@ def place_order(request):
                 total += cart_item.sub_total_with_category_offer()
             else:
                 total += cart_item.sub_total()
-        
+
+            coupon_discount = cart_item.coupon_discount
+        offer_discount = og_total - total
+        total -= discount_amnt
+        print("************************ coupon discount : ", coupon_discount)
         cart = Cart.objects.get(session_id=_session_id(request))
-        discount_amount = 0
-        if cart.coupon:
-            discount_amount = total * cart.coupon.off_percent / 100
-            if discount_amount > cart.coupon.max_discount:
-                discount_amount = cart.coupon.max_discount
-            total -= discount_amount
-            coupon = Coupon.objects.get(id = cart.coupon.id)
-            coupon.coupon_stock -= 1
-            coupon.save()
             
         if cart_count <= 0:
             return redirect('home')
@@ -140,7 +136,8 @@ def place_order(request):
         data.user = current_user
         data.address = address
         data.order_total = total
-        data.discount_amount = discount_amount
+        data.discount_amount = offer_discount
+        data.coupon_discount = coupon_discount
         data.save()
         order = Order.objects.get(user = current_user, 
                                   status = data.status, 
@@ -152,9 +149,10 @@ def place_order(request):
         payment = client.order.create({"amount" : total * 100, 'currency': "INR", "payment_capture" : 1})
 
         context = {
+            'discount_amnt' : discount_amnt,
+            'cart' : cart,
             'total' : total,
             'og_total' : og_total,
-            'discount_amount' : discount_amount,
             'order' : order,
             'cart_items' : cart_items,
             "payment" : payment,
@@ -292,13 +290,16 @@ def user_order_detail(request, id):
 def order_invoice(request, id):
     order = Order.objects.get(id=id, user = request.user)
     order_items = OrderItem.objects.filter(order=order)
-    print("**************************", order, "************************")
-    print("**************************", order_items, "************************")
+    print("**************************", order.discount_amount, "************************")
+    print("**************************", order.coupon_discount, "************************")
 
     for order_item in order_items:
         order_item.total_price = order_item.product.price * order_item.quantity
 
+    total_discount = order.discount_amount + order.coupon_discount
+
     context = {
+        "total_discount": total_discount,
         "order": order,
         "order_items": order_items,
     }

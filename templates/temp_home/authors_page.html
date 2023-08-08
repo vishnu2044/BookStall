@@ -10,9 +10,19 @@
             <form class="form-inline" action="{% url 'search_authors' %}" method = "POST">
                 {% csrf_token %}
                 <input class="form-control form-control-sm mr-sm-2" type="search" placeholder="Search......." name="query" id="query" aria-label="Search">
-                    <button class=""  type="submit"> 
-                        <span class="flaticon-search"></span>
-                    </button>       
+                <button class="search-button" type="submit">
+                    <span class="flaticon-search"></span>
+                </button>
+                <style>
+
+                    .search-button {
+                        border: none; /* Remove the border */
+                        background-color: transparent; /* Set the background color to transparent */
+                        padding: 0; /* Remove padding if needed */
+                        cursor: pointer; /* Add a pointer cursor for better usability */
+                    }
+
+                </style>     
             </form>
         </li>
         <li class="nav-item">

@@ -53,7 +53,8 @@ class Order(models.Model):
     order_total = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=ORDER_STATUS, default='pending')
-    discount_amount = models.BigIntegerField(null=True, blank=True)
+    discount_amount = models.BigIntegerField(default=0)
+    coupon_discount = models.BigIntegerField(default=0)
 
     def __str__(self):
         return self.order_id

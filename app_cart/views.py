@@ -6,29 +6,61 @@ from django.contrib import messages
 from app_offer.models import *
 
 # Create your views here.
+
+# <<<<<<<<<<<< To create a session id for cart management >>>>>>>>>>>
 def _session_id(request):
     cart = request.session.session_key
     if not cart:
         cart = request.session.create()
     return cart
 
-
+# <<<<<<<<<<<< To add product to the cart >>>>>>>>>>>
 def add_cart(request, product_id):
+    
     product = Product.objects.get(id=product_id)
-    cart, created = Cart.objects.get_or_create(session_id=_session_id(request))
+    try:
+        cart = Cart.objects.get(session_id=_session_id(request))
+    except Cart.DoesNotExist:
+        cart = Cart.objects.create(
+            session_id = _session_id(request)
+        )
+
+    if CartItem.objects.filter(product = product).exists():
+        messages.warning(request, f" '{product.product_name}' is already in the cart ")
+        referring_url = request.META.get('HTTP_REFERER')
+        if referring_url:
+            return redirect(referring_url)
+        else:
+            return redirect(cart)
+        
 
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart)
         updated_quantity = cart_item.quantity + 1
         if updated_quantity > product.stock:
             messages.warning(request, "Sorry, this product is out of stock.")
+            referring_url = request.META.get('HTTP_REFERER')
+            if referring_url:
+                return redirect(referring_url)
+            else:
+                return redirect(cart)
+            
         else:
             cart_item.quantity = updated_quantity
             cart_item.save()
+
     except CartItem.DoesNotExist:
         if request.user.is_authenticated:
+
+
             if product.stock < 1:
                 messages.warning(request, "Sorry, this product is out of stock.")
+                referring_url = request.META.get('HTTP_REFERER')
+                if referring_url:
+                    return redirect(referring_url)
+                else:
+                    return redirect(cart)
+                
             else:
                 CartItem.objects.create(
                     product=product,
@@ -36,19 +68,38 @@ def add_cart(request, product_id):
                     cart=cart,
                     user=request.user,
                 )
+                messages.success(request, f" '{product.product_name}' added to cart")
+                referring_url = request.META.get('HTTP_REFERER')
+                if referring_url:
+                    return redirect(referring_url)
+                else:
+                    return redirect(cart)
         else:
             if product.stock < 1:
                 messages.warning(request, "Sorry, this product is out of stock.")
+                referring_url = request.META.get('HTTP_REFERER')
+                if referring_url:
+                    return redirect(referring_url)
+                else:
+                    return redirect(cart)
             else:
                 CartItem.objects.create(
                     product=product,
                     quantity=1,
                     cart=cart,
                 )
+                messages.success(request, f" '{product.product_name}' added to cart")
+                referring_url = request.META.get('HTTP_REFERER')
+                if referring_url:
+                    return redirect(referring_url)
+                else:
+                    return redirect(cart)
+        
     
     return redirect('cart')
 
 
+# <<<<<<<<<<<< To reduce the  product quantity from  the cart >>>>>>>>>>>
 def remove_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     if request.user.is_authenticated:
@@ -64,7 +115,7 @@ def remove_cart(request, product_id):
     return redirect('cart')
 
 
-
+# <<<<<<<<<<<< To delete entire product from a cart >>>>>>>>>>>
 def delete_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     if request.user.is_authenticated:
@@ -76,6 +127,7 @@ def delete_cart(request, product_id):
     cart_items.delete()
     return redirect('cart')
 
+# <<<<<<<<<<<< The cart functions and checking coupons >>>>>>>>>>>
 def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount=0, cart=None, coupons=None, subtotal=0, og_total=0,discount_amnt=0):
     try:
         if request.user.is_authenticated:
@@ -127,12 +179,17 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
             if discount_amount > coupon.max_discount:
                 discount_amount = coupon.max_discount
 
-            subtotal = total
+            
             total -= discount_amount
+            subtotal = total
+            print("******************************* total : ", total, "*******************")
             cart.coupon = coupon
             cart.save()
             cart_item.coupon_discount = discount_amount
-            cart_item
+            cart_item.save()
+            coupon = Coupon.objects.get(id=cart.coupon.id)
+            coupon.coupon_stock -= 1
+            coupon.save()
         except:
             messages.error(request, 'coupon not found')
 

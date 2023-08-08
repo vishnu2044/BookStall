@@ -42,10 +42,13 @@
                           </a>
                         </li>
                         <li>
+                          {% if cart.coupon.offer %}
                           <a href="#">Coupon offer
                             <span>₹ {{ discount_amount }}</span>
                           </a>
+                          
                         </li>
+                        {% endif %}
                         <li>
                           <a href="#">Shipping
                             <span>Flat rate: ₹ 0 </span>

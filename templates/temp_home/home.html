@@ -1,5 +1,39 @@
 {% extends 'temp_home/base.html' %}
 {% block title %} BookStall-Home {% endblock title %}
+{% block search %}
+
+    <nav>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <!-- Small Search Bar -->
+                <form class="form-inline" action="{% url 'product_search' %}" method = "POST">
+                    {% csrf_token %}
+                    <input class="form-control form-control-sm mr-sm-2" type="search" placeholder="Search......." name="query" id="query" aria-label="Search">
+                    <button class="search-button" type="submit">
+                        <span class="flaticon-search"></span>
+                    </button>
+                    <style>
+
+                        .search-button {
+                            border: none; /* Remove the border */
+                            background-color: transparent; /* Set the background color to transparent */
+                            padding: 0; /* Remove padding if needed */
+                            cursor: pointer; /* Add a pointer cursor for better usability */
+                        }
+
+                    </style>
+                      
+                </form>
+            </li>
+            <li class="nav-item">
+
+            </li>
+        </ul>
+    </nav>
+    
+    
+    
+{% endblock search %}
 
         {% block content %} 
         

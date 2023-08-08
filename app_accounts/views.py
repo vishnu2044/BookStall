@@ -46,14 +46,6 @@ def signup(request):
             if not phone_no.strip():
                 messages.error(request, "please enter your phone number")
                 return redirect('signup')
-            
-            # if not len(phone_no) < 10:
-            #     messages.error(request, "phone number must be minimum 10 numbers")
-            #     return redirect('signup')
-      
-            # if not len(phone_no) < 10:
-            #     messages.error(request, "phone number must be minimum 10 numbers")
-            #     return redirect('signup')
       
             if User.objects.filter(username = username).exists():
                 messages.error(request, "usrename is already exists!")

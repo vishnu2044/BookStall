@@ -25,7 +25,7 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity = models.FloatField()
-    is_acitve = models.BooleanField(default=True)
+    is_acitve = models.BooleanField(default=True)  
     coupon_discount = models.FloatField(null=True, blank=True)
 
     def sub_total(self):

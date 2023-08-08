@@ -84,10 +84,13 @@
                                             <strong class="text-dark">₹ {{ order.order_total }}</strong>
                                         </td>
                                     </tr>
-                                    <tr><td class="right">You saved  {{ order.discount_amount }} from this order</td>
+                                    <tr><td class="right">You saved {{ total_discount }} from this order</td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="float-end">
+                            <a href="javascript:window.print()" class="btn btn-info btn-icon-text">Download</a>
                         </div>
                     </div>
                 </div>

@@ -9,9 +9,19 @@
                 <form class="form-inline" action="{% url 'product_search' %}" method = "POST">
                     {% csrf_token %}
                     <input class="form-control form-control-sm mr-sm-2" type="search" placeholder="Search......." name="query" id="query" aria-label="Search">
-                        <button class=""  type="submit"> 
-                            <span class="flaticon-search"></span>
-                        </button>       
+                    <button class="search-button" type="submit">
+                        <span class="flaticon-search"></span>
+                    </button>
+                    <style>
+
+                        .search-button {
+                            border: none; /* Remove the border */
+                            background-color: transparent; /* Set the background color to transparent */
+                            padding: 0; /* Remove padding if needed */
+                            cursor: pointer; /* Add a pointer cursor for better usability */
+                        }
+
+                    </style>      
                 </form>
             </li>
             <li class="nav-item">
@@ -45,6 +55,7 @@
                     <form id="sorting-form" action="{% url 'sorting_products' %}" method="GET">
                         <div class="default-select">
                             <select name="sort" id="select1">
+                                
                                 <option value="">Order by</option>
                                 <option value="a-z">A - Z</option>
                                 <option value="z-a">Z - A</option>
@@ -53,36 +64,31 @@
                             </select>
                         </div>
                         <br>
-                        <div class="col-md-12">
-                            <button  class="btn_3 col-md-12 text-center" type="submit">Sort</button>
-                        </div>
                     </form>
-
-                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-                    <script type="text/javascript">
+                    <div class="col-md-12">
+                        <!-- Display the sorted products here -->
+                        <!-- You can replace this with the appropriate HTML structure for your product list -->
+                        <ul id="product-list">
+                            <!-- List of products goes here -->
+                        </ul>
+                    </div>
+                    
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
                         $(document).ready(function() {
-                            $('#select1').change(function() {
-                                var sort = $(this).val();
-                                var url = '{% url "sorting_products" %}';
-                                var data = {
-                                    'sort': sort
-                                };
-                                $.ajax({
-                                    type: 'GET',
-                                    url: url,
-                                    data: data,
-                                    success: function(data) {
-                                        // Handle the success response here, e.g., update the product listing
-                                        $('#product-list').html(data); // Assuming 'product-list' is the container for the product listing
-                                    },
-                                    error: function(xhr, textStatus, errorThrown) {
-                                        // Handle errors here
-                                        console.log('Error:', errorThrown);
-                                    }
-                                });
+                            $('#select1').on('change', function() {
+                                var selectedOption = $(this).val();
+                                
+                                // Update the URL based on the selected sorting option
+                                var sortingUrl = '{% url "sorting_products" %}?sort=' + selectedOption;
+                                
+                                // Perform the sorting by navigating to the sorting URL
+                                window.location.href = sortingUrl;
                             });
                         });
                     </script>
+                    
+                    
                     
 
                     
@@ -96,12 +102,21 @@
                                     <h6 class="mb-30"><strong>Price range</strong></h6>
                                     <div class="default-select" id="default-select">
                                         <select name="price_range">
+                                            {% if mi_price and ma_price %}
+                                            <option value="">{{ mi_price }} - {{ma_price}}</option>
+                                            <option value="0-1000">₹ 0 to ₹ 1000</option>
+                                            <option value="1000-1500">₹ 1000 to ₹ 1500</option>
+                                            <option value="1500-2000">₹ 1500 to ₹ 2000</option>
+                                            <option value="2000-2500">₹ 2000 to ₹ 2500</option>
+                                            <option value="2500-3000">₹ 2500 to ₹ 3000</option>
+                                            {% else %}
                                             <option value="">Select price range</option>
                                             <option value="0-1000">₹ 0 to ₹ 1000</option>
                                             <option value="1000-1500">₹ 1000 to ₹ 1500</option>
                                             <option value="1500-2000">₹ 1500 to ₹ 2000</option>
                                             <option value="2000-2500">₹ 2000 to ₹ 2500</option>
                                             <option value="2500-3000">₹ 2500 to ₹ 3000</option>
+                                            {% endif %}
                                         </select>
                                     </div>
                                 </div>
@@ -112,10 +127,17 @@
                                     <h6 class="mb-30"><strong>Category</strong></h6>
                                     <div class="default-select" >
                                         <select name="category" name="category" id="categorySelect">
-                                            <option value="">Select Category</option>
-                                            {% for category in categories %}
-                                            <option value="{{ category.category_name }}">{{ category.category_name }}</option>
-                                            {% endfor %}
+                                            {% if category_name %}
+                                                <option value="">{{ category_name }}</option>
+                                                {% for category in categories %}
+                                                    <option value="{{ category.category_name }}">{{ category.category_name }}</option>
+                                                {% endfor %}
+                                            {% else %}
+                                                <option value="">Select Category</option>
+                                                {% for category in categories %}
+                                                    <option value="{{ category.category_name }}">{{ category.category_name }}</option>
+                                                {% endfor %}
+                                            {% endif %}
                                         </select>
                                     </div>
                                 </div>
@@ -127,10 +149,18 @@
                                     <h6 class="mb-30"><strong>Authors</strong></h6>
                                     <div class="default-select" id="default-select">
                                         <select name="author">
-                                            <option value="">Select Author</option>
-                                            {% for author in authors %}
-                                            <option value="{{ author.author_name }}">{{ author.author_name }}</option>
-                                            {% endfor %}
+                                            
+                                            {% if author_name %}
+                                                <option value="">{{ author_name }}</option>
+                                                {% for author in authors %}
+                                                    <option value="{{ author.author_name }}">{{ author.author_name }}</option>
+                                                {% endfor %}
+                                            {% else %}
+                                                <option value="">Select Author</option>
+                                                {% for author in authors %}
+                                                    <option value="{{ author.author_name }}">{{ author.author_name }}</option>
+                                                {% endfor %}
+                                            {% endif %}
                                         </select>
                                     </div>
                                 </div>

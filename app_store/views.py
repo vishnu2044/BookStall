@@ -44,7 +44,7 @@ def shop(request):
 def product_details(request, id):
     product = Product.objects.get(id=id)
     product_reviews = ProductReview.objects.filter(product = product)
-    print("***********************", product_reviews , "**********************")
+
     context = {
         "product_reviews": product_reviews,
         "product": product,
@@ -89,6 +89,9 @@ def filtering_products(request):
     category = request.GET.get('category')
     author = request.GET.get('author')
 
+    category_obj, author_obj = None, None
+    max_price, min_price = None, None
+
     if price_range:
         min_price, max_price = map(int, price_range.split("-"))
         products = products.filter(price__gte=min_price, price__lte=max_price)
@@ -118,7 +121,23 @@ def filtering_products(request):
     except EmptyPage:
         current_page = paginator.page(paginator.num_pages)
 
+    category_name, author_name = None, None
+    mi_price, ma_price = None, None
+
+    if min_price  and max_price:
+        mi_price = min_price
+        ma_price = max_price
+
+    if category_obj:
+        category_name = category_obj
+    if author_obj:
+        author_name = author_obj
+
     context = {
+        "mi_price": mi_price,
+        "ma_price": ma_price,
+        "author_name": author_name,
+        "category_name": category_name,
         "current_page": current_page,
         "authors": authors,
         "categories": categories,
@@ -147,8 +166,12 @@ def sorting_products(request):
     else:
         products = Product.objects.filter(is_available=True)
 
+    categories = Category_list.objects.all()
+    authors = Authors.objects.all()
 
     context = {
+        "authors": authors,
+        "categories": categories,
         "current_page": products,
 
     }
