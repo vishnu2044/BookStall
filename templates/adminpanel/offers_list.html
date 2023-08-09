@@ -26,7 +26,9 @@
 
         <div class="card-body">
           <h4 class="card-title">Offers</h4>
+          {% if offers %}
           <div class="table-responsive">
+            
             <table class="table">
               <thead>
                 <tr>
@@ -58,7 +60,12 @@
               
               </tbody>
             </table>
-          </div>
+
+          </div>            
+          {% else %}
+          <h5 class="card-title">No offers added yet</h5>
+          {% endif %}
+
 
            {% comment %} <!-- Display pagination links -->
            <div class="pagination">

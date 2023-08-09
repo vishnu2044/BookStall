@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from app_cart.models import *
 from app_accounts.models import UserAddress
+from django.contrib import messages
+from app_accounts.views import handle_login
 
 # Create your views here.
 def checkout(request):
@@ -14,4 +16,7 @@ def checkout(request):
         context = {
             'addresses': address
         }
-    return render(request, 'temp_home/checkout.html', context)
+        return render(request, 'temp_home/checkout.html', context)
+    else:
+        messages.error(request, 'you need to login for place a order')
+        return redirect(handle_login)

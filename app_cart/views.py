@@ -25,13 +25,6 @@ def add_cart(request, product_id):
             session_id = _session_id(request)
         )
 
-    if CartItem.objects.filter(product = product).exists():
-        messages.warning(request, f" '{product.product_name}' is already in the cart ")
-        referring_url = request.META.get('HTTP_REFERER')
-        if referring_url:
-            return redirect(referring_url)
-        else:
-            return redirect(cart)
         
 
     try:

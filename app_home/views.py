@@ -7,7 +7,7 @@ def home(request):
     products = Product.objects.all().filter(is_available=True)
     authors = Authors.objects.all()
     context = {
-        "products_slides": products[3:],
+        "products_slides": products,
         "products": products[:3],
         "popular_products" : products[:6],
         "authors" : authors,

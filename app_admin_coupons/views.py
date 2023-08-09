@@ -30,7 +30,6 @@ def add_coupon(request):
         min_amount = request.POST.get("min_amount")
         off_percent = request.POST.get("off_percent")
         max_discount = request.POST.get("max_discount")
-        coupon_stock = request.POST.get("coupon_stock")
         expiry_date_str = request.POST.get("expairy_date")
 
         print("***************************************",expiry_date_str,"***********************")
@@ -58,11 +57,6 @@ def add_coupon(request):
         if not max_discount.isdigit() or int(max_discount) < int(off_percent):
             messages.warning(request, "Max discount must be a number greater than or equal to Off percent!")
             return redirect("add_coupon")
-
-        # Validate coupon_stock
-        if coupon_stock and (not coupon_stock.isdigit() or int(coupon_stock) < 0):
-            messages.warning(request, "Coupon stock must be a non-negative integer!")
-            return redirect("add_coupon")
         
         # Validate expiry_date
         try:
@@ -80,7 +74,6 @@ def add_coupon(request):
                     min_amount = min_amount,
                     off_percent = off_percent,
                     max_discount = max_discount,
-                    coupon_stock = coupon_stock,
                     expiry_date = expiry_date_str
                 ).save()
         messages.success(request, f'{coupon_code} added successfully !')
@@ -98,7 +91,6 @@ def edit_coupon(request, id):
         min_amount = request.POST.get("min_amount")
         off_percent = request.POST.get("off_percent")
         max_discount = request.POST.get("max_discount")
-        coupon_stock = request.POST.get("coupon_stock")
         expiry_date_str = request.POST.get("expairy_date")
 
         Coupon.objects.filter(id = id).update(
@@ -106,7 +98,6 @@ def edit_coupon(request, id):
             min_amount = min_amount,
             off_percent = off_percent,
             max_discount = max_discount,
-            coupon_stock = coupon_stock,
             expiry_date = expiry_date_str
         )
         messages.success(request, f'{coupon_code} updated succesfully.')

@@ -11,6 +11,7 @@
 
                   <h4 class="card-title">Categories</h4>
                   <p>Add, edit or delete a category</p>
+                  {% if current_page  %}
                   <div class="search-bar d-flex ">
                         <input type="text" class="form-control search-input" placeholder="Search...">
                         <button class="btn btn-primary search-button">Search</button>                  
@@ -57,6 +58,10 @@
                       </tbody>
                     </table>
                   </div>
+                  {% else %}
+                  <h4 class="card-title">No item added yet</h4>
+                  
+                  {% endif %}
                    <!-- Display pagination links -->
            <div class="pagination">
             <span class="step-links">

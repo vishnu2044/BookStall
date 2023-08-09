@@ -7,6 +7,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 import razorpay
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from app_accounts.views import handle_login
+
 
 # Create your views here.
 def _session_id(request):
@@ -94,7 +96,10 @@ def payments(request, total=0, ):
 
         return render(request, 'temp_home/confirm.html', context)
 
-    return redirect(place_order)
+    else:
+        messages.error(request, 'You need to login first')
+        return redirect(handle_login)
+    
 
 def place_order(request):
     if request.user.is_authenticated:
@@ -158,7 +163,9 @@ def place_order(request):
             "payment" : payment,
         }
         return render(request, 'temp_home/payments.html', context)
-    return redirect(request, '/')
+    else:
+        messages.error(request, 'you need to login first')
+        return redirect(handle_login)
 
 
 def payment_success(request, total=0):
@@ -216,91 +223,114 @@ def payment_success(request, total=0):
             
   
         return render(request, 'temp_home/confirm.html', context)
-    return redirect(place_order)
+    else:
+        messages.error(request, 'you need to login first')
+        return redirect(handle_login)
 
 
 
 
 def add_user_address(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        ph_no = request.POST.get("number")
-        house = request.POST.get("house")
-        landmark = request.POST.get("landmark")
-        district = request.POST.get("district")
-        city = request.POST.get("city")
-        state = request.POST.get("state")
-        country = request.POST.get("country")
-        pincode = request.POST.get("pincode")
-        
-        UserAddress.objects.create(
-            fullname = name,
-            contact_number = ph_no,    
-            user = request.user,
-            house_name = house,
-            landmark = landmark,
-            city = city,
-            district = district,
-            state = state,
-            country = country,
-            pincode = pincode,
-        ).save()
-        return redirect('place_order')
+    if request.user.is_authenticated:
+
+        if request.method == "POST":
+            name = request.POST.get("name")
+            ph_no = request.POST.get("number")
+            house = request.POST.get("house")
+            landmark = request.POST.get("landmark")
+            district = request.POST.get("district")
+            city = request.POST.get("city")
+            state = request.POST.get("state")
+            country = request.POST.get("country")
+            pincode = request.POST.get("pincode")
+            
+            UserAddress.objects.create(
+                fullname = name,
+                contact_number = ph_no,    
+                user = request.user,
+                house_name = house,
+                landmark = landmark,
+                city = city,
+                district = district,
+                state = state,
+                country = country,
+                pincode = pincode,
+            ).save()
+            return redirect('place_order')
+    else:
+        messages.error(request, 'you need to login to access this page')
+        return redirect(handle_login)
 
 
 def user_order_list(request):
-    order_items = OrderItem.objects.filter(user = request.user).order_by('-id')
+    if request.user.is_authenticated:
 
-    per_page = 5
-    page_number = request.GET.get('page')
-    paginator = Paginator(order_items, per_page)
+        order_items = OrderItem.objects.filter(user = request.user).order_by('-id')
 
-    try:
-        current_page = paginator.page(page_number)
+        per_page = 5
+        page_number = request.GET.get('page')
+        paginator = Paginator(order_items, per_page)
 
-    except PageNotAnInteger:
-        current_page = paginator.page(1)
+        try:
+            current_page = paginator.page(page_number)
 
-    except EmptyPage:
-        current_page = paginator.page(paginator.num_pages)
+        except PageNotAnInteger:
+            current_page = paginator.page(1)
 
-    context  ={
-        "current_page" : current_page,
-    } 
-    return render(request, 'temp_home/user_order_list.html', context)
+        except EmptyPage:
+            current_page = paginator.page(paginator.num_pages)
+
+        context  ={
+            "current_page" : current_page,
+        } 
+        return render(request, 'temp_home/user_order_list.html', context)
     
+    else:
+        messages.error(request, 'you need to login to access this page')
+        return redirect(handle_login)        
 
 
 def user_order_cancel(request, id):
-    order_item = OrderItem.objects.get(id=id)
-    if order_item.status == "accepted":
-        order_item.status = "Cancelled"
-        order_item.save()
-    return redirect(user_order_list )
+    if request.user.is_authenticated:
+        order_item = OrderItem.objects.get(id=id)
+        if order_item.status == "accepted":
+            order_item.status = "Cancelled"
+            order_item.save()
+        return redirect(user_order_list )
+    else:
+        messages.error(request, 'you need to login to access this page')
+        return redirect(handle_login) 
 
 
 def user_order_detail(request, id):
-    order_item = OrderItem.objects.get(id=id)
-    context = {
-        'order_item': order_item
-    }
-    return render(request, 'temp_home/order_item_details.html', context)
+    if request.user.is_authenticated:
+        order_item = OrderItem.objects.get(id=id)
+        context = {
+            'order_item': order_item
+        }
+        return render(request, 'temp_home/order_item_details.html', context)
+    else:
+        messages.error(request, 'you need to login to access this page')
+        return redirect(handle_login) 
 
 
 def order_invoice(request, id):
-    order = Order.objects.get(id=id, user = request.user)
-    order_items = OrderItem.objects.filter(order=order)
-    print("**************************", order.discount_amount, "************************")
-    print("**************************", order.coupon_discount, "************************")
+    if request.user.is_authenticated:
+        order = Order.objects.get(id=id, user = request.user)
+        order_items = OrderItem.objects.filter(order=order)
 
-    for order_item in order_items:
-        order_item.total_price = order_item.product.price * order_item.quantity
+        for order_item in order_items:
+            order_item.total_price = order_item.product.price * order_item.quantity
 
-    total_discount = order.discount_amount + order.coupon_discount
+        total_discount = order.discount_amount + order.coupon_discount
 
-    context = {
-        "total_discount": total_discount,
-        "order": order,
-        "order_items": order_items,
-    }
-    return render(request, 'order_invoice.html', context)
+        context = {
+            "total_discount": total_discount,
+            "order": order,
+            "order_items": order_items,
+        }
+        return render(request, 'order_invoice.html', context)
+    
+    else:
+        messages.error(request, 'you need to login to access this page')
+        return redirect(handle_login) 

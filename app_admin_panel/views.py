@@ -118,6 +118,7 @@ def admin_dashboard(request):
         }
         
         return render(request, 'adminpanel/ad_dashboard.html', context)
+    messages.error(request, 'Only admin can access this page !')
     return render(request, 'adminpanel/admin_login.html')
 
 #<<<<<<<<<<<<<<<<<<<<   admin login function  >>>>>>>>>>>>>>>>>>>>

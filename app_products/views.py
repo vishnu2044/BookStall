@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect
 from .models import *
 from app_home.views import home
 from app_order.models import OrderItem

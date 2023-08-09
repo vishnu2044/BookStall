@@ -1,23 +1,18 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from app_order.models import *
 from app_products.models import *
 from app_authors.models import *
-from django.db.models import Q
-from django.utils import timezone
 from datetime import timedelta
-from django.db.models import F
-from django.db.models import Sum
-import calendar
-from django.db.models import Count
 from app_admin_panel.views import *
 from datetime import date
 
 
 # Create your views here.
 #sales calculation 
-def sales_calculation(start_date, end_date):
+def sales_calculation(request, start_date, end_date):
+    if request.user.is_authenticated and request.user.is_superuser:
+
         if start_date == end_date:
             date_obj = start_date.strftime("%Y-%m-%d")
             order_items = OrderItem.objects.filter(order__created_at__date = date_obj)
@@ -64,113 +59,132 @@ def sales_calculation(start_date, end_date):
 
             }
             return calculation
-        
+    else:
+        messages.error(request, 'Only admin can access this page !')
+        return render(request, 'adminpanel/admin_login.html')     
 
 
 def sales_report(request):
-    if not request.user.is_superuser:
-        return redirect(admin_dashboard)
-    
-    context = {}
-    s_date = None
-    e_date = None
-    start_date = None
-    end_date = None
-    if request.method == "POST":
-        start_date = request.POST.get("start_date")
-        end_date = request.POST.get("end_date")
-
-        if start_date == "" :
-            messages.error(request, 'start date not entered')
-            return redirect(sales_report)
-        if end_date == "" :
-            messages.error(request, 'end date not entered')
-            return redirect(sales_report)
+    if request.user.is_authenticated and request.user.is_superuser:
+        if not request.user.is_superuser:
+            return redirect(admin_dashboard)
         
-        if start_date == end_date:
-            date_obj = datetime.strftime(start_date, '%Y-%m-%d')
-            order_items = OrderItem.objects.filter(order__created_at__date=date_obj.date())
+        context = {}
+        s_date = None
+        e_date = None
+        start_date = None
+        end_date = None
+        if request.method == "POST":
+            start_date = request.POST.get("start_date")
+            end_date = request.POST.get("end_date")
 
-            if order_items:
-                context.update(sales_calculation(start_date, end_date))
-                context.update(sales = order_items, s_date = start_date, e_date = end_date)
-                messages.success(request, f'Here is the sales report as of {end_date}. ')
-
-                return render(request, 'adminpanel/sales.html' ,context)
-            else:
-                messages.error(request, "No data found for the specific date!")
-
-            return redirect(sales_report)
-        
-        order_items = OrderItem.objects.filter(order__created_at__gte=start_date, order__created_at__lte=end_date)
+            if start_date == "" :
+                messages.error(request, 'start date not entered')
+                return redirect(sales_report)
+            if end_date == "" :
+                messages.error(request, 'end date not entered')
+                return redirect(sales_report)
             
-        if order_items:
-            context.update(sales = order_items, s_date = start_date, e_date = end_date)
-            context.update(sales_calculation(start_date, end_date))
+            if start_date == end_date:
+                date_obj = datetime.strftime(start_date, '%Y-%m-%d')
+                order_items = OrderItem.objects.filter(order__created_at__date=date_obj.date())
 
-            messages.success(request, f'Here is the sales report covering the period from {start_date} to {end_date}.')
-        else:
-            messages.error(request, 'No data found at the specific date!')
-    
+                if order_items:
+                    context.update(sales_calculation(start_date, end_date))
+                    context.update(sales = order_items, s_date = start_date, e_date = end_date)
+                    messages.success(request, f'Here is the sales report as of {end_date}. ')
 
-    return render(request, 'adminpanel/sales.html', context)
+                    return render(request, 'adminpanel/sales.html' ,context)
+                else:
+                    messages.error(request, "No data found for the specific date!")
 
+                return redirect(sales_report)
+            
+            order_items = OrderItem.objects.filter(order__created_at__gte=start_date, order__created_at__lte=end_date)
+                
+            if order_items:
+                context.update(sales = order_items, s_date = start_date, e_date = end_date)
+                context.update(sales_calculation(start_date, end_date))
+
+                messages.success(request, f'Here is the sales report covering the period from {start_date} to {end_date}.')
+            else:
+                messages.error(request, 'No data found at the specific date!')
+        
+
+        return render(request, 'adminpanel/sales.html', context)
+    else:
+        messages.error(request, 'Only admin can access this page !')
+        return render(request, 'adminpanel/admin_login.html')  
 
 
 
 def today_report(request):
-    context = {}
-    today = date.today()
-    
-    date_obj = today.strftime("%Y-%m-%d")
-    order_items = OrderItem.objects.filter(order__created_at__date = date_obj)
+    if request.user.is_authenticated and request.user.is_superuser:
 
-    if order_items:
-        context.update(sales = order_items, s_date=today, e_date=today)
-        messages.success(request, f'Here is the sales report as of {date_obj}. ')
-        context.update(sales_calculation(today, today))
+        context = {}
+        today = date.today()
+        
+        date_obj = today.strftime("%Y-%m-%d")
+        order_items = OrderItem.objects.filter(order__created_at__date = date_obj)
 
-        return render(request, 'adminpanel/sales.html' ,context)
+        if order_items:
+            context.update(sales = order_items, s_date=today, e_date=today)
+            messages.success(request, f'Here is the sales report as of {date_obj}. ')
+            context.update(sales_calculation(today, today))
+
+            return render(request, 'adminpanel/sales.html' ,context)
+        else:
+            messages.error(request, 'no data found.')
+            return render(request, 'adminpanel/sales.html')
+        
     else:
-        messages.error(request, 'no data found.')
-        return render(request, 'adminpanel/sales.html')
+        messages.error(request, 'Only admin can access this page !')
+        return render(request, 'adminpanel/admin_login.html')  
 
 
 def week_report(request):
-    context = {}
-    today = date.today()
-    week = today - timedelta(days=7)
+    if request.user.is_authenticated and request.user.is_superuser:
 
-    order_items = OrderItem.objects.filter(order__created_at__gte = week, order__created_at__lte = today)
+        context = {}
+        today = date.today()
+        week = today - timedelta(days=7)
 
-    if order_items:
-        context.update(sales = order_items, s_date = today, e_date = week)
-        context.update(sales_calculation(week, today))
-        messages.success(request, f'Here is the sales report as of last week')
-        return render(request, 'adminpanel/sales.html' ,context)
-    
+        order_items = OrderItem.objects.filter(order__created_at__gte = week, order__created_at__lte = today)
+
+        if order_items:
+            context.update(sales = order_items, s_date = today, e_date = week)
+            context.update(sales_calculation(week, today))
+            messages.success(request, f'Here is the sales report as of last week')
+            return render(request, 'adminpanel/sales.html' ,context)
+        
+        else:
+            messages.error(request, 'no data found in the last week.')
+            return render(request, 'adminpanel/sales.html')
     else:
-        messages.error(request, 'no data found in the last week.')
-        return render(request, 'adminpanel/sales.html')
+        messages.error(request, 'Only admin can access this page !')
+        return render(request, 'adminpanel/admin_login.html')  
 
 
 
 
 def month_report(request):
-    context = {}
-    today = date.today()
-    month = today - timedelta(days=30)
+    if request.user.is_authenticated and request.user.is_superuser:
+        context = {}
+        today = date.today()
+        month = today - timedelta(days=30)
 
-    order_items = OrderItem.objects.filter(order__created_at__gte = month, order__created_at__lte = today)
+        order_items = OrderItem.objects.filter(order__created_at__gte = month, order__created_at__lte = today)
 
-    if order_items:
-        context.update(sales = order_items, s_date = today, e_date = month)
-        context.update(sales_calculation(month, today))
-        print("************************************* context : ",context, "***********************************************************")
-        messages.success(request, 'Here is the sales report of last month')
-        return render(request, 'adminpanel/sales.html', context)
-    
+        if order_items:
+            context.update(sales = order_items, s_date = today, e_date = month)
+            context.update(sales_calculation(month, today))
+            messages.success(request, 'Here is the sales report of last month')
+            return render(request, 'adminpanel/sales.html', context)
+        
+        else:
+            messages.error(request, 'no data found')
+            return render(request, 'adminpanel/sales.html')
     else:
-        messages.error(request, 'no data found')
-        return render(request, 'adminpanel/sales.html')
+        messages.error(request, 'Only admin can access this page !')
+        return render(request, 'adminpanel/admin_login.html')  
 

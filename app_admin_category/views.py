@@ -52,7 +52,9 @@ def add_category(request):
             descripiton = request.POST.get('description')
             offer = request.POST.get('offer_name')
             
-            offer_id = Offer.objects.get(id=offer)
+            offer_id = None 
+            if offer:
+                offer_id = Offer.objects.get(id=offer)
             check = [name, slug]
             is_available = request.POST.get('is_available', False)
             if is_available:
@@ -75,6 +77,7 @@ def add_category(request):
                                         offer = offer_id,
                                         )
                 messages.success(request,f'Category "{name}" succesfully added')
+                return redirect(categories_list)
             else:
                 messages.error(request, f'category "{name} is already exist !')
                 return redirect(add_category)
@@ -113,7 +116,8 @@ def edit_catgory(request, id):
                         offer = offer
             )
             messages.success(request, f'{name} updated successfully')
-            return redirect('categories_list')
+
+            return redirect(categories_list)
 
         try:
             category = Category_list.objects.get(id=id)

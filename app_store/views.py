@@ -10,6 +10,8 @@ from app_authors.models import *
 def shop(request):
   
     products = Product.objects.all().filter(is_available=True)
+    products_ascending = Product.objects.all().filter(is_available=True).order_by('product_name')
+
     cart_items = CartItem.objects.all()
     Categories = Category_list.objects.all()
     authors = Authors.objects.all()
@@ -17,18 +19,23 @@ def shop(request):
     per_page = 6
     page_number = request.GET.get('page')
     paginator = Paginator(products, per_page)
+    paginator2 = Paginator(products_ascending, per_page)
 
     try:
         current_page = paginator.page(page_number)
+        current_page2 = paginator2.page(page_number)
     
     except PageNotAnInteger:
         # If the 'page' parameter is not an integer, display the first page
         current_page = paginator.page(1)
+        current_page2 = paginator2.page(1)
 
     except EmptyPage:
         current_page = paginator.page(paginator.num_pages)
+        current_page2 = paginator2.page(paginator.num_pages)
 
     context = {
+        "current_page2": current_page2,
         "current_page": current_page,
         "categories": Categories,
         "authors": authors,
@@ -175,34 +182,3 @@ def filtering_products(request):
 
     return render(request, 'temp_home/shop.html', context)
 
-
-def sorting_products(request):
-    products = Product.objects.filter(is_available=True)
-
-    a_to_z = request.GET.get('a-z')
-    z_to_a = request.GET.get('z-a')
-    high_to_low = request.GET.get('high_to_low')
-    low_to_high = request.GET.get('low_to_high')
-
-    if a_to_z:
-        products = products.order_by('product_name')
-    elif z_to_a:
-        products =  products.order_by('-product_name')
-    elif high_to_low:
-        products =  products.order_by('-price')
-    elif low_to_high:
-        products =  products.order_by('price')
-    else:
-        products = Product.objects.filter(is_available=True)
-
-    categories = Category_list.objects.all()
-    authors = Authors.objects.all()
-
-    context = {
-        "authors": authors,
-        "categories": categories,
-        "current_page": products,
-
-    }
-
-    return render(request, 'temp_home/shop.html', context)

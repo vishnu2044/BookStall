@@ -24,6 +24,7 @@
         <div class="card-body">
           <h4 class="card-title">Authors</h4>
           <div class="table-responsive">
+            {% if current_page %}
             <table class="table">
               <thead>
                 <tr>
@@ -52,6 +53,9 @@
               
               </tbody>
             </table>
+            {% else %}
+            <h5 class="card-title">no authors details added yet</h5>
+            {% endif %}
           </div>
 
            <!-- Display pagination links -->

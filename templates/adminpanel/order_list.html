@@ -28,6 +28,7 @@
 
         <div class="card-body">
           <h4 class="card-title">orders</h4>
+          {% if odders %}
           <div class="table-responsive">
             <table class="table">
               <thead>
@@ -119,6 +120,10 @@
                                   {% endif %}
                               </span>
                               </div>
+          {% else %}
+          <h5 >No orders recieved yet</h5>
+          {% endif %}
+
         </div>
       </div>
     </div>

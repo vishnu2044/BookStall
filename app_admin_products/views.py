@@ -65,7 +65,7 @@ def add_product(request):
             offer = request.POST.get('offer_name')
             description = request.POST.get("description")
 
-            if not name.strip():
+            if len(name) == 0:
                 messages.warning(request, 'please enter the prodcut name')
                 return redirect(add_product)
             
@@ -78,7 +78,8 @@ def add_product(request):
                 return redirect(add_product)
 
             try:
-                Product.objects.get(product_name = name)
+                if Product:
+                    Product.objects.get(slug = slug)
             except:
                 check = [name, slug, price, stock, description]
                 for values in check:

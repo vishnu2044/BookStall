@@ -20,13 +20,19 @@
                                                     <p data-animation="fadeInLeft" data-delay=".7s" data-duration="2000ms" >Author: {{ product.author }}</p>
                                                     <!-- Hero-btn -->
                                                     <div class="d-flex">
+                                                        {% if product.stock > 0 %}
                                                         <div class="hero__btn" data-animation="fadeInLeft" data-delay=".8s" data-duration="2000ms">
                                                             <a href="{% url 'add_cart' product.id %}" class="btn hero-btn text-white">Add TO Cart</a>
                                                         </div>
+                                                        {% else %}
                                                         <div class="hero__btn" data-animation="fadeInLeft" data-delay=".8s" data-duration="2000ms">
-                                                            <a href="" class="btn hero-btn text-white">Wish List</a>
+                                                            <a href="" class="btn hero-btn text-white">Out of stock</a>
                                                         </div>
-
+                                                        {% endif %}
+                                                    </div>
+                                                    <br>
+                                                    <div class="hero__btn" data-animation="fadeInLeft" data-delay=".8s" data-duration="2000ms">
+                                                        <a href="{% url 'add_to_wishlist' product.id %}" class="btn hero-btn text-white">Wish List</a>
                                                     </div>
 
                                                 </div>

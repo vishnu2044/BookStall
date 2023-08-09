@@ -218,8 +218,6 @@ def user_logout(request):
         return render(home)
 
 
-
-
     #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
     #<<<<<<<<<<<<<<<<<<<< --------------------- >>>>>>>>>>>>>>>>>>>>
     #<<<<<<<<<<<<<<<<<<<< user profile settings >>>>>>>>>>>>>>>>>>>>
@@ -230,12 +228,13 @@ def user_logout(request):
 def user_profile(request):
     if request.user.is_authenticated:
 
-        address = UserAddress.objects.filter(user=request.user)
+        addresses = UserAddress.objects.filter(user=request.user)
         user = request.user
+        print("************************************", addresses, "*************************")
 
         context = {
             'user' : user,
-            'addresses': address,
+            'addresses': addresses,
         }
 
         return render(request, 'temp_home/user_profile.html', context)
@@ -243,53 +242,41 @@ def user_profile(request):
     return redirect('home')
 
 #<<<<<<<<<<<<<<<<<<<<  To change user password with using old password  >>>>>>>>>>>>>>>>>>>>
-def change_password(request):
+def change_user_password(request):
+    user = request.user
+    if user.is_authenticated:
+        if request.method == "POST":
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            
 
+            if not user.check_password(old_password):
+                messages.error(request, 'please enter the correct password !')
+                return redirect(change_user_password)
+            
+            if len(new_password) < 8:
+                messages.warning(request, 'password length must be greater than 8')
+                return redirect(change_user_password)
+            
+            
+            if old_password == new_password or old_password == confirm_password:
+                messages.warning(request, 'the new password is same as your old password please change')
+                return redirect(change_user_password)
 
-        old_password = request.POST.get('old_password')
-        new_password = request.POST.get('new_password')
-        confirm_password = request.POST.get('confirm_password')
+            if new_password != confirm_password:
+                messages.error(request, "Password mismatch")
+                return redirect(request, change_user_password)
 
-        user = request.user
-        if not user.is_authenticated:
-            messages.error(request, 'please login first !')
-            return redirect(request, 'handle_login')
-        
-        if new_password is None:
-            messages.error(request, 'please enter new password')
-            return redirect(change_password)
-        
-        if confirm_password is None:
-            messages.error(request, 'please confirm your  password')
-            return redirect(change_password)
-        
-        if old_password is None:
-            messages.error(request, 'please enter old password ')
-            return redirect(change_password)
-        
-
-        if not user.check_password(old_password):
-            messages.error(request, 'please enter the correct password !')
-            return redirect(change_password)
-        
-        if len(new_password) < 8:
-            messages.warning(request, 'password length must be greater than 8')
-            return redirect(change_password)
-        
-        
-        if old_password == new_password or old_password == confirm_password:
-            messages.warning(request, 'the new password is same as your old password please change')
-            return redirect(change_password)
-
-        if new_password != confirm_password:
-            messages.error(request, "Password mismatch")
-            return redirect(request, change_password)
-
-        user.set_password(new_password)
-        user.save()
-        auth.login(request, user)
-        messages.success(request, "password changed successfully !")
-        return redirect(user_profile)
+            user.set_password(new_password)
+            user.save()
+            auth.login(request, user)
+            messages.success(request, "password changed successfully !")
+            return redirect(user_profile)
+        return render(request, 'temp_home/change_password.html')
+    else:
+        messages.error(request, 'You need to login first')
+        return redirect('home')
 
 
 #<<<<<<<<<<<<<<<<<<<<    >>>>>>>>>>>>>>>>>>>>
@@ -328,7 +315,7 @@ def forgot_password(request):
                 return render(request, "accounts/forget_password.html", {"otp": True, "user": user})
 
     if request.user.is_authenticated:
-        return redirect("/")
+        return redirect(home )
 
     return render(request, "accounts/forget_password.html")
 
@@ -396,6 +383,44 @@ def add_user_address_profile(request):
             country = request.POST.get("country")
             pincode = request.POST.get("pincode")
             
+            if len(name) == 0:
+                messages.warning(request, 'please enter name')
+                return redirect(add_user_address_profile)
+            
+            if len(ph_no) == 0:
+                messages.warning(request, 'please enter phone number')
+                return redirect(add_user_address_profile)
+            
+            if len(name) == 0:
+                messages.warning(request, 'please enter house name')
+                return redirect(add_user_address_profile)
+            
+            if len(landmark) == 0:
+                messages.warning(request, 'please enter your landmark')
+                return redirect(add_user_address_profile)
+            
+            if len(district) == 0:
+                messages.warning(request, 'please enter your district')
+                return redirect(add_user_address_profile)
+            
+            if len(city) == 0:
+                messages.warning(request, 'please enter your city')
+                return redirect(add_user_address_profile)
+            
+            if len(state) == 0:
+                messages.warning(request, 'please enter your sate')
+                return redirect(add_user_address_profile)
+            
+            if len(country) == 0:
+                messages.warning(request, 'please enter your country')
+                return redirect(add_user_address_profile)
+            
+            if len(pincode) == 0:
+                messages.warning(request, 'please enter your pincode')
+                return redirect(add_user_address_profile)
+
+
+            
             UserAddress.objects.create(
                 fullname = name,
                 contact_number = ph_no,    
@@ -408,6 +433,7 @@ def add_user_address_profile(request):
                 country = country,
                 pincode = pincode,
             ).save()
+            messages.success(request, 'address added success fully')
             return redirect(user_profile)
         return render(request, 'temp_home/add_user_address.html')
     else:
@@ -428,6 +454,7 @@ def edit_user_address(request, id):
             state = request.POST.get("state")
             country = request.POST.get("country")
             pincode = request.POST.get("pincode")
+
             
             UserAddress.objects.filter(id=id).update(
                 fullname = name,
