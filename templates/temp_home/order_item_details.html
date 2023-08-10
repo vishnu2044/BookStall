@@ -57,7 +57,13 @@
                                         <td class="center"> 1 </td>
                                         <td class="left strong">{{ order_item.product.product_name }}</td>
                                         <td class="center">{{ order_item.quantity }}</td>
-                                        <td class="right">₹ {{ order_item.product_price }}</td>
+                                        {% if order_item.product.category.offer %}
+                                            <td class="right">₹ {{ order_item.product.get_offer_price_by_category }}</td>
+                                        {% elif order_item.product.offer %}
+                                            <td class="right">₹ {{ order_item.product.get_offer_price }}</td>
+                                        {% else %}
+                                            <td class="right">₹ {{ order_item.product_price }}</td>
+                                        
                                     </tr>
                                 </tbody>
                             </tbody>
@@ -73,9 +79,19 @@
                                         <td class="left">
                                             <strong class="text-dark">Total</strong>
                                         </td>
+                                        {% if order_item.product.category.offer %}
                                         <td class="right">
                                             <strong class="text-dark">₹ {{ order_item.sub_total }}</strong>
                                         </td>
+                                        {% elif order_item.product.category.offer %}
+                                        <td class="right">
+                                            <strong class="text-dark">₹ {{ order_item.sub_total_with_category_offer }}</strong>
+                                        </td>
+                                        {% elif order_item.product.offer %}
+                                        <td class="right">
+                                            <strong class="text-dark">₹ {{ order_item.sub_total_with_offer }}</strong>
+                                        </td>
+                                        {% endif %}
                                     </tr>
 
                                 </tbody>

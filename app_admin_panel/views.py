@@ -196,3 +196,5 @@ def unblock_user(request, id):
 
 
 
+def error_404(request):
+    return render(request, 'adminpanel/error-404-admin.html')

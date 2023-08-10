@@ -59,8 +59,14 @@ def payments(request, total=0, ):
             product = Product.objects.get(id=cart_item.product.id)
             product.stock -= cart_item.quantity
             product.save()
-        print("*******************", total, "******************************")
-        cart = Cart.objects.get(session_id=_session_id(request))
+        discount_amount = 0
+
+        try:
+            cart = Cart.objects.get(session_id=_session_id(request))
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create(
+                session_id = _session_id(request)
+        )
         if cart.coupon:
             discount_amount = total * cart.coupon.off_percent / 100
             if discount_amount > cart.coupon.max_discount:
@@ -68,7 +74,6 @@ def payments(request, total=0, ):
             if discount_amount:
                 total -= discount_amount
             
-        print("*******************************************", discount_amount,"****************************")
 
         CartItem.objects.filter(user=request.user).delete()
 
@@ -110,6 +115,7 @@ def place_order(request):
         og_total = 0
         off_percent = None
         discount_amnt = 0
+        coupon_discount = 0
         for cart_item in cart_items:
             if cart_item.quantity > cart_item.product.stock:
                 print("cart item out of stock")
@@ -125,8 +131,12 @@ def place_order(request):
             coupon_discount = cart_item.coupon_discount
         offer_discount = og_total - total
         total -= discount_amnt
-        print("************************ coupon discount : ", coupon_discount)
-        cart = Cart.objects.get(session_id=_session_id(request))
+        try:
+            cart = Cart.objects.get(session_id=_session_id(request))
+        except Cart.DoesNotExist:
+            cart = Cart.objects.create(
+                session_id = _session_id(request)
+        )
             
         if cart_count <= 0:
             return redirect('home')
@@ -141,8 +151,7 @@ def place_order(request):
         data.user = current_user
         data.address = address
         data.order_total = total
-        data.discount_amount = offer_discount
-        data.coupon_discount = coupon_discount
+
         data.save()
         order = Order.objects.get(user = current_user, 
                                   status = data.status, 

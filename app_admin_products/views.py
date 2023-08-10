@@ -90,7 +90,9 @@ def add_product(request):
                         pass
                     author_instance = Authors.objects.get(id=author)
                     category_instance = Category_list.objects.get(id=category)
-                    offer_instance = Offer.objects.get(id=offer)
+                    offer_instance = None
+                    if offer:
+                        offer_instance = Offer.objects.get(id=offer)
                     
                     Product.objects.create(
                             product_name = name,

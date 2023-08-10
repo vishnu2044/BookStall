@@ -47,6 +47,10 @@ def signup(request):
             if not phone_no.strip():
                 messages.error(request, "please enter your phone number")
                 return redirect('signup')
+                 
+            if len(phone_no)>10:
+                messages.error(request, "phone number only contain 10 numbers")
+                return redirect('signup')
       
             if User.objects.filter(username = username).exists():
                 messages.error(request, "usrename is already exists!")
@@ -59,7 +63,7 @@ def signup(request):
             if len(username)>10:
                 messages.error(request, "username must be contain lessthan 10 characters!")
                 return redirect('signup')
-            
+
             if not firstname.strip():
                 messages.error(request, "please enter your name")
                 return redirect('signup')
@@ -330,11 +334,24 @@ def reset_password(request):
         get_mail = request.POST.get("email")
         user = User.objects.get(email = get_mail)
 
+        if not pass1.strip():
+            messages.error("please enter password")
+            return redirect(reset_password)
+
+        if not pass1.strip():
+            messages.error("please confirm password")
+            return redirect(reset_password)
+
+        if not pass1 != pass2:
+            messages.error("password mismatch!")
+            return redirect(reset_password)
+
         if pass1 == pass2:
             user.set_password(pass1)
             user.save()
             messages.success(request, 'password successfully changed')
             return redirect(handle_login)
+    return render(request, 'accounts/reset_password.html')
 
 
 
@@ -346,14 +363,27 @@ def edit_user_profile(request):
             fname = request.POST.get("firstname")
             lname = request.POST.get("lastname")
             email = request.POST.get("email")
-            
-            
-            print(username,"   ", fname,"     ", lname)
 
-            if User.objects.filter(username = username).exists():
-                messages.error(request, "usrename is already exists!")
-                return redirect('edit_user_profile ')
+            if request.user.username != username:
+                if User.objects.filter(username = username).exists():
+                    messages.error(request, "user name is already taken!")
+                    return redirect('edit_user_profile')
 
+            if not username.strip():
+                messages.error(request, "please enter username!")
+                return redirect('edit_user_profile')
+
+            if not fname.strip():
+                messages.error(request, "please enter first name!")
+                return redirect('edit_user_profile')
+
+            if not lname.strip():
+                messages.error(request, "please enter last name!")
+                return redirect('edit_user_profile')
+
+            if not email:
+                messages.error(request, "please enter email!")
+                return redirect('edit_user_profile')
 
             edited_user = request.user
             edited_user.first_name = fname

@@ -137,15 +137,7 @@
                 <div class="container col-8">
                     <div class="row product-btn justify-content-between mb-40">
                         <div class="properties__button">
-                            <!--Nav Button  -->
-                            <nav>                                                      
-                                <div class= "nav nav-tabs" id= "nav-tab" role="tablist">
-                                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">NewestArrivals</a>
-                                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false"> Ascending order</a>
-                                    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false"> jhgkjg </a>
-                                </div>
-                            </nav>
-                            <!--End Nav Button  -->
+
                         </div>
                         <!-- Grid and List view -->
                         <div class="grid-list-view">
@@ -260,96 +252,6 @@
                             </span>
                             </div>
                             <br>
-
-
-                        <!-- Card two -->
-                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            <div class="row">
-                                {% for product in current_page2 %}
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                                    <div class="single-popular-items mb-50 text-center">
-                                        <div class="popular-img">
-                                            <img src="{{ product.images.url }}" alt="">
-                                            <div class="img-cap">
-                                                <span>Add to cart</span>
-                                            </div>
-                                            <div class="favorit-items">
-                                                <span class="flaticon-heart"></span>
-                                            </div>
-                                        </div>
-                                        <div class="popular-caption">
-                                            <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
-                                            <span>$ {{ product.price }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                                
-                            </div>
-                             <!-- Display pagination links -->
-                             <div class="pagination">
-                                <span class="step-links">
-                                    {% if current_page2.has_previous %}
-                                        <a href="?page=1">&laquo; first</a>
-                                        <a href="?page={{ current_page2.previous_page_number }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
-                                                <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1z"/>
-                                              </svg>
-                                        </a>
-                                    {% endif %}
-                                    {% for i in current_page2.paginator.page_range %}
-                                        {% if i == current_page2.number %}
-                                            <span class="current">
-                                                Page {{ i }}
-                                            </span>
-                                        {% else %}
-                                            <a href="?page={{ i }}">{{ i }}</a>
-                                        {% endif %}
-                                    {% endfor %}
-    
-                                    {% if current_page2.has_next %}
-                                        <a href="?page={{ current_page2.next_page_number }}"class="text-black">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="red" class="bi bi-arrow-right-square-fill" viewBox="0 0 16 16">
-                                                <path d="M0 14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12zm4.5-6.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5a.5.5 0 0 1 0-1z"/>
-                                              </svg>
-                                              
-                                              
-                                        </a>
-                                        <a href="?page={{ current_page2.paginator2.num_pages }}">last &raquo;</a>
-                                    {% endif %}
-                                </span>
-                                </div>
-                                <br>
-    
-    
-                        </div>
-                        <!-- Card three -->
-                        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                            <div class="row">
-                                {% for product in products_popular %}
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
-                                    <div class="single-popular-items mb-50 text-center">
-                                        <div class="popular-img">
-                                            <img src="{{ product.images.url }}" alt="">
-                                            <div class="img-cap">
-                                                <span>Add to cart</span>
-                                            </div>
-                                            <div class="favorit-items">
-                                                <span class="flaticon-heart"></span>
-                                            </div>
-                                        </div>
-                                        <div class="popular-caption">
-                                            <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
-                                            <span>$ {{ product.price }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                                
-                            </div>
-                        </div> 
-                    </div>
-                    <!-- End Nav Card -->
                 </div>
             </section>
 

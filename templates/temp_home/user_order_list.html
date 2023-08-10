@@ -22,6 +22,7 @@
                   <div class="section-border single_confirmation_details p-1">
                     <h3 class="mb-30">Order Details</h3>
                     <div class="progress-">
+                      {% if current_page %}
                       <div class="progress-table">
                         <table class="table">
                           <thead>
@@ -89,6 +90,11 @@
                                                     </span>
                                                     </div>
                                                     <br>
+                      {% else %}
+                      <h5 class="mb-30">you have no orders make an order</h5>
+                      <a href="{% url 'shop' %}" class="genric-btn info radius  col-3">Shop</a>
+                      {% endif %}
+
                     </div>
                   </div>
                   

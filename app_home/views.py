@@ -20,6 +20,8 @@ def about(request):
     return render(request, "temp_home/about.html")
  
  
+def error_404_home(request):
+    return render(request, 'temp_home/error-404-home.html')
 
 
 

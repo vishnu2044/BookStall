@@ -25,8 +25,6 @@ def add_cart(request, product_id):
             session_id = _session_id(request)
         )
 
-        
-
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart)
         updated_quantity = cart_item.quantity + 1
