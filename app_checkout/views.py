@@ -3,11 +3,15 @@ from app_cart.models import *
 from app_accounts.models import UserAddress
 from django.contrib import messages
 from app_accounts.views import handle_login
+from app_cart.views import cart
 
 # Create your views here.
 def checkout(request):
     if request.user.is_authenticated:
         cart_items = CartItem.objects.filter(user=request.user)
+        if cart_items is None:
+            messages.warning(request, 'cart is empty !')
+            return redirect(cart)
         for cart_item in cart_items:
             if cart_item.quantity > cart_item.product.stock:
                 print("cart item out of stock")

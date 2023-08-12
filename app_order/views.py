@@ -147,8 +147,24 @@ def place_order(request):
         else:
             address = UserAddress.objects.filter(user=current_user).first()
 
+        order_address = OrderAddress.objects.create(
+            fullname = address.fullname,
+            contact_number = address.contact_number,
+            user = address.user,
+            house_name = address.house_name,
+            landmark = address.landmark,
+            city = address.city,
+            district = address.district,
+            state = address.state,
+            country = address.country,
+            pincode = address.pincode
+
+        )
+        order_address.save()
+
         data = Order()
         data.user = current_user
+        data.order_address = order_address
         data.address = address
         data.order_total = total
 

@@ -12,6 +12,7 @@
       <section class="cart_area ">
         <div class="container">
           <div class="cart_inner">
+            {% if wishlist_items %}
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -53,6 +54,12 @@
               </div>
             </div>
           </div>
+          {% else %}
+          <div class="cole-12  text-center p-5">
+            <h2>Your Wishlist is empty </h2>
+            <a class="btn_1" href="{% url 'shop' %}">Continue Shopping</a>
+          </div>
+          {% endif %}
           <br>
       </section>
       <!--================End Cart Area =================-->

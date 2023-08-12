@@ -11,6 +11,7 @@
     <!--================Cart Area =================-->
 
     <section class="cart_area ">
+      {% if cart_items %}
       <div class="container d-flex">
         <div class="col-4">
           <div class="single_confirmation_details p-5" style="background-color: #f0f0f0;">
@@ -50,9 +51,10 @@
         </div>
         <div class="col-8">
           <div class="single_confirmation_details" style="background-color: #f0f0f0;">
-
+            
             <div class="cart_inner">
               <div class="table-responsive">
+                
                 <table class="table">
                   <thead>
                     <tr>
@@ -97,7 +99,7 @@
                       </td>
                     </tr>
                     {% endfor %}
-
+                    {% if discount_amnt %}
                     <tr>
                       <td></td>
                       <td></td>
@@ -112,6 +114,7 @@
                       <td><h5>Discount</h5></td>
                       <td><span style="color: red;"> - {{ discount_amnt }}</span></td>
                     </tr>
+                    {% endif %}
                     {% if cart.coupon %}
                     <tr>
                       <td></td>
@@ -157,6 +160,7 @@
                   </tbody>
                 </table>
 
+
               </div>
             </div>
 
@@ -164,6 +168,14 @@
         </div>
         
       </div>
+      {% else %}
+      <div class="cole-12  text-center p-5">
+        <h2>Your cart is empty </h2>
+        <a class="btn_1" href="{% url 'shop' %}">Continue Shopping</a>
+      </div>
+      
+      {% endif %}
+
 
     </section>
     <!--================End Cart Area =================-->

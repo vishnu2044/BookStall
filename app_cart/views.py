@@ -101,8 +101,9 @@ def remove_cart(request, product_id):
     if cart_item.quantity >1:
         cart_item.quantity -=1
         cart_item.save()
-    else:
-        cart_item.delete()
+    elif cart_item.quantity ==1 :
+        messages.warning(request, 'cart item must need one quantity !')
+        return redirect('cart')
     return redirect('cart')
 
 

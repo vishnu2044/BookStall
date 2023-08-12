@@ -41,6 +41,22 @@ class Payment(models.Model):
         return self.payment_method.method
     
 
+class OrderAddress(models.Model):
+    fullname = models.CharField(max_length=150, null=True)
+    contact_number = models.CharField(max_length=12, null=True)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    house_name = models.CharField(max_length=100)
+    landmark = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    district = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    pincode = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.fullname
+
+
 class Order(models.Model):
     ORDER_STATUS = [
         ('pending', 'Pending'),
@@ -50,6 +66,7 @@ class Order(models.Model):
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, null=True, blank=True)
     order_id = models.CharField(max_length=50, default=generate_order_id, unique=True)
     address = models.ForeignKey(UserAddress, on_delete=models.SET_NULL, null=True, blank=True)
+    order_address = models.ForeignKey(OrderAddress, on_delete=models.CASCADE, null=True, blank= True)
     order_total = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=ORDER_STATUS, default='pending')
@@ -87,7 +104,6 @@ class OrderItem(models.Model):
     
     def sub_total_with_category_offer(self):
         return int((self.sub_total()) - (self.sub_total() * self.product.category.offer.off_percent)/100 )
-
 
 
 
