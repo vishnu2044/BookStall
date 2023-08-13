@@ -30,7 +30,6 @@
                       </form>
                   </li>
                   <br>
-                  <h6 class="agileits-sear-head">Available coupons..</h6>
                   {% if cart.coupon %}
                   <li style="color: green;">{{ cart.coupon.coupon_code }} applied.
                     
@@ -44,6 +43,18 @@
                   {%endfor%}
                   </ul>
                   {%endif%}
+                  <h6 class="agileits-sear-head">Available coupons..</h6>
+                  <table class="table">
+
+                    <tbody>
+                      {% for coupons in available_coupons %}
+                      <tr>
+                        <th scope="col" style="color: green;">{{ coupons.coupon_code }}</th>
+                        <th scope="col" style="color: rgb(255, 0, 0);">{{ coupons.off_percent }}%</th>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
               </ul>
           </nav>
 

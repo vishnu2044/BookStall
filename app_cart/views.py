@@ -141,8 +141,6 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
             count += 1
             subtotal = total
             discount_amnt = og_total - total
-            
-        print("*")
         
 
     except CartItem.DoesNotExist:
@@ -174,7 +172,6 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
             
             total -= discount_amount
             subtotal = total
-            print("******************************* total : ", total, "*******************")
             cart.coupon = coupon
             cart.save()
             cart_item.coupon_discount = discount_amount
@@ -183,11 +180,18 @@ def cart(request, total=0, quantity=0, cart_items=None, count=0, discount_amount
             coupon.coupon_stock -= 1
             coupon.save()
         except:
-            messages.error(request, 'coupon not found')
+            pass
+    
+    
+    total_coupons = Coupon.objects.all()
+    available_coupons = []
+    for cpn in total_coupons:
+        if not cpn.is_expired():
 
-
+            available_coupons.append(cpn)
 
     context = {
+        "available_coupons": available_coupons,
         "discount_amnt": discount_amnt,
         "og_total": og_total,
         "total": total,

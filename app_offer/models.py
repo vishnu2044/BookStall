@@ -18,13 +18,14 @@ class Coupon(models.Model):
     coupon_stock = models.PositiveIntegerField(null=True, blank=True)
     expiry_date = models.DateField(validators=[validate_expiry_date])
 
-    def str(self):
+    def __str__(self):
         return self.coupon_code
     
     def is_expired(self):
         if self.coupon_stock == 0 or self.expiry_date < date.today():
             return True
         return False
+
 
 
 class Offer(models.Model):
