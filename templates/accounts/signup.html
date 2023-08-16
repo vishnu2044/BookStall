@@ -98,7 +98,7 @@
                         <!-- Rest of your content -->
                     
                     <div class="card-body p-4 p-md-5">
-                        <form action="{% url 'signup' %}" method="POST">
+                        <form  action="{% url 'signup' %}" method="POST">
                             {% csrf_token %}
 
                             <div class="row">
@@ -112,7 +112,7 @@
                                 <div class="col-md-6 mb-4 d-flex align-items-center pb-2">
                                     <div class="form-outline datepicker w-100">
                                         <label for="name" class="form-label"><strong>Last Name</strong></label>
-                                        <input type="text" class="form-control form-control-lg" id="firstname" name="lastname" placeholder="Enter your Last name" />
+                                        <input type="text" class="form-control form-control-lg" id="lastname" name="lastname" placeholder="Enter your Last name" />
                                     </div>
                                 </div>                        
                             </div>
@@ -159,12 +159,14 @@
                             </div>
 
                             <div class="pl-5">
-                                <button type="submit" value="submit" class="btn_3 mt-5 pt-4 col-md-10 ">
+                                <button type="submit" value="submit" class="btn_3 mt-5 pt-4 col-md-10 " >
                                     Sign  up
                                 </button>
                             </div >
 
                         </form>
+                    
+
                         <div class="pl-5 col-12">
                             <a href="{% url 'handle_login' %}"><button type="" value="" class="btn_3 mt-5 pt-4 col-md-4 ">
                                 log in page
@@ -178,6 +180,10 @@
             </div>
         </div>
     </div>
+
+        
+
+        
 </section>
 {% endif %}
 <!--================login_part end =================-->
