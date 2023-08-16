@@ -32,94 +32,98 @@ def get_month_name(month_number):
 
 
 def admin_dashboard(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-       
-        order_count = OrderItem.objects.count()
-        # order_count = delivered_item.count()
-        product_count = Product.objects.count()
-        author_count = Authors.objects.count()
-        category_count = Category_list.objects.count()
-        user_count = User.objects.count()                                                                                             
-
-        #<<<<<<<<<< order status >>>>>>>>>>>
-        pending_count = OrderItem.objects.filter(status__iexact="pending").count()
-        accepted_count = OrderItem.objects.filter(status__iexact="accepted").count()
-        shipped_count = OrderItem.objects.filter(status__iexact="shipped").count()
-        delivered_count = OrderItem.objects.filter(status__iexact="delivered").count()
-        cancelled_count = OrderItem.objects.filter(status__iexact="cancelled").count()
-        refunded_count = OrderItem.objects.filter(status__iexact="refunded").count()
-
-        # Calculating revenue
+    try:
+        if request.user.is_authenticated and request.user.is_superuser:
         
-        # filtering the delivered items from the OrderItem
-        delivered_items = OrderItem.objects.filter(status__iexact="delivered")
+            order_count = OrderItem.objects.count()
+            # order_count = delivered_item.count()
+            product_count = Product.objects.count()
+            author_count = Authors.objects.count()
+            category_count = Category_list.objects.count()
+            user_count = User.objects.count()                                                                                             
 
-        # sales report by month for the graph
-        today = timezone.now().date()
-        five_months_ago = today - timedelta(days=150)
-        sales_report = (
-            OrderItem.objects.annotate(month=TruncMonth('created_at'))
-            .filter(created_at__gte= five_months_ago, status__iexact="delivered")
-            .values(month = F('month__month'))
-            .annotate(total_sales= Sum('product_price'), total_number_orders = Sum('quantity'))
-            .order_by('month')
-        )
-        for entry in sales_report:
-            entry['month_name'] = get_month_name(entry['month'])
-        print("**********************************************************", sales_report)
+            #<<<<<<<<<< order status >>>>>>>>>>>
+            pending_count = OrderItem.objects.filter(status__iexact="pending").count()
+            accepted_count = OrderItem.objects.filter(status__iexact="accepted").count()
+            shipped_count = OrderItem.objects.filter(status__iexact="shipped").count()
+            delivered_count = OrderItem.objects.filter(status__iexact="delivered").count()
+            cancelled_count = OrderItem.objects.filter(status__iexact="cancelled").count()
+            refunded_count = OrderItem.objects.filter(status__iexact="refunded").count()
 
-        revenue = 0
-        for item in delivered_items:
-            revenue += (item.product_price * item.quantity )
+            # Calculating revenue
+            
+            # filtering the delivered items from the OrderItem
+            delivered_items = OrderItem.objects.filter(status__iexact="delivered")
 
-        raz_total = 0
-        raz_method = PaymentMethod.objects.get(id=2)  # Use get() to retrieve the specific payment method
-        raz_orders = Order.objects.filter(payment__payment_method=raz_method)  # Double underscore to navigate to related fields
-        razorpay_items = delivered_items.filter(order__in=raz_orders)
-  # Double underscore to navigate to related fields
+            # sales report by month for the graph
+            today = timezone.now().date()
+            five_months_ago = today - timedelta(days=150)
+            sales_report = (
+                OrderItem.objects.annotate(month=TruncMonth('created_at'))
+                .filter(created_at__gte= five_months_ago, status__iexact="delivered")
+                .values(month = F('month__month'))
+                .annotate(total_sales= Sum('product_price'), total_number_orders = Sum('quantity'))
+                .order_by('month')
+            )
+            for entry in sales_report:
+                entry['month_name'] = get_month_name(entry['month'])
+            print("**********************************************************", sales_report)
 
-        for item in razorpay_items:
-            raz_total += (item.product_price * item.quantity)
+            revenue = 0
+            for item in delivered_items:
+                revenue += (item.product_price * item.quantity )
 
-        ## Through cod  ##
-        cod_total = 0
-        cod_method = PaymentMethod.objects.get(id=1)  
-        cod_orders = Order.objects.filter(payment__payment_method=cod_method)  
-        cod_items = delivered_items.filter(order__in=cod_orders)  
+            raz_total = 0
+            raz_method = PaymentMethod.objects.get(id=2)  # Use get() to retrieve the specific payment method
+            raz_orders = Order.objects.filter(payment__payment_method=raz_method)  # Double underscore to navigate to related fields
+            razorpay_items = delivered_items.filter(order__in=raz_orders)
+    # Double underscore to navigate to related fields
 
-        for item in cod_items:
-            cod_total += item.product_price * item.quantity
-        
-        # latest orders
-        order_items = OrderItem.objects.all().order_by('-id')[:5]
+            for item in razorpay_items:
+                raz_total += (item.product_price * item.quantity)
 
-        context = {
-            "order_items" : order_items[:5],
-            'order_count' : order_count,
-            'product_count' : product_count,
-            'author_count' : author_count,
-            'category_count' : category_count,
-            'user_count' : user_count,
-             #order status
-            'pending_count' : pending_count,
-            'accepted_count' : accepted_count,
-            'shipped_count' : shipped_count,
-            'delivered_count' : delivered_count,
-            'cancelled_count' : cancelled_count,
-            'refunded_count' : refunded_count,
+            ## Through cod  ##
+            cod_total = 0
+            cod_method = PaymentMethod.objects.get(id=1)  
+            cod_orders = Order.objects.filter(payment__payment_method=cod_method)  
+            cod_items = delivered_items.filter(order__in=cod_orders)  
 
-            #revenue count
-            'revenue' : revenue,
-            'raz_total' : raz_total,
-            'cod_total' : cod_total,
+            for item in cod_items:
+                cod_total += item.product_price * item.quantity
+            
+            # latest orders
+            order_items = OrderItem.objects.all().order_by('-id')[:5]
+
+            context = {
+                "order_items" : order_items[:5],
+                'order_count' : order_count,
+                'product_count' : product_count,
+                'author_count' : author_count,
+                'category_count' : category_count,
+                'user_count' : user_count,
+                #order status
+                'pending_count' : pending_count,
+                'accepted_count' : accepted_count,
+                'shipped_count' : shipped_count,
+                'delivered_count' : delivered_count,
+                'cancelled_count' : cancelled_count,
+                'refunded_count' : refunded_count,
+
+                #revenue count
+                'revenue' : revenue,
+                'raz_total' : raz_total,
+                'cod_total' : cod_total,
 
 
-            'sales_report' : sales_report,  
-        }
-        
-        return render(request, 'adminpanel/ad_dashboard.html', context)
-    messages.error(request, 'Only admin can access this page !')
-    return render(request, 'adminpanel/admin_login.html')
+                'sales_report' : sales_report,  
+            }
+            
+            return render(request, 'adminpanel/ad_dashboard.html', context)
+        messages.error(request, 'Only admin can access this page !')
+        return render(request, 'adminpanel/admin_login.html')
+    except:
+        messages.warning(request, 'Oops somwthing went wrong!')
+        return redirect(admin_dashboard)
 
 #<<<<<<<<<<<<<<<<<<<<   admin login function  >>>>>>>>>>>>>>>>>>>>
 def adminlogin(request):

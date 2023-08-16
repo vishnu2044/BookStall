@@ -36,3 +36,8 @@ class Offer(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    def is_expired(self):
+        if self.end_date < date.today():
+            return True
+        return False

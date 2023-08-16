@@ -23,9 +23,9 @@
                         <li>
                           <a href="#">{{ cart_item.product.product_name }}
                             <span class="middle">{{ cart_item.quantity }} </span>
-                            {% if cart_item.product.offer %}
+                            {% if cart_item.product.offer and not cart_item.product.offer.is_expired %}
                             <span class="last">₹ {{ cart_item.sub_total_with_offer }}</span>
-                            {% elif cart_item.product.category.offer %}
+                            {% elif cart_item.product.category.offer and not cart_item.product.category.offer.is_expired %}
                             <span class="last">₹ {{ cart_item.sub_total_with_category_offer }}</span>
                             {% else %}
                             <span class="last">₹ {{ cart_item.sub_total }}</span>

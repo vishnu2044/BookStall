@@ -185,7 +185,7 @@
                                                 
                                             </div>
                                         </div>
-                                        {% if product.offer %}
+                                        {% if product.offer and not product.offer.is_expired %}
                                         <div class="popular-caption">
                                             <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
                                             <h3>
@@ -193,7 +193,7 @@
                                                 <span class='text-danger'>{{ product.offer.off_percent }} % OFF</span>  
                                             </h3>  
                                         </div>
-                                        {% elif product.category.offer %}
+                                        {% elif product.category.offer and not product.category.offer.is_expired %}
                                         <div class="popular-caption">
                                             <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
                                             <h3>

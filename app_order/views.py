@@ -8,6 +8,7 @@ from django.conf import settings
 import razorpay
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from app_accounts.views import handle_login
+from app_checkout.views import checkout
 
 
 # Create your views here.
@@ -35,9 +36,9 @@ def payments(request, total=0, ):
         cart_items = CartItem.objects.filter(user=request.user)
         for cart_item in cart_items:
             product_price = 0
-            if cart_item.product.offer:
+            if cart_item.product.offer and cart_item.product.offer.is_expired != True:
                 product_price = cart_item.product.get_offer_price()
-            if cart_item.product.category.offer:
+            elif cart_item.product.category.offer and cart_item.product.category.offer.is_expired != True:
                 product_price = cart_item.product.get_offer_price_by_category()
             else:
                 product_price = cart_item.product.price
@@ -121,9 +122,10 @@ def place_order(request):
                 print("cart item out of stock")
                 return redirect('cart')
             og_total += cart_item.sub_total()
-            if cart_item.product.offer:
+            
+            if cart_item.product.offer and cart_item.product.offer.is_expired != True:
                 total += cart_item.sub_total_with_offer()
-            elif cart_item.product.category.offer:
+            elif cart_item.product.category.offer and cart_item.product.category.offer.is_expired != True:
                 total += cart_item.sub_total_with_category_offer()
             else:
                 total += cart_item.sub_total()
@@ -213,9 +215,9 @@ def payment_success(request, total=0):
         cart_items = CartItem.objects.filter(user=request.user)
         for cart_item in cart_items:
             product_price = 0
-            if cart_item.product.offer:
+            if cart_item.product.offer and cart_item.product.offer.is_expired != True:
                 product_price = cart_item.product.get_offer_price()
-            if cart_item.product.category.offer:
+            elif cart_item.product.category.offer and cart_item.product.category.offer.is_expired != True:
                 product_price = cart_item.product.get_offer_price_by_category()
             else:
                 product_price = cart_item.product.price
@@ -268,6 +270,48 @@ def add_user_address(request):
             state = request.POST.get("state")
             country = request.POST.get("country")
             pincode = request.POST.get("pincode")
+
+                        
+            if len(name) == 0:
+                messages.warning(request, 'please enter name')
+                return redirect(checkout)
+            
+            if len(ph_no) == 0:
+                messages.warning(request, 'please enter phone number')
+                return redirect(checkout)
+            
+            if len(ph_no) > 10:
+                messages.warning(request, 'Phone number length must be minimum 10')
+                return redirect(checkout)
+            
+            if len(name) == 0:
+                messages.warning(request, 'please enter house name')
+                return redirect(checkout)
+            
+            if len(landmark) == 0:
+                messages.warning(request, 'please enter your landmark')
+                return redirect(checkout)
+            
+            if len(district) == 0:
+                messages.warning(request, 'please enter your district')
+                return redirect(checkout)
+            
+            if len(city) == 0:
+                messages.warning(request, 'please enter your city')
+                return redirect(checkout)
+            
+            if len(state) == 0:
+                messages.warning(request, 'please enter your sate')
+                return redirect(checkout)
+            
+            if len(country) == 0:
+                messages.warning(request, 'please enter your country')
+                return redirect(checkout)
+            
+            if len(pincode) == 0:
+                messages.warning(request, 'please enter your pincode')
+                return redirect(checkout)
+
             
             UserAddress.objects.create(
                 fullname = name,

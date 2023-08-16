@@ -81,9 +81,9 @@
                     <tr>
                       <td>{{ forloop.counter }}</td>
                       <td>{{ cart_item.product.product_name }}</td>
-                      {% if cart_item.product.offer %}
+                      {% if cart_item.product.offer and not cart_item.product.offer.is_expired  %}
                       <td>{{ cart_item.product.get_offer_price }}</td>
-                      {% elif cart_item.product.category.offer %}
+                      {% elif cart_item.product.category.offer and not cart_item.product.category.offer.is_expired  %}
                       <td>{{ cart_item.product.get_offer_price_by_category }}</td>
                       {% else %}
                       <td>{{ cart_item.product.price }}</td>
@@ -135,13 +135,6 @@
                       <td><span style="color: red;"> - {{ discount_amount }}</span></td>
                     </tr>
                     {% endif %}
-                    {% comment %} <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>Service Charges </td>
-                      <td><span><del  style="color: red;">99</del> </span></td>
-                    </tr> {% endcomment %}
                     <tr>
                       <td></td>
                       <td></td>

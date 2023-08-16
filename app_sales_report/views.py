@@ -14,7 +14,8 @@ def sales_calculation(request, start_date, end_date):
     if request.user.is_authenticated and request.user.is_superuser:
 
         if start_date == end_date:
-            date_obj = start_date.strftime("%Y-%m-%d")
+            date_obj = datetime.strftime(start_date, '%Y-%m-%d')
+                        
             order_items = OrderItem.objects.filter(order__created_at__date = date_obj)
         else:
             order_items = OrderItem.objects.filter(order__created_at__gte = start_date, order__created_at__lte = end_date)
@@ -86,25 +87,14 @@ def sales_report(request):
                 return redirect(sales_report)
             
             if start_date == end_date:
-                date_obj = datetime.strftime(start_date, '%Y-%m-%d')
-                order_items = OrderItem.objects.filter(order__created_at__date=date_obj.date())
-
-                if order_items:
-                    context.update(sales_calculation(start_date, end_date))
-                    context.update(sales = order_items, s_date = start_date, e_date = end_date)
-                    messages.success(request, f'Here is the sales report as of {end_date}. ')
-
-                    return render(request, 'adminpanel/sales.html' ,context)
-                else:
-                    messages.error(request, "No data found for the specific date!")
-
+                messages.warning(request, 'Please select a start date and end date must be deferent!')
                 return redirect(sales_report)
             
             order_items = OrderItem.objects.filter(order__created_at__gte=start_date, order__created_at__lte=end_date)
                 
             if order_items:
                 context.update(sales = order_items, s_date = start_date, e_date = end_date)
-                context.update(sales_calculation(start_date, end_date))
+                context.update(sales_calculation(request, start_date = start_date, end_date = end_date))
 
                 messages.success(request, f'Here is the sales report covering the period from {start_date} to {end_date}.')
             else:
@@ -130,7 +120,7 @@ def today_report(request):
         if order_items:
             context.update(sales = order_items, s_date=today, e_date=today)
             messages.success(request, f'Here is the sales report as of {date_obj}. ')
-            context.update(sales_calculation(today, today))
+            context.update(sales_calculation(request, start_date = today, end_date = today))
 
             return render(request, 'adminpanel/sales.html' ,context)
         else:
@@ -150,10 +140,14 @@ def week_report(request):
         week = today - timedelta(days=7)
 
         order_items = OrderItem.objects.filter(order__created_at__gte = week, order__created_at__lte = today)
+        print("************************************", order_items)
+        if order_items is None:
+            messages.warning(request, 'dfssssssssssssssssssssssssss')
+            return render(request, 'adminpanel/sales.html')
 
         if order_items:
             context.update(sales = order_items, s_date = today, e_date = week)
-            context.update(sales_calculation(week, today))
+            context.update(sales_calculation(request, start_date=week, end_date=today))
             messages.success(request, f'Here is the sales report as of last week')
             return render(request, 'adminpanel/sales.html' ,context)
         
@@ -177,7 +171,7 @@ def month_report(request):
 
         if order_items:
             context.update(sales = order_items, s_date = today, e_date = month)
-            context.update(sales_calculation(month, today))
+            context.update(sales_calculation(request, start_date = month, end_date = today))
             messages.success(request, 'Here is the sales report of last month')
             return render(request, 'adminpanel/sales.html', context)
         

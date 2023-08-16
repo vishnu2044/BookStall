@@ -60,13 +60,9 @@
                                         <td class="left strong">{{ order_item.product.product_name }}</td>
                                         <td class="right">₹ {{ order_item.product_price }}</td>
                                         <td class="center">{{ order_item.quantity }}</td>
-                                        {% if order_item.product.category.offer %}
-                                        <td class="right">₹ {{ order_item.sub_total_with_category_offer }}</td>
-                                        {% elif order_item.product.offer %}
-                                        <td class="right">₹ {{ order_item.sub_total_with_offer }}</td>
-                                        {% else %}
+
                                         <td class="right">₹ {{ order_item.sub_total }}</td>
-                                        {% endif %}
+                                      
                                     </tr>
                                     {% endfor %}
                                 </tbody> 

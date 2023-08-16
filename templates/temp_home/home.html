@@ -102,10 +102,29 @@
                             <div class="product-img">
                                 <img src="{{ product.images.url }}" alt="">
                             </div>
+                            {% if product.offer and not product.offer.is_expired %}
                             <div class="product-caption">
                                 <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
-                                <span>₹ {{ product.price }}</span>
+                                <h3>
+                                    <span>₹ <del>&#8377;{{ product.price }}</del> {{ product.get_offer_price }}</span>
+                                    <span class='text-danger'>{{ product.offer.off_percent }} % OFF</span>  
+                                </h3> 
                             </div>
+                            {% elif product.category.offer and not product.category.offer.is_expired %}
+                            <div class="product-caption">
+                                <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
+                                <h3>
+                                    <span>₹ <del>&#8377;{{ product.price }}</del> {{ product.get_offer_price_by_category }}</span> 
+                                    <span class='text-danger'>{{ product.category.offer.off_percent }} % OFF</span>  
+                                </h3> 
+                            </div>
+
+                            {% else %}
+                            <div class="product-caption">
+                                <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
+                                <span class="text-bg-dark">₹ {{ product.price }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
@@ -180,10 +199,30 @@
                                     
                                 </div>
                             </div>
+                            {% if product.offer and not product.offer.is_expired %}
                             <div class="popular-caption">
                                 <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
-                                <span>$ {{ product.price }}</span>
+                                <h3>
+                                    <span>₹ <del>&#8377;{{ product.price }}</del> {{ product.get_offer_price }}</span>
+                                    <span class='text-danger'>{{ product.offer.off_percent }} % OFF</span>  
+                                </h3>  
                             </div>
+                            {% elif product.category.offer and not product.category.offer.is_expired %}
+                            <div class="popular-caption">
+                                <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
+                                <h3>
+                                    <span>₹ <del>&#8377;{{ product.price }}</del> {{ product.get_offer_price_by_category }}</span> 
+                                    <span class='text-danger'>{{ product.category.offer.off_percent }} % OFF</span>  
+                                </h3>  
+                            </div>
+                            {% else %}
+                            <div class="popular-caption">
+                                <h3><a href="{% url 'product_details' product.id %}">{{ product.product_name }}</a></h3>
+                                <h3>
+                                    <span>₹ {{ product.price }}</span> 
+                                </h3>  
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}

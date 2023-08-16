@@ -8,7 +8,7 @@ from app_authors.models import *
 
 # Create your views here.
 def shop(request):
-  
+
     products = Product.objects.all().filter(is_available=True)
     products_ascending = Product.objects.all().filter(is_available=True).order_by('product_name')
     products_high_to_low = Product.objects.all().filter(is_available=True).order_by('price')

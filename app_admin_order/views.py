@@ -16,27 +16,31 @@ from django.db.models import Q
 @login_required
 @user_passes_test(super_admincheck)
 def admin_order_list(request):
-    order_items = OrderItem.objects.all().order_by('-id')
-
-
-    per_page = 10
-    page_number = request.GET.get('page')
-    paginator = Paginator(order_items, per_page) 
-
     try:
-        current_page = paginator.page(page_number)
+        order_items = OrderItem.objects.all().order_by('-id')
 
-    except PageNotAnInteger:
-        current_page = paginator.page(1)
 
-    except EmptyPage:
-        current_page = paginator.page(paginator.num_pages)
+        per_page = 10
+        page_number = request.GET.get('page')
+        paginator = Paginator(order_items, per_page) 
 
-    context = {
-        "current_page" : current_page,
-        "order_items" : order_items
-    }
-    return render(request, 'adminpanel/order_list.html', context)
+        try:
+            current_page = paginator.page(page_number)
+
+        except PageNotAnInteger:
+            current_page = paginator.page(1)
+
+        except EmptyPage:
+            current_page = paginator.page(paginator.num_pages)
+
+        context = {
+            "current_page" : current_page,
+            "order_items" : order_items
+        }
+        return render(request, 'adminpanel/order_list.html', context)
+    
+    except:
+        return render(request, 'adminpanel/error-404-admin.html')
 
 
 #<<<<<<<<<<<<<<<<<<<<  To update order order status in the admin side  >>>>>>>>>>>>>>>>>>>>
@@ -87,50 +91,67 @@ def update_order_status(request, id):
 @login_required
 @user_passes_test(super_admincheck)
 def order_details(request, id):
+    try:
+        order_item = OrderItem.objects.get(id=id)
+        context = {
+            "order_item" : order_item,
+            "id" : id
+        }
+        return render(request, 'adminpanel/order_details.html', context)
+    
+
+    except OrderItem.DoesNotExist:
+        messages.error(request, "oops something wrong!")
+        
     order_item = OrderItem.objects.get(id=id)
     context = {
-        "order_item" : order_item,
-        "id" : id
-    }
-    return render(request, 'adminpanel/order_details.html', context)
+            "order_item" : order_item,
+            "id" : id
+        }
+    return render(order_details, context )
 
 
 @login_required
 @user_passes_test(super_admincheck)
 def search_orders(request):
-    search_text = request.POST.get("query")
-
-    product = Product.objects.filter(product_name__icontains = search_text)
-
-    order_id = Order.objects.filter(order_id__icontains = search_text)
-
-    username = User.objects.filter(username__icontains = search_text)
-
-    combined_query = Q()
-    combined_query |= Q(product_id__in=product.values_list('id', flat=True))
-    combined_query |= Q(order_id__in=order_id.values_list('id', flat=True))
-    combined_query |= Q(user_id__in=username.values_list('id', flat=True))
-
-    order_items = OrderItem.objects.filter(combined_query)
-
-    per_page = 10
-    page_number = request.GET.get('page')
-    paginator = Paginator(order_items, per_page) 
-
     try:
-        current_page = paginator.page(page_number)
+        search_text = request.POST.get("query")
 
-    except PageNotAnInteger:
-        current_page = paginator.page(1)
+        product = Product.objects.filter(product_name__icontains = search_text)
 
-    except EmptyPage:
-        current_page = paginator.page(paginator.num_pages)
+        order_id = Order.objects.filter(order_id__icontains = search_text)
 
-    context = {
-        "current_page" : order_items,
-        "order_items" : order_items
-    }
-    return render(request, 'adminpanel/order_list.html', context)
+        username = User.objects.filter(username__icontains = search_text)
+
+        combined_query = Q()
+        combined_query |= Q(product_id__in=product.values_list('id', flat=True))
+        combined_query |= Q(order_id__in=order_id.values_list('id', flat=True))
+        combined_query |= Q(user_id__in=username.values_list('id', flat=True))
+
+        order_items = OrderItem.objects.filter(combined_query)
+
+        per_page = 10
+        page_number = request.GET.get('page')
+        paginator = Paginator(order_items, per_page) 
+
+        try:
+            current_page = paginator.page(page_number)
+
+        except PageNotAnInteger:
+            current_page = paginator.page(1)
+
+        except EmptyPage:
+            current_page = paginator.page(paginator.num_pages)
+
+        context = {
+            "current_page" : order_items,
+            "order_items" : order_items
+        }
+        return render(request, 'adminpanel/order_list.html', context)
+        
+    except:
+        messages.error(request, "oops something wrong!")
+        return render(admin_order_list)
 
 
 
