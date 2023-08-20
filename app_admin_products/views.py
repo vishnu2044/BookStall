@@ -97,11 +97,11 @@ def add_product(request):
                             return redirect(add_product)
                         else:
                             pass
-                        author_instance = Authors.objects.get(id=author)
-                        category_instance = Category_list.objects.get(id=category)
+                        author_instance = Authors.objects.filter(id=author)
+                        category_instance = Category_list.objects.filter(id=category)
                         offer_instance = None
                         if offer:
-                            offer_instance = Offer.objects.get(id=offer)
+                            offer_instance = Offer.objects.filter(id=offer)
                         
                         Product.objects.create(
                                 product_name = name,
@@ -210,9 +210,9 @@ def edit_product(request, id):
                     messages.error(request, "Product name can't be null!")
                     return redirect(edit_product)
                 
-                author_instance = Authors.objects.get(id=author)
-                categoriy_instance = Category_list.objects.get(id=category)
-                offer_instance = Offer.objects.get(id=offer)
+                author_instance = Authors.objects.filter(id=author)
+                categoriy_instance = Category_list.objects.filter(id=category)
+                offer_instance = Offer.objects.filter(id=offer)
 
                 product = Product.objects.filter(id=id).update(
                             product_name = name,
