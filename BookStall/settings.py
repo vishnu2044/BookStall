@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-u^3#y1o*o4ur=)^4&gj@q#ye_w6nw*y0qc9khh!zll@6iljpv#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.bookstall.store', 'bookstall.store', '16.16.212.7', '127.0.0.1']
 
 
 # Application definition
@@ -91,12 +91,12 @@ WSGI_APPLICATION = 'BookStall.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecom_bookstall_testing',
-        'USER': 'postgres',
-        'PASSWORD': 'vishnu2044',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'bookstall_database',
+        'USER': 'bookstall_db_user',
+        'PASSWORD': 'bookstall@2044',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '',
     }
 }
 
@@ -140,6 +140,7 @@ USE_TZ = True
 # Static files configuration
 import os
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
