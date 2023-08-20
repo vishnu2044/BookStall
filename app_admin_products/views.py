@@ -97,12 +97,14 @@ def add_product(request):
                             return redirect(add_product)
                         else:
                             pass
+
                         author_instance = Authors.objects.filter(id=author)
                         category_instance = Category_list.objects.filter(id=category)
                         offer_instance = None
                         if offer:
                             offer_instance = Offer.objects.filter(id=offer)
                         
+                        print("********************************************** git pull cheking")
                         Product.objects.create(
                                 product_name = name,
                                 slug = slug,
