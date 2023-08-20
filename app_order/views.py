@@ -139,6 +139,16 @@ def place_order(request):
             cart = Cart.objects.create(
                 session_id = _session_id(request)
         )
+        print("***********************  total : :::: ", total)
+            
+        if cart.coupon:
+            discount_amount = total * cart.coupon.off_percent / 100
+            if discount_amount > cart.coupon.max_discount:
+                discount_amount = cart.coupon.max_discount
+            if discount_amount:
+                total -= discount_amount
+        print("***********************  discount emt : :::: ", discount_amount)
+        print("***********************  total : :::: ", total)
             
         if cart_count <= 0:
             return redirect('home')

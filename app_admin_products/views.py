@@ -123,8 +123,9 @@ def add_product(request):
             offers = Offer.objects.all()
             offers_active = []
             for offer in offers:
-                if not offer.is_expired :
+                if  offer.is_expired != True :
                     offers_active.append(offer)
+            print("***************************** offers active :::::::::::::", offers_active)
 
             context = {
                     'offers' : offers_active,
