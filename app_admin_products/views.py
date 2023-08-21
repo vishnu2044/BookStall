@@ -104,7 +104,7 @@ def add_product(request):
                         if offer:
                             offer_instance = Offer.objects.filter(id=offer)
                         
-                        print("********************************************** git pull cheking")
+                        print("********************************************** git pull cheking  ")
                         Product.objects.create(
                                 product_name = name,
                                 slug = slug,
