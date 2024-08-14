@@ -54,95 +54,88 @@ def add_product_page(request):
 
  
 def add_product(request):
-    try:
-        if request.user.is_authenticated and request.user.is_superuser:
-            if request.method == "POST":
-                image = ''
-                try:
-                    image = request.FILES["image"]
-                except:
-                    if image == '':
-                        messages.info(request, "Image field cant't be empty !")
-                        return redirect(add_product)
+    if not (request.user.is_authenticated and request.user.is_superuser):
+        messages.error(request, 'Only admins can use this page!')
+        return render(request, 'adminpanel/admin_login.html')
 
-                name = request.POST.get("name")
-                slug = request.POST.get("slug")
-                price = request.POST.get("price")
-                stock = request.POST.get("stock")
-                category = request.POST.get("category")
-                author = request.POST.get("author")
-                offer = request.POST.get('offer_name')
-                description = request.POST.get("description")
+    if request.method == "POST":
+        image = request.FILES.get("image")
+        if image is None:
+            messages.info(request, "Image field can't be empty!")
+            return redirect('add_product')
 
-                if len(name) == 0:
-                    messages.warning(request, 'please enter the prodcut name')
-                    return redirect(add_product)
-                
-                if author == "":
-                    messages.warning(request, 'please select a author .')
-                    return redirect(add_product)
-                
-                if category == "":
-                    messages.warning(request, 'please select a category.')
-                    return redirect(add_product)
+        name = request.POST.get("name")
+        slug = request.POST.get("slug")
+        price = request.POST.get("price")
+        stock = request.POST.get("stock")
+        category = request.POST.get("category")
+        author = request.POST.get("author")
+        offer = request.POST.get('offer_name')
+        description = request.POST.get("description")
 
-                try:
-                    if Product:
-                        Product.objects.get(slug = slug)
-                except:
-                    check = [name, slug, price, stock, description]
-                    for values in check:
-                        if values == "" :
-                            messages.info(request, "some fields are empty !")
-                            return redirect(add_product)
-                        else:
-                            pass
+        # Check required fields
+        required_fields = [name, slug, price, stock, description]
+        if any(not field for field in required_fields):
+            messages.info(request, "Some required fields are empty!")
+            return redirect('add_product')
 
-                        author_instance = Authors.objects.filter(id=author)
-                        category_instance = Category_list.objects.filter(id=category)
-                        offer_instance = None
-                        if offer:
-                            offer_instance = Offer.objects.filter(id=offer)
-                        
-                        print("********************************************** git pull cheking  ")
-                        Product.objects.create(
-                                product_name = name,
-                                slug = slug,
-                                product_description = description,
-                                price = price,
-                                stock = stock,
-                                images = image,
-                                category = category_instance,
-                                author = author_instance,
-                                offer = offer_instance
-                        ).save()
-                        messages.success(request,f'Book : {name} added successfully')
-                        return redirect(admin_products)
-                    
-            authors = Authors.objects.all()
-            categories = Category_list.objects.all()
+        if Product.objects.filter(slug=slug).exists():
+            messages.warning(request, 'Product with this slug already exists!')
+            return redirect('add_product')
 
-            offers = Offer.objects.all()
-            offers_active = []
-            for offer in offers:
-                if  offer.is_expired != True :
-                    offers_active.append(offer)
-            print("***************************** offers active :::::::::::::", offers_active)
+        # Validate and get related instances
+        try:
+            author_instance = Authors.objects.get(id=author)
+        except Authors.DoesNotExist:
+            messages.warning(request, 'Author not found!')
+            return redirect('add_product')
 
-            context = {
-                    'offers' : offers_active,
-                    'categories' : categories,
-                    'authors' : authors,
-            }
-            return render(request, 'adminpanel/add_product.html', context)
-        
-        else:
-            messages.error(request, 'only admin can use this page !')
-            return render(request, 'adminpanel/admin_login.html')
-        
-    except:
-        messages.warning(request, 'oops something went wrong')
-        return redirect(admin_products)
+        try:
+            category_instance = Category_list.objects.get(id=category)
+        except Category_list.DoesNotExist:
+            messages.warning(request, 'Category not found!')
+            return redirect('add_product')
+
+        offer_instance = None
+        if offer:
+            try:
+                offer_instance = Offer.objects.get(id=offer)
+            except Offer.DoesNotExist:
+                messages.warning(request, 'Offer not found!')
+                return redirect('add_product')
+
+        # Create the product
+        try:
+            Product.objects.create(
+                product_name=name,
+                slug=slug,
+                product_description=description,
+                price=price,
+                stock=stock,
+                images=image,
+                category=category_instance,
+                author=author_instance,
+                offer=offer_instance
+            )
+            messages.success(request, f'Book: {name} added successfully')
+            return redirect('admin_products')
+        except Exception as e:
+            print(f"Error occurred while creating product: {e}")
+            messages.warning(request, f'Oops, something went wrong: {e}')
+            return redirect('add_product')
+
+    # GET request handling
+    authors = Authors.objects.all()
+    categories = Category_list.objects.all()
+    offers_active = Offer.objects.filter(is_expired=False)
+
+    context = {
+        'offers': offers_active,
+        'categories': categories,
+        'authors': authors,
+    }
+    return render(request, 'adminpanel/add_product.html', context)
+
     
 
 

@@ -74,17 +74,19 @@ def admin_dashboard(request):
                 revenue += (item.product_price * item.quantity )
 
             raz_total = 0
-            raz_method = PaymentMethod.objects.get(id=2)  # Use get() to retrieve the specific payment method
-            raz_orders = Order.objects.filter(payment__payment_method=raz_method)  # Double underscore to navigate to related fields
-            razorpay_items = delivered_items.filter(order__in=raz_orders)
-    # Double underscore to navigate to related fields
+            try:
+                raz_method = PaymentMethod.objects.get(method='raz')  # Use get() to retrieve the specific payment method
+                raz_orders = Order.objects.filter(payment__payment_method=raz_method)  # Double underscore to navigate to related fields
+                razorpay_items = delivered_items.filter(order__in=raz_orders)
+            except PaymentMethod.DoesNotExist:
+                raz_method = 2
 
             for item in razorpay_items:
                 raz_total += (item.product_price * item.quantity)
 
             ## Through cod  ##
             cod_total = 0
-            cod_method = PaymentMethod.objects.get(id=1)  
+            cod_method = PaymentMethod.objects.get(method='cod')  
             cod_orders = Order.objects.filter(payment__payment_method=cod_method)  
             cod_items = delivered_items.filter(order__in=cod_orders)  
 

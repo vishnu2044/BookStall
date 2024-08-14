@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -89,17 +90,26 @@ WSGI_APPLICATION = 'BookStall.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'bookstall',
+#         'USER': 'postgres',
+#         'PASSWORD': 'vishnu2044',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'bookstall_database',
-        'USER': 'bookstall_db_user',
-        'PASSWORD': 'bookstall@2044',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
+    "default": {
+        "ENGINE": os.environ.get("DB_ENGINE", default="django.db.backends.sqlite3"),
+        "NAME": os.environ.get("DB_NAME", default=BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("DB_USER", default=""),
+        "PASSWORD": os.environ.get("DB_PASSWORD", default=""),
+        "HOST": os.environ.get("DB_HOST", default=""),
+        "PORT": os.environ.get("DB_PORT", default=""),
+    },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
